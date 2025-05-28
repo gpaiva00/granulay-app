@@ -61,7 +61,11 @@ class MenuBarManager: ObservableObject {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         
         if let button = statusItem?.button {
-            button.image = NSImage(systemSymbolName: "camera.filters", accessibilityDescription: "Granulay")
+            button.image = NSImage(named: "MenuBarIcon")
+            button.image?.size = NSSize(width: 16, height: 16)
+            
+            button.image?.isTemplate = true
+            
             button.action = #selector(toggleGrain)
             button.target = self
         }
@@ -74,8 +78,8 @@ class MenuBarManager: ObservableObject {
         
         let toggleItem = NSMenuItem(
             title: isGrainEnabled ? "Desativar Efeito" : "Ativar Efeito",
-            action: #selector(toggleGrain),
-            keyEquivalent: "g"
+             action: #selector(toggleGrain),
+             keyEquivalent: ""
         )
         toggleItem.target = self
         menu.addItem(toggleItem)
@@ -84,8 +88,8 @@ class MenuBarManager: ObservableObject {
         
         let settingsItem = NSMenuItem(
             title: "Configurações...",
-            action: #selector(openSettings),
-            keyEquivalent: ","
+             action: #selector(openSettings),
+            keyEquivalent: ""
         )
         settingsItem.target = self
         menu.addItem(settingsItem)
@@ -94,8 +98,8 @@ class MenuBarManager: ObservableObject {
         
         let quitItem = NSMenuItem(
             title: "Sair",
-            action: #selector(quit),
-            keyEquivalent: "q"
+             action: #selector(quit),
+            keyEquivalent: ""
         )
         quitItem.target = self
         menu.addItem(quitItem)

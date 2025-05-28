@@ -53,8 +53,10 @@ struct LoadingOverlay: View {
 struct HeaderView: View {
     var body: some View {
         VStack(spacing: 8) {
-            Image(systemName: "camera.filters")
-                .font(.system(size: 32))
+            Image("SettingsViewIcon")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 40, height: 40)
                 .foregroundColor(.accentColor)
             
             Text("Granulay")
