@@ -1,6 +1,8 @@
 import SwiftUI
 import CoreImage
 import CoreImage.CIFilterBuiltins
+import Combine
+import QuartzCore
 
 enum GrainStyle: String, CaseIterable {
     case fine = "Fino"
@@ -27,6 +29,84 @@ enum GrainStyle: String, CaseIterable {
     }
 }
 
+class GrainTextureCache {
+    static let shared = GrainTextureCache()
+    private var cache: [String: NSImage] = [:]
+    private let queue = DispatchQueue(label: "grain.texture.cache", qos: .userInitiated)
+    private var currentTextureSize = CGSize(width: 512, height: 512)
+    
+    private init() {
+        setupPerformanceOptimizations()
+    }
+    
+    func getTexture(for style: GrainStyle, completion: @escaping (NSImage?) -> Void) {
+        let key = "\(style.rawValue)_\(Int(currentTextureSize.width))x\(Int(currentTextureSize.height))"
+        
+        queue.async {
+            if let cachedTexture = self.cache[key] {
+                DispatchQueue.main.async {
+                    completion(cachedTexture)
+                }
+                return
+            }
+            
+            let texture = createGrainTexture(size: self.currentTextureSize, style: style)
+            
+            if let texture = texture {
+                self.cache[key] = texture
+            }
+            
+            DispatchQueue.main.async {
+                completion(texture)
+            }
+        }
+    }
+    
+    func preloadTextures() {
+        queue.async {
+            for style in GrainStyle.allCases {
+                let key = "\(style.rawValue)_\(Int(self.currentTextureSize.width))x\(Int(self.currentTextureSize.height))"
+                if self.cache[key] == nil {
+                    let texture = createGrainTexture(size: self.currentTextureSize, style: style)
+                    if let texture = texture {
+                        self.cache[key] = texture
+                    }
+                }
+            }
+        }
+    }
+    
+    private func setupPerformanceOptimizations() {
+        NotificationCenter.default.addObserver(
+            forName: .textureQualityChanged,
+            object: nil,
+            queue: .main
+        ) { notification in
+            if let newSize = notification.object as? CGSize {
+                self.adjustTextureQuality(size: newSize)
+            }
+        }
+    }
+    
+    private func adjustTextureQuality(size: CGSize) {
+        currentTextureSize = size
+        
+        queue.async {
+            // Limpa cache antigo
+            self.cache.removeAll()
+            
+            // Regenera texturas com nova qualidade
+            for style in GrainStyle.allCases {
+                let key = "\(style.rawValue)_\(Int(size.width))x\(Int(size.height))"
+                let texture = createGrainTexture(size: size, style: style)
+                if let texture = texture {
+                    self.cache[key] = texture
+                }
+            }
+        }
+    }
+}
+
 struct GrainEffect: View {
     let intensity: Double
     let style: GrainStyle
@@ -34,38 +114,50 @@ struct GrainEffect: View {
     let preserveBrightness: Bool
     
     @State private var grainTexture: NSImage?
+    @State private var isTextureLoading = false
     
     var body: some View {
         Rectangle()
             .fill(Color.clear)
             .overlay(
-                Image(nsImage: grainTexture ?? NSImage())
-                    .resizable(resizingMode: .tile)
-                    .opacity(intensity)
-                    .blendMode(preserveBrightness ? .overlay : .multiply)
-                    .allowsHitTesting(false)
+                Group {
+                    if let texture = grainTexture {
+                        Image(nsImage: texture)
+                            .resizable(resizingMode: .tile)
+                            .opacity(intensity)
+                            .blendMode(preserveBrightness ? .overlay : .multiply)
+                            .allowsHitTesting(false)
+                            .animation(.easeInOut(duration: 0.1), value: intensity)
+                    } else {
+                        Color.clear
+                    }
+                }
             )
             .onAppear {
-                generateGrainTexture()
+                loadTextureIfNeeded()
             }
             .onChange(of: style) { _ in
-                generateGrainTexture()
+                loadTextureIfNeeded()
             }
     }
     
-    private func generateGrainTexture() {
-        DispatchQueue.global(qos: .userInitiated).async {
-            let texture = createGrainTexture(size: CGSize(width: 512, height: 512), style: style)
-            
-            DispatchQueue.main.async {
-                self.grainTexture = texture
-            }
+    private func loadTextureIfNeeded() {
+        guard !isTextureLoading else { return }
+        
+        isTextureLoading = true
+        GrainTextureCache.shared.getTexture(for: style) { texture in
+            self.grainTexture = texture
+            self.isTextureLoading = false
         }
     }
 }
 
 func createGrainTexture(size: CGSize, style: GrainStyle) -> NSImage? {
-    let context = CIContext()
+    let context = CIContext(options: [
+        .workingColorSpace: NSNull(),
+        .outputColorSpace: NSNull(),
+        .useSoftwareRenderer: false
+    ])
     
     guard let noiseFilter = CIFilter(name: "CIRandomGenerator") else { return nil }
     
@@ -111,6 +203,7 @@ func createGrainTexture(size: CGSize, style: GrainStyle) -> NSImage? {
     
     return NSImage(cgImage: cgImage, size: size)
 }
+
 // MARK: - GrainStyle Extension for Hybrid Implementation
 extension GrainStyle {
     var colorComponents: (CGFloat, CGFloat, CGFloat) {
@@ -120,5 +213,140 @@ extension GrainStyle {
         case .coarse: return (0.4, 0.4, 0.4)
         case .vintage: return (0.35, 0.25, 0.15)
         }
+    }
+}
+
+// MARK: - Notification Extensions
+extension Notification.Name {
+    static let textureQualityChanged = Notification.Name("textureQualityChanged")
+    static let updateFrequencyChanged = Notification.Name("updateFrequencyChanged")
+}
+
+// MARK: - Performance Optimizer
+class PerformanceOptimizer: ObservableObject {
+    static let shared = PerformanceOptimizer()
+    
+    private var frameRateMonitor: Timer?
+    private var lastFrameTime: CFTimeInterval = 0
+    private var frameCount = 0
+    private var averageFPS: Double = 60.0
+    private let targetFPS: Double = 60.0
+    
+    private init() {
+        setupFrameRateMonitor()
+        setupDisplayNotifications()
+    }
+    
+    deinit {
+        frameRateMonitor?.invalidate()
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    private func setupFrameRateMonitor() {
+        frameRateMonitor = Timer.scheduledTimer(withTimeInterval: 1.0/60.0, repeats: true) { _ in
+            self.frameCallback()
+        }
+    }
+    
+    private func setupDisplayNotifications() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(displayConfigurationChanged),
+            name: NSApplication.didChangeScreenParametersNotification,
+            object: nil
+        )
+    }
+    
+    @objc private func frameCallback() {
+        let currentTime = CFAbsoluteTimeGetCurrent()
+        
+        if lastFrameTime > 0 {
+            let deltaTime = currentTime - lastFrameTime
+            let currentFPS = 1.0 / deltaTime
+            
+            // Média móvel simples para suavizar variações
+            averageFPS = (averageFPS * 0.9) + (currentFPS * 0.1)
+            frameCount += 1
+            
+            // Verifica performance a cada 60 frames
+            if frameCount >= 60 {
+                optimizeBasedOnPerformance()
+                frameCount = 0
+            }
+        }
+        
+        lastFrameTime = currentTime
+    }
+    
+    private func optimizeBasedOnPerformance() {
+        let performanceRatio = averageFPS / targetFPS
+        
+        if performanceRatio < 0.8 { // Performance abaixo de 80%
+            applyPerformanceOptimizations()
+        } else if performanceRatio > 0.95 { // Performance boa
+            removePerformanceOptimizations()
+        }
+    }
+    
+    private func applyPerformanceOptimizations() {
+        DispatchQueue.main.async {
+            // Reduz qualidade da textura temporariamente
+            self.optimizeTextureQuality(reduce: true)
+            
+            // Reduz frequência de atualizações
+            self.optimizeUpdateFrequency(reduce: true)
+        }
+    }
+    
+    private func removePerformanceOptimizations() {
+        DispatchQueue.main.async {
+            // Restaura qualidade normal
+            self.optimizeTextureQuality(reduce: false)
+            
+            // Restaura frequência normal
+            self.optimizeUpdateFrequency(reduce: false)
+        }
+    }
+    
+    private func optimizeTextureQuality(reduce: Bool) {
+        let newSize = reduce ? CGSize(width: 256, height: 256) : CGSize(width: 512, height: 512)
+        
+        // Notifica o cache para ajustar qualidade
+        NotificationCenter.default.post(
+            name: .textureQualityChanged,
+            object: newSize
+        )
+    }
+    
+    private func optimizeUpdateFrequency(reduce: Bool) {
+        let interval = reduce ? 0.1 : 0.05
+        
+        // Notifica o overlay para ajustar frequência
+        NotificationCenter.default.post(
+            name: .updateFrequencyChanged,
+            object: interval
+        )
+    }
+    
+    @objc private func displayConfigurationChanged() {
+        // Reset performance monitoring quando configuração da tela muda
+        averageFPS = 60.0
+        frameCount = 0
+        lastFrameTime = 0
+    }
+    
+    func getCurrentPerformanceMetrics() -> (fps: Double, quality: String) {
+        let quality: String
+        if averageFPS >= 55 {
+            quality = "Excelente"
+        } else if averageFPS >= 45 {
+            quality = "Boa"
+        } else if averageFPS >= 30 {
+            quality = "Média"
+        } else {
+            quality = "Baixa"
+        }
+        
+        return (averageFPS, quality)
     }
 }

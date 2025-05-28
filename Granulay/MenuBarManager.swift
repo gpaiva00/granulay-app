@@ -1,10 +1,13 @@
 import SwiftUI
 import AppKit
+import Combine
 
 class MenuBarManager: ObservableObject {
     private var statusItem: NSStatusItem?
     private var overlayWindow: GrainOverlayWindow?
     private var settingsWindow: NSWindow?
+    private var cancellables = Set<AnyCancellable>()
+    private var intensityDebouncer = Timer()
     
     @Published var isGrainEnabled = false {
         didSet {
@@ -17,10 +20,7 @@ class MenuBarManager: ObservableObject {
     
     @Published var grainIntensity: Double = 0.3 {
         didSet {
-            overlayWindow?.updateGrainIntensity(grainIntensity)
-            if saveSettingsAutomatically {
-                saveSettings()
-            }
+            debouncedIntensityUpdate()
         }
     }
     
@@ -55,6 +55,16 @@ class MenuBarManager: ObservableObject {
         loadSettings()
         setupMenuBar()
         setupOverlayWindow()
+    }
+    
+    private func debouncedIntensityUpdate() {
+        intensityDebouncer.invalidate()
+        intensityDebouncer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false) { _ in
+            self.overlayWindow?.updateGrainIntensity(self.grainIntensity)
+            if self.saveSettingsAutomatically {
+                self.saveSettings()
+            }
+        }
     }
     
     private func setupMenuBar() {
