@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
     <channel>
-        <title>Granulay Updates</title>
+        <title>Granulay 1.0.1-beta</title>
         <link>https://gpaiva00.github.io/granulay-releases/</link>
         <description>Updates for Granulay - Vintage grain effect for macOS</description>
         <language>en</language>
-        <lastBuildDate>Wed, 29 May 2025 10:00:00 +0000</lastBuildDate>
+        <lastBuildDate>Thu, 29 May 2025 17:06:52 +0000</lastBuildDate>
 
         <item>
-            <title>Granulay 1.0.0 Beta</title>
-            <pubDate>Wed, 29 May 2025 10:00:00 +0000</pubDate>
-            <sparkle:version>1.0.0</sparkle:version>
-            <sparkle:shortVersionString>1.0.0-beta</sparkle:shortVersionString>
+            <title>Granulay 1.0.1-beta</title>
+            <pubDate>Thu, 29 May 2025 17:06:52 +0000</pubDate>
+            <sparkle:version>1.0.1</sparkle:version>
+            <sparkle:shortVersionString>1.0.1-beta</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
             <sparkle:channel>beta</sparkle:channel>
             <sparkle:criticalUpdate>false</sparkle:criticalUpdate>
@@ -42,11 +42,11 @@
                     </p>
                 </div>
             ]]></description>
-            <enclosure url="https://github.com/gpaiva00/granulay-app/releases/download/v1.0.0-beta/Granulay.zip"
-                sparkle:version="1.0.0"
-                sparkle:shortVersionString="1.0.0-beta"
-                sparkle:edSignature="YbIQBvqHqFX2Th+xatvnMEtHRg+rbOYwlrV6Zm6/7b2xoaBouH6+1Wun4bZgmHTsLQvzYDYkroSMH0819EAMCQ=="
-                length="4938135"
+            <enclosure url="https://github.com/gpaiva00/granulay-app/releases/download/v1.0.1-beta/Granulay-1.0.1.zip"
+                sparkle:version="1.0.1"
+                sparkle:shortVersionString="1.0.1-beta"
+                sparkle:edSignature="aolbpjojaS09EX1CMGYf8IMUBxtlCcbeEs6sjqXYH4rkumBbA8sys9a0JrkGPqvi62DXhzXOz/z+2y0J59iWCw=="
+                length="6613521"
                 type="application/octet-stream" />
         </item>
     </channel>
@@ -61,8 +61,8 @@ INSTRUÇÕES PARA ATUALIZAR O APPCAST:
    sign_update -s sparkle_private_key.pem -f Granulay.zip
    
    Isso retornará algo como:
-   sparkle:edSignature="MC0CFQCdoW..."
-   length="12345678"
+   sparkle:edSignature="aolbpjojaS09EX1CMGYf8IMUBxtlCcbeEs6sjqXYH4rkumBbA8sys9a0JrkGPqvi62DXhzXOz/z+2y0J59iWCw=="
+   length="6613521"
 
 2. Substitua no XML acima:
    - "YbIQBvqHqFX2Th+xatvnMEtHRg+rbOYwlrV6Zm6/7b2xoaBouH6+1Wun4bZgmHTsLQvzYDYkroSMH0819EAMCQ==" pela assinatura real
