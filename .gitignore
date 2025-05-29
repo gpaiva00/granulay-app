@@ -2,7 +2,6 @@ sparkle_private_key.pem
 sparkle_public_key.pem
 
 build_release.sh
-release.sh
 update_appcast.sh
 sign_and_update.sh
 
