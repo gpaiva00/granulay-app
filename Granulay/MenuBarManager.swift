@@ -1,10 +1,14 @@
 import SwiftUI
 import AppKit
+import Combine
 
 class MenuBarManager: ObservableObject {
     private var statusItem: NSStatusItem?
     private var overlayWindow: GrainOverlayWindow?
     private var settingsWindow: NSWindow?
+    private var cancellables = Set<AnyCancellable>()
+    private var intensityDebouncer = Timer()
+    private let updateManager = UpdateManager.shared
     
     @Published var isGrainEnabled = false {
         didSet {
@@ -17,10 +21,7 @@ class MenuBarManager: ObservableObject {
     
     @Published var grainIntensity: Double = 0.3 {
         didSet {
-            overlayWindow?.updateGrainIntensity(grainIntensity)
-            if saveSettingsAutomatically {
-                saveSettings()
-            }
+            debouncedIntensityUpdate()
         }
     }
     
@@ -57,11 +58,25 @@ class MenuBarManager: ObservableObject {
         setupOverlayWindow()
     }
     
+    private func debouncedIntensityUpdate() {
+        intensityDebouncer.invalidate()
+        intensityDebouncer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false) { _ in
+            self.overlayWindow?.updateGrainIntensity(self.grainIntensity)
+            if self.saveSettingsAutomatically {
+                self.saveSettings()
+            }
+        }
+    }
+    
     private func setupMenuBar() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         
         if let button = statusItem?.button {
-            button.image = NSImage(systemSymbolName: "camera.filters", accessibilityDescription: "Granulay")
+            button.image = NSImage(named: "MenuBarIcon")
+            button.image?.size = NSSize(width: 16, height: 16)
+            
+            button.image?.isTemplate = true
+            
             button.action = #selector(toggleGrain)
             button.target = self
         }
@@ -74,8 +89,8 @@ class MenuBarManager: ObservableObject {
         
         let toggleItem = NSMenuItem(
             title: isGrainEnabled ? "Desativar Efeito" : "Ativar Efeito",
-            action: #selector(toggleGrain),
-            keyEquivalent: "g"
+             action: #selector(toggleGrain),
+             keyEquivalent: ""
         )
         toggleItem.target = self
         menu.addItem(toggleItem)
@@ -84,18 +99,28 @@ class MenuBarManager: ObservableObject {
         
         let settingsItem = NSMenuItem(
             title: "Configurações...",
-            action: #selector(openSettings),
-            keyEquivalent: ","
+             action: #selector(openSettings),
+            keyEquivalent: ""
         )
         settingsItem.target = self
         menu.addItem(settingsItem)
         
         menu.addItem(NSMenuItem.separator())
         
+        let checkUpdatesItem = NSMenuItem(
+            title: "Verificar Atualizações...",
+            action: #selector(checkForUpdates),
+            keyEquivalent: ""
+        )
+        checkUpdatesItem.target = self
+        menu.addItem(checkUpdatesItem)
+        
+        menu.addItem(NSMenuItem.separator())
+        
         let quitItem = NSMenuItem(
             title: "Sair",
-            action: #selector(quit),
-            keyEquivalent: "q"
+             action: #selector(quit),
+            keyEquivalent: ""
         )
         quitItem.target = self
         menu.addItem(quitItem)
@@ -157,6 +182,10 @@ class MenuBarManager: ObservableObject {
     
     @objc private func quit() {
         NSApp.terminate(nil)
+    }
+    
+    @objc private func checkForUpdates() {
+        updateManager.checkForUpdates()
     }
     
     private func loadSettings() {

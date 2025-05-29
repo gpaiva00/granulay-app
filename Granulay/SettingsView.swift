@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject var menuBarManager: MenuBarManager
+    @StateObject private var updateManager = UpdateManager.shared
     @State private var isLoading = false
     
     var body: some View {
@@ -12,12 +13,15 @@ struct SettingsView: View {
                 ControlsSection(isLoading: $isLoading)
                     .environmentObject(menuBarManager)
                 
+                UpdatesSection(isLoading: $isLoading)
+                    .environmentObject(updateManager)
+                
                 ActionButtons(isLoading: $isLoading)
                     .environmentObject(menuBarManager)
             }
             .padding(24)
         }
-        .frame(width: 480, height: 470)
+        .frame(width: 480, height: 550)
         .overlay(
             Group {
                 if isLoading {
@@ -53,13 +57,26 @@ struct LoadingOverlay: View {
 struct HeaderView: View {
     var body: some View {
         VStack(spacing: 8) {
-            Image(systemName: "camera.filters")
-                .font(.system(size: 32))
+            Image("SettingsViewIcon")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 40, height: 40)
                 .foregroundColor(.accentColor)
             
-            Text("Granulay")
-                .font(.title)
-                .fontWeight(.semibold)
+            HStack(spacing: 8) {
+                Text("Granulay")
+                    .font(.title)
+                    .fontWeight(.semibold)
+                
+                Text("BETA")
+                    .font(.caption)
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 2)
+                    .background(Color.orange)
+                    .cornerRadius(8)
+            }
             
             Text("Efeito granulado vintage para sua tela")
                 .font(.subheadline)
@@ -193,6 +210,52 @@ struct ControlsSection: View {
                     ))
                     .toggleStyle(SwitchToggleStyle())
                     .disabled(isLoading)
+                }
+            }
+            .padding(16)
+            .background(Color(NSColor.controlBackgroundColor))
+            .cornerRadius(12)
+        }
+    }
+}
+
+struct UpdatesSection: View {
+    @EnvironmentObject var updateManager: UpdateManager
+    @Binding var isLoading: Bool
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Atualizações")
+                .font(.headline)
+            
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Text("Verificar Automaticamente")
+                        .font(.subheadline)
+                    
+                    Spacer()
+                    
+                    Toggle("", isOn: $updateManager.automaticUpdatesEnabled)
+                        .toggleStyle(SwitchToggleStyle())
+                        .disabled(isLoading)
+                }
+                
+                if !updateManager.automaticUpdatesEnabled {
+                    Text("Verificação automática desabilitada. Use o botão abaixo para verificar manualmente.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                
+                Divider()
+                
+                HStack {
+                    Button("Verificar Atualizações") {
+                        updateManager.checkForUpdates()
+                    }
+                    .buttonStyle(BorderedButtonStyle())
+                    .disabled(isLoading)
+                    
+                    Spacer()
                 }
             }
             .padding(16)

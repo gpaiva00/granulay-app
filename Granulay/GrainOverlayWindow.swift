@@ -1,15 +1,24 @@
 import SwiftUI
 import AppKit
+import Combine
 
-class GrainOverlayWindow: NSObject {
+class GrainOverlayWindow: NSObject, ObservableObject {
     private var overlayWindows: [NSWindow] = []
     private var hostingViews: [NSHostingView<GrainEffect>] = []
     private var currentIntensity: Double = 0.3
     private var currentStyle: GrainStyle = .fine
     private var currentPreserveBrightness: Bool = true
+    private var updateTimer: Timer?
+    private var pendingUpdate = false
+    private var updateInterval: TimeInterval = 0.05
     
     override init() {
         super.init()
+        
+        // Preload texturas para melhor performance
+        GrainTextureCache.shared.preloadTextures()
+        
+        setupPerformanceOptimizations()
         setupOverlayWindows()
         
         NotificationCenter.default.addObserver(
@@ -22,6 +31,19 @@ class GrainOverlayWindow: NSObject {
     
     deinit {
         NotificationCenter.default.removeObserver(self)
+        updateTimer?.invalidate()
+    }
+    
+    private func setupPerformanceOptimizations() {
+        NotificationCenter.default.addObserver(
+            forName: .updateFrequencyChanged,
+            object: nil,
+            queue: .main
+        ) { notification in
+            if let newInterval = notification.object as? TimeInterval {
+                self.updateInterval = newInterval
+            }
+        }
     }
     
     private func setupOverlayWindows() {
@@ -50,6 +72,9 @@ class GrainOverlayWindow: NSObject {
         window.collectionBehavior = [.canJoinAllSpaces, .stationary, .ignoresCycle, .fullScreenAuxiliary]
         window.isReleasedWhenClosed = false
         
+        // Garante que a janela cubra toda a tela de forma consistente
+        window.setFrame(screen.frame, display: true, animate: false)
+        
         let grainEffect = GrainEffect(
             intensity: currentIntensity,
             style: currentStyle,
@@ -58,6 +83,7 @@ class GrainOverlayWindow: NSObject {
         )
         
         let hostingView = NSHostingView(rootView: grainEffect)
+        hostingView.frame = screen.frame
         hostingViews.append(hostingView)
         
         window.contentView = hostingView
@@ -88,6 +114,10 @@ class GrainOverlayWindow: NSObject {
     func showOverlay() {
         for window in overlayWindows {
             window.orderFrontRegardless()
+            // Força refresh da geometria da janela
+            if let screen = window.screen {
+                window.setFrame(screen.frame, display: true, animate: false)
+            }
         }
     }
     
@@ -99,21 +129,34 @@ class GrainOverlayWindow: NSObject {
     
     func updateGrainIntensity(_ intensity: Double) {
         currentIntensity = intensity
-        updateAllViews()
+        scheduleUpdate()
     }
     
     func updateGrainStyle(_ style: GrainStyle) {
         currentStyle = style
-        updateAllViews()
+        scheduleUpdate()
     }
     
     func updatePreserveBrightness(_ preserve: Bool) {
         currentPreserveBrightness = preserve
-        updateAllViews()
+        scheduleUpdate()
     }
     
-    private func updateAllViews() {
-        for (index, window) in overlayWindows.enumerated() {
+    // Implementa debouncing para evitar atualizações excessivas
+    private func scheduleUpdate() {
+        guard !pendingUpdate else { return }
+        
+        pendingUpdate = true
+        updateTimer?.invalidate()
+        
+        updateTimer = Timer.scheduledTimer(withTimeInterval: updateInterval, repeats: false) { _ in
+            self.performUpdate()
+            self.pendingUpdate = false
+        }
+    }
+    
+    private func performUpdate() {
+        for (index, hostingView) in hostingViews.enumerated() {
             guard index < NSScreen.screens.count else { continue }
             
             let screen = NSScreen.screens[index]
@@ -124,8 +167,23 @@ class GrainOverlayWindow: NSObject {
                 preserveBrightness: currentPreserveBrightness
             )
             
-            let hostingView = NSHostingView(rootView: grainEffect)
-            window.contentView = hostingView
+            // Atualiza a view existente ao invés de recriar
+            hostingView.rootView = grainEffect
+        }
+        
+        // Força refresh das janelas para garantir aplicação uniforme
+        refreshAllWindows()
+    }
+    
+    private func refreshAllWindows() {
+        for window in overlayWindows {
+            if window.isVisible {
+                window.invalidateShadow()
+                window.viewsNeedDisplay = true
+                if let contentView = window.contentView {
+                    contentView.needsDisplay = true
+                }
+            }
         }
     }
 }

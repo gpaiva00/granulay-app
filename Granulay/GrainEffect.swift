@@ -1,6 +1,8 @@
 import SwiftUI
 import CoreImage
 import CoreImage.CIFilterBuiltins
+import Combine
+import QuartzCore
 
 enum GrainStyle: String, CaseIterable {
     case fine = "Fino"
@@ -27,6 +29,84 @@ enum GrainStyle: String, CaseIterable {
     }
 }
 
+class GrainTextureCache {
+    static let shared = GrainTextureCache()
+    private var cache: [String: NSImage] = [:]
+    private let queue = DispatchQueue(label: "grain.texture.cache", qos: .userInitiated)
+    private var currentTextureSize = CGSize(width: 512, height: 512)
+    
+    private init() {
+        setupPerformanceOptimizations()
+    }
+    
+    func getTexture(for style: GrainStyle, completion: @escaping (NSImage?) -> Void) {
+        let key = "\(style.rawValue)_\(Int(currentTextureSize.width))x\(Int(currentTextureSize.height))"
+        
+        queue.async {
+            if let cachedTexture = self.cache[key] {
+                DispatchQueue.main.async {
+                    completion(cachedTexture)
+                }
+                return
+            }
+            
+            let texture = createGrainTexture(size: self.currentTextureSize, style: style)
+            
+            if let texture = texture {
+                self.cache[key] = texture
+            }
+            
+            DispatchQueue.main.async {
+                completion(texture)
+            }
+        }
+    }
+    
+    func preloadTextures() {
+        queue.async {
+            for style in GrainStyle.allCases {
+                let key = "\(style.rawValue)_\(Int(self.currentTextureSize.width))x\(Int(self.currentTextureSize.height))"
+                if self.cache[key] == nil {
+                    let texture = createGrainTexture(size: self.currentTextureSize, style: style)
+                    if let texture = texture {
+                        self.cache[key] = texture
+                    }
+                }
+            }
+        }
+    }
+    
+    private func setupPerformanceOptimizations() {
+        NotificationCenter.default.addObserver(
+            forName: .textureQualityChanged,
+            object: nil,
+            queue: .main
+        ) { notification in
+            if let newSize = notification.object as? CGSize {
+                self.adjustTextureQuality(size: newSize)
+            }
+        }
+    }
+    
+    private func adjustTextureQuality(size: CGSize) {
+        currentTextureSize = size
+        
+        queue.async {
+            // Limpa cache antigo
+            self.cache.removeAll()
+            
+            // Regenera texturas com nova qualidade
+            for style in GrainStyle.allCases {
+                let key = "\(style.rawValue)_\(Int(size.width))x\(Int(size.height))"
+                let texture = createGrainTexture(size: size, style: style)
+                if let texture = texture {
+                    self.cache[key] = texture
+                }
+            }
+        }
+    }
+}
+
 struct GrainEffect: View {
     let intensity: Double
     let style: GrainStyle
@@ -34,38 +114,50 @@ struct GrainEffect: View {
     let preserveBrightness: Bool
     
     @State private var grainTexture: NSImage?
+    @State private var isTextureLoading = false
     
     var body: some View {
         Rectangle()
             .fill(Color.clear)
             .overlay(
-                Image(nsImage: grainTexture ?? NSImage())
-                    .resizable(resizingMode: .tile)
-                    .opacity(intensity)
-                    .blendMode(preserveBrightness ? .overlay : .multiply)
-                    .allowsHitTesting(false)
+                Group {
+                    if let texture = grainTexture {
+                        Image(nsImage: texture)
+                            .resizable(resizingMode: .tile)
+                            .opacity(intensity)
+                            .blendMode(preserveBrightness ? .overlay : .multiply)
+                            .allowsHitTesting(false)
+                            .animation(.easeInOut(duration: 0.1), value: intensity)
+                    } else {
+                        Color.clear
+                    }
+                }
             )
             .onAppear {
-                generateGrainTexture()
+                loadTextureIfNeeded()
             }
             .onChange(of: style) { _ in
-                generateGrainTexture()
+                loadTextureIfNeeded()
             }
     }
     
-    private func generateGrainTexture() {
-        DispatchQueue.global(qos: .userInitiated).async {
-            let texture = createGrainTexture(size: CGSize(width: 512, height: 512), style: style)
-            
-            DispatchQueue.main.async {
-                self.grainTexture = texture
-            }
+    private func loadTextureIfNeeded() {
+        guard !isTextureLoading else { return }
+        
+        isTextureLoading = true
+        GrainTextureCache.shared.getTexture(for: style) { texture in
+            self.grainTexture = texture
+            self.isTextureLoading = false
         }
     }
 }
 
 func createGrainTexture(size: CGSize, style: GrainStyle) -> NSImage? {
-    let context = CIContext()
+    let context = CIContext(options: [
+        .workingColorSpace: NSNull(),
+        .outputColorSpace: NSNull(),
+        .useSoftwareRenderer: false
+    ])
     
     guard let noiseFilter = CIFilter(name: "CIRandomGenerator") else { return nil }
     
@@ -111,6 +203,7 @@ func createGrainTexture(size: CGSize, style: GrainStyle) -> NSImage? {
     
     return NSImage(cgImage: cgImage, size: size)
 }
+
 // MARK: - GrainStyle Extension for Hybrid Implementation
 extension GrainStyle {
     var colorComponents: (CGFloat, CGFloat, CGFloat) {
@@ -121,4 +214,10 @@ extension GrainStyle {
         case .vintage: return (0.35, 0.25, 0.15)
         }
     }
+}
+
+// MARK: - Notification Extensions
+extension Notification.Name {
+    static let textureQualityChanged = Notification.Name("textureQualityChanged")
+    static let updateFrequencyChanged = Notification.Name("updateFrequencyChanged")
 }

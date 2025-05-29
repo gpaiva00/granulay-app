@@ -1,0 +1,21 @@
+sparkle_private_key.pem
+sparkle_public_key.pem
+
+build_release.sh
+update_appcast.sh
+sign_and_update.sh
+
+DISTRIBUICAO.md
+SPARKLE_SETUP.md
+SETUP_COMPLETO.md
+RELEASES_SETUP.md
+
+dist/
+build/
+bin/
+
+# Sparkle XCode project
+Sparkle Test App.app/
+sparkle.app/
+sparkle.framework/
+Symbols/
