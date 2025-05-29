@@ -8,6 +8,7 @@ class MenuBarManager: ObservableObject {
     private var settingsWindow: NSWindow?
     private var cancellables = Set<AnyCancellable>()
     private var intensityDebouncer = Timer()
+    private let updateManager = UpdateManager.shared
     
     @Published var isGrainEnabled = false {
         didSet {
@@ -106,6 +107,16 @@ class MenuBarManager: ObservableObject {
         
         menu.addItem(NSMenuItem.separator())
         
+        let checkUpdatesItem = NSMenuItem(
+            title: "Verificar Atualizações...",
+            action: #selector(checkForUpdates),
+            keyEquivalent: ""
+        )
+        checkUpdatesItem.target = self
+        menu.addItem(checkUpdatesItem)
+        
+        menu.addItem(NSMenuItem.separator())
+        
         let quitItem = NSMenuItem(
             title: "Sair",
              action: #selector(quit),
@@ -171,6 +182,10 @@ class MenuBarManager: ObservableObject {
     
     @objc private func quit() {
         NSApp.terminate(nil)
+    }
+    
+    @objc private func checkForUpdates() {
+        updateManager.checkForUpdates()
     }
     
     private func loadSettings() {

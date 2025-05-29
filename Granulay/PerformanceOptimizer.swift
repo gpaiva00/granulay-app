@@ -1,11 +1,10 @@
 import Foundation
 import AppKit
-import QuartzCore
 
 class PerformanceOptimizer: ObservableObject {
     static let shared = PerformanceOptimizer()
     
-    private var frameRateMonitor: CADisplayLink?
+    private var frameRateMonitor: Timer?
     private var lastFrameTime: CFTimeInterval = 0
     private var frameCount = 0
     private var averageFPS: Double = 60.0
@@ -22,8 +21,9 @@ class PerformanceOptimizer: ObservableObject {
     }
     
     private func setupFrameRateMonitor() {
-        frameRateMonitor = CADisplayLink(target: self, selector: #selector(frameCallback))
-        frameRateMonitor?.add(to: .main, forMode: .common)
+        frameRateMonitor = Timer.scheduledTimer(withTimeInterval: 1.0/60.0, repeats: true) { _ in
+            self.frameCallback()
+        }
     }
     
     private func setupDisplayNotifications() {
@@ -35,8 +35,8 @@ class PerformanceOptimizer: ObservableObject {
         )
     }
     
-    @objc private func frameCallback(displayLink: CADisplayLink) {
-        let currentTime = displayLink.timestamp
+    @objc private func frameCallback() {
+        let currentTime = CFAbsoluteTimeGetCurrent()
         
         if lastFrameTime > 0 {
             let deltaTime = currentTime - lastFrameTime
