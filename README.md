@@ -1,73 +1,66 @@
 # Granulay
 
-Um aplicativo nativo para Mac que adiciona um efeito granulado vintage sobre toda a tela, criando uma textura nostálgica sem interferir na interação do usuário.
+Vintage grain effect for macOS - Um aplicativo que adiciona efeito de grão vintage para toda a tela.
 
-## Características
+## Recursos
 
-- **Overlay Transparente**: Efeito aplicado sobre todas as telas sem bloquear interações
-- **Ícone na Barra de Menu**: Controle rápido para ativar/desativar o efeito
-- **Configurações Avançadas**: Ajuste de intensidade e estilo do grão
-- **Preview em Tempo Real**: Visualize as mudanças antes de aplicar
-- **Performance Otimizada**: Efeito estático que não consome recursos desnecessários
-- **Multi-Monitor**: Suporte completo para múltiplas telas
+- 🎨 **Efeito de grão vintage** para toda a tela
+- ⚙️ **Configurações personalizáveis** para intensidade e estilo  
+- 🖥️ **Suporte a múltiplos monitores** com configurações individuais
+- 🔧 **Integração com barra de menu** para acesso rápido
+- 💡 **Opção de preservação de brilho**
+- 🎯 **4 estilos de grão:** Fino, Médio, Grosso, Vintage
+- 🔄 **Sistema de atualizações automáticas** via Sparkle
 
-## Estilos de Grão
+## Distribuição
 
-- **Fino**: Grão sutil e delicado
-- **Médio**: Textura equilibrada
-- **Grosso**: Efeito mais pronunciado
-- **Vintage**: Tom sépia nostálgico
+O projeto agora usa DMG para distribuição, seguindo as melhores práticas recomendadas pelo Sparkle:
 
-## Requisitos
+- ✅ **DMG com link simbólico /Applications** - encoraja os usuários a copiarem o app para fora do DMG
+- ✅ **Atualizações automáticas** via Sparkle
+- ✅ **Assinatura digital** para segurança
+- ✅ **Suporte a canais beta e produção**
 
-- macOS 13.0 ou superior
-- Xcode 15.0 ou superior
-- Swift 5.9 ou superior
+## Scripts de Release
 
-## Compilação
+### Release Principal
+```bash
+./release.sh 1.0.X          # Release beta
+./release.sh 1.0.X --production  # Release de produção
+```
 
-1. Abra o projeto no Xcode:
+### Teste do DMG
+```bash
+./test_dmg.sh [arquivo.dmg]  # Verifica se o DMG está correto
+```
 
-   ```bash
-   open Granulay.xcodeproj
-   ```
+### Build de Release
+```bash
+./build_release.sh [versão]  # Build manual com DMG
+```
 
-2. Selecione o esquema "Granulay" e o destino "My Mac"
+O script `release.sh` agora:
+1. Cria DMG em vez de ZIP
+2. Adiciona link simbólico para `/Applications`
+3. Valida se o DMG foi criado corretamente
+4. Atualiza automaticamente o appcast.xml
+5. Faz deploy para GitHub Pages
 
-3. Compile e execute o projeto (⌘+R)
+## Requisitos do Sistema
 
-## Uso
+- macOS 13.0 (Ventura) ou superior
+- Apple Silicon ou Intel Mac
+- 4GB RAM mínimo
 
-1. **Ativação**: Clique no ícone na barra de menu ou use o atalho ⌘+G
-2. **Configurações**: Acesse através do menu ou atalho ⌘+,
-3. **Ajustes**: Modifique intensidade (10-100%) e estilo do grão
-4. **Preview**: Visualize as mudanças na área de preview
-5. **Reset**: Use "Restaurar Padrão" para voltar às configurações iniciais
+## Desenvolvimento
 
-## Arquitetura
+Para contribuir com o projeto, certifique-se de que:
+1. As chaves do Sparkle estão configuradas (`./generate_keys`)
+2. O SSH está configurado para GitHub
+3. Você tem acesso aos repositórios necessários
 
-### Componentes Principais
-
-- **GranulayApp**: Ponto de entrada do aplicativo
-- **MenuBarManager**: Gerencia o ícone da barra de menu e estados
-- **GrainOverlayWindow**: Cria janelas overlay transparentes
-- **GrainEffect**: Renderiza o efeito granulado usando Core Image
-- **SettingsView**: Interface de configurações com preview
-
-### Otimizações de Performance
-
-- Textura de grão gerada uma única vez por estilo
-- Renderização assíncrona em background
-- Overlay estático sem atualizações desnecessárias
-- Gerenciamento eficiente de memória
-
-## Tecnologias
-
-- **SwiftUI**: Interface do usuário moderna e declarativa
-- **AppKit**: Integração nativa com macOS
-- **Core Image**: Geração de texturas granuladas
-- **Combine**: Gerenciamento reativo de estados
+Execute `./test_release.sh` para verificar todos os pré-requisitos antes de fazer um release.
 
 ## Licença
 
-Este projeto é fornecido como exemplo educacional.
+[Incluir informações de licença aqui]
