@@ -3,17 +3,17 @@
     <channel>
         <title>Granulay</title>
         <item>
-            <title>1.0.6-beta</title>
-            <pubDate>Fri, 30 May 2025 12:09:03 -0300</pubDate>
+            <title>1.0.7-beta</title>
+            <pubDate>Fri, 30 May 2025 13:12:24 -0300</pubDate>
             <sparkle:channel>beta</sparkle:channel>
-            <sparkle:version>6</sparkle:version>
-            <sparkle:shortVersionString>1.0.6-beta</sparkle:shortVersionString>
+            <sparkle:version>7</sparkle:version>
+            <sparkle:shortVersionString>1.0.7-beta</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
             <description><![CDATA[<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6;">
-    <h2 style="color: #4F46E5; margin-bottom: 16px;">🎉 Granulay 1.0.6-beta Beta Release!</h2>
+    <h2 style="color: #4F46E5; margin-bottom: 16px;">🎉 Granulay 1.0.7-beta Beta Release!</h2>
     <p style="margin-bottom: 16px;">Nova versão beta do Granulay com melhorias e novas funcionalidades!</p>
     
-    <h3 style="color: #333; margin: 20px 0 12px 0;">✨ Novidades na versão 1.0.6-beta:</h3>
+    <h3 style="color: #333; margin: 20px 0 12px 0;">✨ Novidades na versão 1.0.7-beta:</h3>
     <ul style="margin: 0; padding-left: 20px;">
         <li style="margin-bottom: 8px;">🔧 <strong>Melhorias de performance</strong> e estabilidade</li>
         <li style="margin-bottom: 8px;">🐛 <strong>Correções de bugs</strong> reportados pela comunidade</li>
@@ -41,7 +41,7 @@
     </p>
 </div>
 ]]></description>
-            <enclosure url="https://github.com/gpaiva00/granulay-app/releases/download/v1.0.6-beta/Granulay-1.0.6.zip" length="6621929" type="application/octet-stream" sparkle:edSignature="7H8Kc22fCmil08xm3PLfttaR0pfHm+nJl/+XxFV0jtTtm76mTUIoUcJVuFafCGjZS5paCG24geCR+l39fbJ0DA=="/>
+            <enclosure url="https://github.com/gpaiva00/granulay-app/releases/download/v1.0.7-beta/Granulay-1.0.7.zip" length="6621919" type="application/octet-stream" sparkle:edSignature="1fe9dPs8e1zBUMpe8bz+Adu4gZ+tlJQ2dGYc0OxD8v7Y1gtnUx97Z4RlAzB6JfhkD2TAejucjw8kLk9ZRIYLCg=="/>
         </item>
     </channel>
 </rss>
