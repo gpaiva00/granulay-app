@@ -58,13 +58,6 @@ class UpdateManager: NSObject, ObservableObject, SPUUpdaterDelegate {
     
     // MARK: - SPUUpdaterDelegate
     
-    // Fornece URL do appcast como fallback se não estiver no Info.plist
-    func feedURLString(for updater: SPUUpdater) -> String? {
-        let feedURL = "https://gpaiva00.github.io/granulay-releases/appcast.xml"
-        print("Fornecendo URL do appcast via delegate: \(feedURL)")
-        return feedURL
-    }
-    
     // Permite canal beta
     func allowedChannels(for updater: SPUUpdater) -> Set<String> {
         let channels: Set<String> = ["beta"]
