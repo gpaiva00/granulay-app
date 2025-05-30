@@ -4,7 +4,7 @@
         <title>Granulay</title>
         <item>
             <title>1.0.0</title>
-            <pubDate>Fri, 30 May 2025 11:05:11 -0300</pubDate>
+            <pubDate>Fri, 30 May 2025 11:22:08 -0300</pubDate>
             <sparkle:channel>beta</sparkle:channel>
             <sparkle:version>1</sparkle:version>
             <sparkle:shortVersionString>1.0.0</sparkle:shortVersionString>
@@ -41,7 +41,7 @@
     </p>
 </div>
 ]]></description>
-            <enclosure url="https://github.com/gpaiva00/granulay-app/releases/download/v1.0.5-beta/Granulay-1.0.5.zip" length="6621721" type="application/octet-stream" sparkle:edSignature="L8KhCjh+pwFY5Glizs8MeecEmxkYonBh4I1hJockZBMv6zkjam46J5vWzp/jcQJqhvfwY2cK3/uc1MLFQyM8Dg=="/>
+            <enclosure url="https://github.com/gpaiva00/granulay-app/releases/download/v1.0.5-beta/Granulay-1.0.5.zip" length="6621856" type="application/octet-stream" sparkle:edSignature="+nftNLJ9Og7LGez7pT+f3Kv2Vv17cDDCK/IyyraejkieWwybwndZvP3aEw8bFQjhQ7AooS0FVME2qX9SfboiCw=="/>
         </item>
     </channel>
 </rss>
