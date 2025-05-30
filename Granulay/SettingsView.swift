@@ -299,6 +299,10 @@ struct ActionButtons: View {
                 .disabled(isLoading)
             }
             
+            HStack(alignment: .center) {
+                Text("v1.0.8").font(.caption).foregroundColor(.secondary)
+            }
+            
             if !menuBarManager.saveSettingsAutomatically {
                 Text("Salvamento automático desabilitado. Use o botão acima para salvar manualmente.")
                     .font(.caption)
