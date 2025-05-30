@@ -25,13 +25,14 @@ O projeto agora usa DMG para distribuição, seguindo as melhores práticas reco
 
 ### Release Principal
 ```bash
-./release.sh 1.0.X          # Release beta
-./release.sh 1.0.X --production  # Release de produção
-```
+# Release beta (padrão)
+./release.sh 1.0.5
 
-### Teste do DMG
-```bash
-./test_dmg.sh [arquivo.dmg]  # Verifica se o DMG está correto
+# Release beta (explícito)
+./release.sh 1.0.5 --channel beta
+
+# Release de produção
+./release.sh 1.0.5 --production
 ```
 
 ### Build de Release
