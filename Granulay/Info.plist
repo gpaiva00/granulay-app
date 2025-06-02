@@ -30,6 +30,5 @@
     <true/>
     <key>SUEnableInstallerLauncherService</key>
     <true/>
-    <!-- SUEnableDownloaderService não é necessário porque o app já tem com.apple.security.network.client -->
 </dict>
 </plist> 
