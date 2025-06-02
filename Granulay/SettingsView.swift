@@ -300,7 +300,7 @@ struct ActionButtons: View {
             }
             
             HStack(alignment: .center) {
-                Text("v1.0.8").font(.caption).foregroundColor(.secondary)
+                Text("v\(appVersion)").font(.caption).foregroundColor(.secondary)
             }
             
             if !menuBarManager.saveSettingsAutomatically {
@@ -316,4 +316,8 @@ struct ActionButtons: View {
 #Preview {
     SettingsView()
         .environmentObject(MenuBarManager())
+}
+
+private var appVersion: String {
+    Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
 }
