@@ -125,28 +125,33 @@ struct GrainEffect: View {
     @State private var isTextureLoading = false
 
     var body: some View {
-        Rectangle()
-            .fill(Color.clear)
-            .overlay(
-                Group {
-                    if let texture = grainTexture {
-                        Image(nsImage: texture)
-                            .resizable(resizingMode: .tile)
-                            .opacity(intensity)
-                            .blendMode(preserveBrightness ? .overlay : .multiply)
-                            .allowsHitTesting(false)
-                            .animation(.easeInOut(duration: 0.1), value: intensity)
-                    } else {
-                        Color.clear
+        if #available(macOS 14.0, *) {
+            Rectangle()
+                .fill(Color.clear)
+                .overlay(
+                    Group {
+                        if let texture = grainTexture {
+                            Image(nsImage: texture)
+                                .resizable(resizingMode: .tile)
+                                .opacity(intensity)
+                                .blendMode(preserveBrightness ? .overlay : .multiply)
+                                .allowsHitTesting(false)
+                                .drawingGroup(opaque: false, colorMode: .nonLinear)
+                            // .animation(.easeInOut(duration: 0.1), value: intensity)
+                        } else {
+                            Color.clear
+                        }
                     }
+                )
+                .onAppear {
+                    loadTextureIfNeeded()
                 }
-            )
-            .onAppear {
-                loadTextureIfNeeded()
-            }
-            .onChange(of: style) { _ in
-                loadTextureIfNeeded()
-            }
+                .onChange(of: style) { oldValue, newValue in
+                    loadTextureIfNeeded()
+                }
+        } else {
+            // Fallback on earlier versions
+        }
     }
 
     private func loadTextureIfNeeded() {
@@ -186,17 +191,17 @@ func createGrainTexture(size: CGSize, style: GrainStyle) -> NSImage? {
 
     switch style {
     case .fine:
+        colorFilter.setValue(CIVector(x: 0.08, y: 0.08, z: 0.08, w: 0), forKey: "inputRVector")
+        colorFilter.setValue(CIVector(x: 0.08, y: 0.08, z: 0.08, w: 0), forKey: "inputGVector")
+        colorFilter.setValue(CIVector(x: 0.08, y: 0.08, z: 0.08, w: 0), forKey: "inputBVector")
+    case .medium:
         colorFilter.setValue(CIVector(x: 0.2, y: 0.2, z: 0.2, w: 0), forKey: "inputRVector")
         colorFilter.setValue(CIVector(x: 0.2, y: 0.2, z: 0.2, w: 0), forKey: "inputGVector")
         colorFilter.setValue(CIVector(x: 0.2, y: 0.2, z: 0.2, w: 0), forKey: "inputBVector")
-    case .medium:
-        colorFilter.setValue(CIVector(x: 0.3, y: 0.3, z: 0.3, w: 0), forKey: "inputRVector")
-        colorFilter.setValue(CIVector(x: 0.3, y: 0.3, z: 0.3, w: 0), forKey: "inputGVector")
-        colorFilter.setValue(CIVector(x: 0.3, y: 0.3, z: 0.3, w: 0), forKey: "inputBVector")
     case .coarse:
-        colorFilter.setValue(CIVector(x: 0.4, y: 0.4, z: 0.4, w: 0), forKey: "inputRVector")
-        colorFilter.setValue(CIVector(x: 0.4, y: 0.4, z: 0.4, w: 0), forKey: "inputGVector")
-        colorFilter.setValue(CIVector(x: 0.4, y: 0.4, z: 0.4, w: 0), forKey: "inputBVector")
+        colorFilter.setValue(CIVector(x: 0.25, y: 0.25, z: 0.25, w: 0), forKey: "inputRVector")
+        colorFilter.setValue(CIVector(x: 0.25, y: 0.25, z: 0.25, w: 0), forKey: "inputGVector")
+        colorFilter.setValue(CIVector(x: 0.25, y: 0.25, z: 0.25, w: 0), forKey: "inputBVector")
     case .vintage:
         colorFilter.setValue(CIVector(x: 0.35, y: 0.25, z: 0.15, w: 0), forKey: "inputRVector")
         colorFilter.setValue(CIVector(x: 0.25, y: 0.35, z: 0.25, w: 0), forKey: "inputGVector")
