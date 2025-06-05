@@ -19,7 +19,7 @@ class MenuBarManager: ObservableObject {
         }
     }
 
-    @Published var grainIntensity: Double = 0.2 {
+    @Published var grainIntensity: Double = GrainStyle.fine.recommendedIntensity {
         didSet {
             debouncedIntensityUpdate()
         }
@@ -195,11 +195,8 @@ class MenuBarManager: ObservableObject {
 
         if saveSettingsAutomatically {
             isGrainEnabled = UserDefaults.standard.bool(forKey: "isGrainEnabled")
-            grainIntensity =
-                UserDefaults.standard.object(forKey: "grainIntensity") as? Double ?? 0.2
-            preserveBrightness =
-                UserDefaults.standard.object(forKey: "preserveBrightness") as? Bool ?? true
 
+            // Primeiro carregamos o estilo para poder usar a intensidade recomendada
             if let styleRawValue = UserDefaults.standard.string(forKey: "grainStyle"),
                 let style = GrainStyle(rawValue: styleRawValue)
             {
@@ -207,6 +204,12 @@ class MenuBarManager: ObservableObject {
             } else {
                 grainStyle = .fine
             }
+
+            grainIntensity =
+                UserDefaults.standard.object(forKey: "grainIntensity") as? Double
+                ?? grainStyle.recommendedIntensity
+            preserveBrightness =
+                UserDefaults.standard.object(forKey: "preserveBrightness") as? Bool ?? true
         }
     }
 
@@ -222,7 +225,7 @@ class MenuBarManager: ObservableObject {
     }
 
     func resetToDefaults() {
-        grainIntensity = 0.2
+        grainIntensity = GrainStyle.fine.recommendedIntensity
         grainStyle = .fine
         isGrainEnabled = false
         preserveBrightness = true

@@ -27,6 +27,15 @@ enum GrainStyle: String, CaseIterable {
         case .vintage: return 2.5
         }
     }
+
+    var recommendedIntensity: Double {
+        switch self {
+        case .fine: return 0.1
+        case .medium: return 0.2
+        case .coarse: return 0.3
+        case .vintage: return 0.25
+        }
+    }
 }
 
 class GrainTextureCache {
@@ -137,7 +146,7 @@ struct GrainEffect: View {
                                 .blendMode(preserveBrightness ? .overlay : .multiply)
                                 .allowsHitTesting(false)
                                 .drawingGroup(opaque: false, colorMode: .nonLinear)
-                            // .animation(.easeInOut(duration: 0.1), value: intensity)
+                                .animation(.easeInOut(duration: 0.1), value: intensity)
                         } else {
                             Color.clear
                         }
