@@ -30,5 +30,7 @@
     <true/>
     <key>SUEnableInstallerLauncherService</key>
     <true/>
+    <key>ResendApiKey</key>
+    <string>re_a4iN2Cvt_CSnKrDJo5i8r2pkmQwLvVjK9</string>
 </dict>
 </plist> 
