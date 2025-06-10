@@ -53,6 +53,15 @@ class MenuBarManager: ObservableObject {
         }
     }
 
+    @Published var showInDock = false {
+        didSet {
+            updateDockVisibility()
+            if saveSettingsAutomatically {
+                saveSettings()
+            }
+        }
+    }
+
     init() {
         loadSettings()
         setupMenuBar()
@@ -153,6 +162,26 @@ class MenuBarManager: ObservableObject {
         }
     }
 
+    private func updateDockVisibility() {
+        let wasSettingsWindowVisible = settingsWindow?.isVisible ?? false
+        let wasSettingsWindowKey = settingsWindow?.isKeyWindow ?? false
+        
+        if showInDock {
+            NSApp.setActivationPolicy(.regular)
+        } else {
+            NSApp.setActivationPolicy(.accessory)
+        }
+        
+        // Manter a janela de configurações em foco se ela estava visível
+        if wasSettingsWindowVisible {
+            settingsWindow?.makeKeyAndOrderFront(nil)
+            // Se a janela era a janela principal, garantir que ela continue sendo
+            if wasSettingsWindowKey {
+                settingsWindow?.orderFrontRegardless()
+            }
+        }
+    }
+
     @objc private func toggleGrain() {
         isGrainEnabled.toggle()
     }
@@ -193,6 +222,9 @@ class MenuBarManager: ObservableObject {
         saveSettingsAutomatically =
             UserDefaults.standard.object(forKey: "saveSettingsAutomatically") as? Bool ?? true
 
+        // Carrega a configuração da Dock independentemente do salvamento automático
+        showInDock = UserDefaults.standard.object(forKey: "showInDock") as? Bool ?? false
+
         if saveSettingsAutomatically {
             isGrainEnabled = UserDefaults.standard.bool(forKey: "isGrainEnabled")
 
@@ -218,6 +250,7 @@ class MenuBarManager: ObservableObject {
         UserDefaults.standard.set(grainIntensity, forKey: "grainIntensity")
         UserDefaults.standard.set(grainStyle.rawValue, forKey: "grainStyle")
         UserDefaults.standard.set(preserveBrightness, forKey: "preserveBrightness")
+        UserDefaults.standard.set(showInDock, forKey: "showInDock")
     }
 
     func saveSettingsManually() {
@@ -229,6 +262,7 @@ class MenuBarManager: ObservableObject {
         grainStyle = .fine
         isGrainEnabled = false
         preserveBrightness = true
+        showInDock = false
 
         if saveSettingsAutomatically {
             saveSettings()

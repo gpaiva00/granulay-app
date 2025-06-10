@@ -248,6 +248,29 @@ struct ControlsSection: View {
                     .toggleStyle(SwitchToggleStyle())
                     .disabled(isLoading)
                 }
+
+                Divider()
+
+                HStack {
+                    Text("Exibir na Dock")
+                        .font(.subheadline)
+
+                    Spacer()
+
+                    Toggle(
+                        "",
+                        isOn: Binding(
+                            get: { menuBarManager.showInDock },
+                            set: { newValue in
+                                withLoadingDelay {
+                                    menuBarManager.showInDock = newValue
+                                }
+                            }
+                        )
+                    )
+                    .toggleStyle(SwitchToggleStyle())
+                    .disabled(isLoading)
+                }
             }
             .padding(16)
             .background(Color(NSColor.controlBackgroundColor))
