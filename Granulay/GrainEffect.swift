@@ -147,33 +147,30 @@ struct GrainEffect: View {
     @State private var isTextureLoading = false
 
     var body: some View {
-        if #available(macOS 14.0, *) {
-            Rectangle()
-                .fill(Color.clear)
-                .overlay(
-                    Group {
-                        if let texture = grainTexture {
-                            Image(nsImage: texture)
-                                .resizable(resizingMode: .tile)
-                                .opacity(intensity)
-                                .blendMode(preserveBrightness ? .overlay : .multiply)
-                                .allowsHitTesting(false)
-                                .drawingGroup(opaque: false, colorMode: .nonLinear)
-                                .animation(.easeInOut(duration: 0.1), value: intensity)
-                        } else {
-                            Color.clear
-                        }
+        Rectangle()
+            .fill(Color.clear)
+            .overlay(
+                Group {
+                    if let texture = grainTexture {
+                        Image(nsImage: texture)
+                            .resizable(resizingMode: .tile)
+                            .opacity(preserveBrightness ? intensity * 0.5 : intensity)
+                            .blendMode(preserveBrightness ? .overlay : .multiply)
+                            .colorMultiply(preserveBrightness ? Color.white.opacity(0.7) : Color.white)
+                            .allowsHitTesting(false)
+                            .drawingGroup(opaque: false, colorMode: .nonLinear)
+                            .animation(.easeInOut(duration: 0.1), value: intensity)
+                    } else {
+                        Color.clear
                     }
-                )
-                .onAppear {
-                    loadTextureIfNeeded()
                 }
-                .onChange(of: style) { oldValue, newValue in
-                    loadTextureIfNeeded()
-                }
-        } else {
-            // Fallback on earlier versions
-        }
+            )
+            .onAppear {
+                loadTextureIfNeeded()
+            }
+            .onChange(of: style) { _ in
+                loadTextureIfNeeded()
+            }
     }
 
     private func loadTextureIfNeeded() {
