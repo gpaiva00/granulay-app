@@ -3,13 +3,13 @@
     <channel>
         <title>Granulay</title>
         <item>
-            <title>1.0.17-beta</title>
-            <pubDate>Thu, 05 Jun 2025 11:01:06 -0300</pubDate>
+            <title>1.0.18-beta</title>
+            <pubDate>Wed, 11 Jun 2025 17:55:28 -0300</pubDate>
             <sparkle:channel>beta</sparkle:channel>
-            <sparkle:version>17</sparkle:version>
-            <sparkle:shortVersionString>1.0.17-beta</sparkle:shortVersionString>
+            <sparkle:version>18</sparkle:version>
+            <sparkle:shortVersionString>1.0.18-beta</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/gpaiva00/granulay-app/releases/download/v1.0.17-beta/Granulay-1.0.17.dmg" length="5760074" type="application/octet-stream" sparkle:edSignature="6aJEanrqBa46cVwlfiEAtoiCp9v+p7xgQQKTiD9gbR1zX8Sz5maet3YuyuOxwCeckWvWimwLu2/QbOsFiQvTDg=="/>
+            <enclosure url="https://github.com/gpaiva00/granulay-app/releases/download/v1.0.18-beta/Granulay-1.0.18.dmg" length="5763855" type="application/octet-stream" sparkle:edSignature="5Ot0iSWrxM4q2tIlqXf5VO31dpgXOFSgKDXMxh8JyyeOgJ8FU6swpOxvErn0ucYLLI0IKu0YsLZhFWIbJWb+DQ=="/>
         </item>
     </channel>
 </rss>
