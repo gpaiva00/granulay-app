@@ -8,7 +8,7 @@ struct SettingsView: View {
     @State private var isLoading = false
     @State private var feedbackMessage = ""
     @State private var showFeedbackSent = false
-    @State private var loadingMessage = "Aplicando alterações..."
+    @State private var loadingMessage = LocalizationKeys.Loading.applyingChanges.localized
 
     var body: some View {
         ScrollView {
@@ -42,7 +42,7 @@ struct SettingsView: View {
 }
 
 struct LoadingOverlay: View {
-    var message: String = "Aplicando alterações..."
+    var message: String = LocalizationKeys.Loading.applyingChanges.localized
 
     var body: some View {
         ZStack {
@@ -79,7 +79,7 @@ struct HeaderView: View {
                     .font(.title)
                     .fontWeight(.semibold)
 
-                Text("BETA")
+                Text(LocalizationKeys.App.beta.localized)
                     .font(.caption)
                     .fontWeight(.bold)
                     .foregroundColor(.white)
@@ -89,7 +89,7 @@ struct HeaderView: View {
                     .cornerRadius(8)
             }
 
-            Text("Efeito granulado vintage para sua tela")
+            Text(LocalizationKeys.App.tagline.localized)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
         }
@@ -112,12 +112,12 @@ struct ControlsSection: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Configurações")
+            Text(LocalizationKeys.Settings.title.localized)
                 .font(.headline)
 
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
-                    Text("Ativar Efeito")
+                    Text(LocalizationKeys.Settings.enableEffect.localized)
                         .font(.subheadline)
 
                     Spacer()
@@ -141,14 +141,14 @@ struct ControlsSection: View {
 
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
-                        Text("Intensidade")
+                        Text(LocalizationKeys.Settings.intensity.localized)
                             .font(.subheadline)
 
                         Spacer()
                     }
 
                     HStack(spacing: 10) {
-                        Button("Fraco") {
+                        Button(LocalizationKeys.Settings.Intensity.weak.localized) {
                             withLoadingDelay {
                                 menuBarManager.grainIntensity = 0.1
                             }
@@ -158,7 +158,7 @@ struct ControlsSection: View {
                         )
                         .disabled(!menuBarManager.isGrainEnabled || isLoading)
 
-                        Button("Médio") {
+                        Button(LocalizationKeys.Settings.Intensity.medium.localized) {
                             withLoadingDelay {
                                 menuBarManager.grainIntensity = 0.2
                             }
@@ -170,7 +170,7 @@ struct ControlsSection: View {
                         )
                         .disabled(!menuBarManager.isGrainEnabled || isLoading)
 
-                        Button("Forte") {
+                        Button(LocalizationKeys.Settings.Intensity.strong.localized) {
                             withLoadingDelay {
                                 menuBarManager.grainIntensity = 0.3
                             }
@@ -186,12 +186,12 @@ struct ControlsSection: View {
                 Divider()
 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Estilo do Grão")
+                    Text(LocalizationKeys.Settings.grainStyle.localized)
                         .font(.subheadline)
 
                     HStack(spacing: 10) {
                         ForEach(GrainStyle.allCases, id: \.self) { style in
-                            Button(style.rawValue) {
+                            Button(style.localizedName) {
                                 withLoadingDelay {
                                     menuBarManager.grainStyle = style
                                 }
@@ -208,7 +208,7 @@ struct ControlsSection: View {
                 Divider()
 
                 HStack {
-                    Text("Preservar Luminosidade")
+                    Text(LocalizationKeys.Settings.preserveBrightness.localized)
                         .font(.subheadline)
 
                     Spacer()
@@ -231,7 +231,7 @@ struct ControlsSection: View {
                 Divider()
 
                 HStack {
-                    Text("Salvar Configurações Automaticamente")
+                    Text(LocalizationKeys.Settings.saveAutomatically.localized)
                         .font(.subheadline)
 
                     Spacer()
@@ -252,7 +252,7 @@ struct ControlsSection: View {
                 Divider()
 
                 HStack {
-                    Text("Exibir na Dock")
+                    Text(LocalizationKeys.Settings.showInDock.localized)
                         .font(.subheadline)
 
                     Spacer()
@@ -285,12 +285,12 @@ struct UpdatesSection: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Atualizações")
+            Text(LocalizationKeys.Settings.updates.localized)
                 .font(.headline)
 
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
-                    Text("Verificar Automaticamente")
+                    Text(LocalizationKeys.Settings.autoUpdates.localized)
                         .font(.subheadline)
 
                     Spacer()
@@ -301,9 +301,7 @@ struct UpdatesSection: View {
                 }
 
                 if !updateManager.automaticUpdatesEnabled {
-                    Text(
-                        "Verificação automática desabilitada. Use o botão abaixo para verificar manualmente."
-                    )
+                    Text(LocalizationKeys.Settings.autoUpdatesDescription.localized)
                     .font(.caption)
                     .foregroundColor(.secondary)
                 }
@@ -311,7 +309,7 @@ struct UpdatesSection: View {
                 Divider()
 
                 HStack {
-                    Button("Verificar Atualizações") {
+                    Button(LocalizationKeys.Settings.checkUpdates.localized) {
                         updateManager.checkForUpdates()
                     }
                     .buttonStyle(BorderedButtonStyle())
@@ -344,7 +342,7 @@ struct ActionButtons: View {
     var body: some View {
         VStack(spacing: 12) {
             HStack {
-                Button("Salvar Configurações") {
+                Button(LocalizationKeys.Settings.export.localized) {
                     menuBarManager.saveSettingsManually()
                 }
                 .buttonStyle(BorderedButtonStyle())
@@ -352,7 +350,7 @@ struct ActionButtons: View {
 
                 Spacer()
 
-                Button("Restaurar Padrão") {
+                Button(LocalizationKeys.Settings.reset.localized) {
                     withLoadingDelay {
                         menuBarManager.resetToDefaults()
                     }
@@ -366,9 +364,7 @@ struct ActionButtons: View {
             }
 
             if !menuBarManager.saveSettingsAutomatically {
-                Text(
-                    "Salvamento automático desabilitado. Use o botão acima para salvar manualmente."
-                )
+                Text(LocalizationKeys.Settings.saveAutomaticallyDescription.localized)
                 .font(.caption)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
@@ -489,12 +485,12 @@ struct FeedbackSection: View {
 
     private func sendFeedback() {
         guard !feedbackMessage.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            errorMessage = "Por favor, digite uma mensagem antes de enviar."
+            errorMessage = LocalizationKeys.Settings.feedbackValidation.localized
             showError = true
             return
         }
 
-        loadingMessage = "Enviando feedback..."
+        loadingMessage = LocalizationKeys.Loading.sendingFeedback.localized
         isLoading = true
 
         // Implementação real da chamada para a API Resend
@@ -509,7 +505,7 @@ struct FeedbackSection: View {
             request.addValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
         } else {
             // Se não encontrar a chave no Info.plist, mostrar erro
-            self.errorMessage = "Erro: Chave da API não encontrada. Verifique o arquivo Info.plist."
+            self.errorMessage = LocalizationKeys.Settings.feedbackError.localized
             self.showError = true
             self.isLoading = false
             self.loadingMessage = "Aplicando alterações..."
@@ -542,7 +538,7 @@ struct FeedbackSection: View {
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 DispatchQueue.main.async {
                     if let error = error {
-                        self.errorMessage = "Erro ao enviar: \(error.localizedDescription)"
+                        self.errorMessage = "\(LocalizationKeys.Settings.feedbackError.localized): \(error.localizedDescription)"
                         self.showError = true
                         self.isLoading = false
                         self.loadingMessage = "Aplicando alterações..."
@@ -552,7 +548,7 @@ struct FeedbackSection: View {
                     if let httpResponse = response as? HTTPURLResponse,
                         !(200...299).contains(httpResponse.statusCode)
                     {
-                        self.errorMessage = "Erro no servidor: Código \(httpResponse.statusCode)"
+                        self.errorMessage = "\(LocalizationKeys.Settings.feedbackError.localized): \(httpResponse.statusCode)"
                         self.showError = true
                         self.isLoading = false
                         self.loadingMessage = "Aplicando alterações..."
@@ -576,7 +572,7 @@ struct FeedbackSection: View {
         } catch {
             print("Erro ao enviar feedback: \(error.localizedDescription)")
 
-            self.errorMessage = "Erro ao processar dados: \(error.localizedDescription)"
+            self.errorMessage = "\(LocalizationKeys.Settings.feedbackError.localized): \(error.localizedDescription)"
             self.showError = true
             self.isLoading = false
             self.loadingMessage = "Aplicando alterações..."
@@ -585,11 +581,11 @@ struct FeedbackSection: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Feedback")
+            Text(LocalizationKeys.Settings.feedback.localized)
                 .font(.headline)
 
             VStack(alignment: .leading, spacing: 12) {
-                Text("Envie-nos suas sugestões ou reporte problemas")
+                Text(LocalizationKeys.Settings.feedbackPlaceholder.localized)
                     .font(.subheadline)
 
                 TextEditor(text: $feedbackMessage)
@@ -602,7 +598,7 @@ struct FeedbackSection: View {
                     .disabled(isLoading)
 
                 HStack {
-                    Button("Enviar Feedback") {
+                    Button(LocalizationKeys.Settings.feedbackSend.localized) {
                         sendFeedback()
                     }
                     .buttonStyle(BorderedButtonStyle())
@@ -618,7 +614,7 @@ struct FeedbackSection: View {
                         HStack(spacing: 4) {
                             Image(systemName: "checkmark.circle.fill")
                                 .foregroundColor(.green)
-                            Text("Feedback enviado!")
+                            Text(LocalizationKeys.Settings.feedbackSent.localized)
                                 .foregroundColor(.green)
                         }
                         .transition(.opacity)

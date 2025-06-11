@@ -1,0 +1,92 @@
+/* 
+   Localizable.strings
+   Granulay
+   
+   Portuguese (Brazil) localization
+*/
+
+// App Info
+"app.name" = "Granulay";
+"app.tagline" = "Efeito granulado vintage para sua tela";
+"app.beta" = "BETA";
+
+// Menu Bar
+"menu.enable_effect" = "Ativar Efeito";
+"menu.disable_effect" = "Desativar Efeito";
+"menu.settings" = "Configurações...";
+"menu.check_updates" = "Verificar Atualizações...";
+"menu.quit" = "Sair";
+
+// Settings - General
+"settings.window_title" = "Configurações do Granulay";
+"settings.title" = "Configurações";
+"settings.enable_effect" = "Ativar Efeito";
+"settings.intensity" = "Intensidade";
+"settings.intensity.weak" = "Fraco";
+"settings.intensity.medium" = "Médio";
+"settings.intensity.strong" = "Forte";
+"settings.grain_style" = "Estilo do Grão";
+"settings.grain_style.fine" = "Fino";
+"settings.grain_style.medium" = "Médio";
+"settings.grain_style.coarse" = "Grosso";
+"settings.grain_style.vintage" = "Vintage";
+"settings.preserve_brightness" = "Preservar Brilho";
+"settings.preserve_brightness.description" = "Mantém o brilho original da tela";
+
+// Settings - Advanced
+"settings.advanced" = "Avançado";
+"settings.save_automatically" = "Salvar Configurações Automaticamente";
+"settings.save_automatically.description" = "As alterações são salvas instantaneamente";
+"settings.show_in_dock" = "Mostrar no Dock";
+"settings.show_in_dock.description" = "Exibe o ícone do app no Dock";
+
+// Settings - Updates
+"settings.updates" = "Atualizações";
+"settings.check_updates" = "Verificar Atualizações";
+"settings.auto_updates" = "Atualizações Automáticas";
+"settings.auto_updates.description" = "Baixa e instala atualizações automaticamente";
+"settings.current_version" = "Versão Atual";
+"settings.latest_version" = "Última Versão";
+"settings.up_to_date" = "Atualizado";
+"settings.update_available" = "Atualização Disponível";
+"settings.checking_updates" = "Verificando atualizações...";
+"settings.download_update" = "Baixar Atualização";
+"settings.install_update" = "Instalar Atualização";
+
+// Settings - Feedback
+"settings.feedback" = "Feedback";
+"settings.feedback.placeholder" = "Compartilhe sua experiência, reporte bugs ou sugira melhorias...";
+"settings.feedback.send" = "Enviar Feedback";
+"settings.feedback.sent" = "Feedback enviado com sucesso!";
+"settings.feedback.error" = "Erro ao enviar feedback. Tente novamente.";
+"settings.feedback.validation" = "Por favor, digite uma mensagem antes de enviar.";
+
+// Settings - Actions
+"settings.reset" = "Restaurar Padrões";
+"settings.reset.description" = "Volta às configurações originais";
+"settings.export" = "Exportar Configurações";
+"settings.export.description" = "Salva suas configurações em um arquivo";
+"settings.import" = "Importar Configurações";
+"settings.import.description" = "Carrega configurações de um arquivo";
+
+// Loading and Status
+"loading.applying_changes" = "Aplicando alterações...";
+"loading.checking_updates" = "Verificando atualizações...";
+"loading.sending_feedback" = "Enviando feedback...";
+"loading.resetting" = "Restaurando configurações...";
+"loading.exporting" = "Exportando configurações...";
+"loading.importing" = "Importando configurações...";
+
+// Alerts and Messages
+"alert.reset.title" = "Restaurar Configurações";
+"alert.reset.message" = "Tem certeza que deseja restaurar todas as configurações para os valores padrão?";
+"alert.reset.confirm" = "Restaurar";
+"alert.reset.cancel" = "Cancelar";
+"alert.export.success" = "Configurações exportadas com sucesso!";
+"alert.import.success" = "Configurações importadas com sucesso!";
+"alert.import.error" = "Erro ao importar configurações. Verifique se o arquivo é válido.";
+
+// File Operations
+"file.export.title" = "Exportar Configurações";
+"file.import.title" = "Importar Configurações";
+"file.settings.extension" = "granulay";

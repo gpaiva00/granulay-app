@@ -8,7 +8,7 @@ struct ContentView: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 40, height: 40)
                 .foregroundColor(.accentColor)
-            Text("Granulay")
+            Text(LocalizationKeys.App.name.localized)
         }
         .padding()
     }

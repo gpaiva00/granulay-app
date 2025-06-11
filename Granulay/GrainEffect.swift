@@ -5,10 +5,23 @@ import QuartzCore
 import SwiftUI
 
 enum GrainStyle: String, CaseIterable {
-    case fine = "Fino"
-    case medium = "Médio"
-    case coarse = "Grosso"
-    case vintage = "Vintage"
+    case fine = "fine"
+    case medium = "medium"
+    case coarse = "coarse"
+    case vintage = "vintage"
+
+    var localizedName: String {
+        switch self {
+        case .fine:
+            return LocalizationKeys.Settings.GrainStyle.fine.localized
+        case .medium:
+            return LocalizationKeys.Settings.GrainStyle.medium.localized
+        case .coarse:
+            return LocalizationKeys.Settings.GrainStyle.coarse.localized
+        case .vintage:
+            return LocalizationKeys.Settings.GrainStyle.vintage.localized
+        }
+    }
 
     var noiseScale: Float {
         switch self {

@@ -1,0 +1,92 @@
+/* 
+   Localizable.strings
+   Granulay
+   
+   English localization
+*/
+
+// App Info
+"app.name" = "Granulay";
+"app.tagline" = "Vintage grain effect for your screen";
+"app.beta" = "BETA";
+
+// Menu Bar
+"menu.enable_effect" = "Enable Effect";
+"menu.disable_effect" = "Disable Effect";
+"menu.settings" = "Settings...";
+"menu.check_updates" = "Check for Updates...";
+"menu.quit" = "Quit";
+
+// Settings - General
+"settings.window_title" = "Granulay Settings";
+"settings.title" = "Settings";
+"settings.enable_effect" = "Enable Effect";
+"settings.intensity" = "Intensity";
+"settings.intensity.weak" = "Weak";
+"settings.intensity.medium" = "Medium";
+"settings.intensity.strong" = "Strong";
+"settings.grain_style" = "Grain Style";
+"settings.grain_style.fine" = "Fine";
+"settings.grain_style.medium" = "Medium";
+"settings.grain_style.coarse" = "Coarse";
+"settings.grain_style.vintage" = "Vintage";
+"settings.preserve_brightness" = "Preserve Brightness";
+"settings.preserve_brightness.description" = "Maintains the original screen brightness";
+
+// Settings - Advanced
+"settings.advanced" = "Advanced";
+"settings.save_automatically" = "Save Settings Automatically";
+"settings.save_automatically.description" = "Changes are saved instantly";
+"settings.show_in_dock" = "Show in Dock";
+"settings.show_in_dock.description" = "Displays the app icon in the Dock";
+
+// Settings - Updates
+"settings.updates" = "Updates";
+"settings.check_updates" = "Check for Updates";
+"settings.auto_updates" = "Automatic Updates";
+"settings.auto_updates.description" = "Downloads and installs updates automatically";
+"settings.current_version" = "Current Version";
+"settings.latest_version" = "Latest Version";
+"settings.up_to_date" = "Up to Date";
+"settings.update_available" = "Update Available";
+"settings.checking_updates" = "Checking for updates...";
+"settings.download_update" = "Download Update";
+"settings.install_update" = "Install Update";
+
+// Settings - Feedback
+"settings.feedback" = "Feedback";
+"settings.feedback.placeholder" = "Share your experience, report bugs, or suggest improvements...";
+"settings.feedback.send" = "Send Feedback";
+"settings.feedback.sent" = "Feedback sent successfully!";
+"settings.feedback.error" = "Error sending feedback. Please try again.";
+"settings.feedbackValidation" = "Please enter a message before sending.";
+
+// Settings - Actions
+"settings.reset" = "Reset to Defaults";
+"settings.reset.description" = "Returns to original settings";
+"settings.export" = "Export Settings";
+"settings.export.description" = "Saves your settings to a file";
+"settings.import" = "Import Settings";
+"settings.import.description" = "Loads settings from a file";
+
+// Loading and Status
+"loading.applying_changes" = "Applying changes...";
+"loading.checking_updates" = "Checking for updates...";
+"loading.sending_feedback" = "Sending feedback...";
+"loading.resetting" = "Resetting settings...";
+"loading.exporting" = "Exporting settings...";
+"loading.importing" = "Importing settings...";
+
+// Alerts and Messages
+"alert.reset.title" = "Reset Settings";
+"alert.reset.message" = "Are you sure you want to reset all settings to default values?";
+"alert.reset.confirm" = "Reset";
+"alert.reset.cancel" = "Cancel";
+"alert.export.success" = "Settings exported successfully!";
+"alert.import.success" = "Settings imported successfully!";
+"alert.import.error" = "Error importing settings. Please check if the file is valid.";
+
+// File Operations
+"file.export.title" = "Export Settings";
+"file.import.title" = "Import Settings";
+"file.settings.extension" = "granulay";

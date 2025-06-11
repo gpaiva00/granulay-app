@@ -17,6 +17,8 @@
 		B1000015000000000000001 /* MenuBarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000016000000000000001 /* MenuBarManager.swift */; };
 		B1000034000000000000001 /* UpdateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000035000000000000001 /* UpdateManager.swift */; };
 		B1000036000000000000001 /* PerformanceOptimizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000037000000000000001 /* PerformanceOptimizer.swift */; };
+		B1000038000000000000001 /* LocalizationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000039000000000000001 /* LocalizationHelper.swift */; };
+		B1000043000000000000001 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B1000040000000000000001 /* Localizable.strings */; };
 		C0D1BFC72DE7DE09009D1D15 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = C0D1BFC62DE7DE09009D1D15 /* Sparkle */; };
 /* End PBXBuildFile section */
 
@@ -33,6 +35,9 @@
 		B1000018000000000000001 /* Granulay.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Granulay.entitlements; sourceTree = "<group>"; };
 		B1000035000000000000001 /* UpdateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateManager.swift; sourceTree = "<group>"; };
 		B1000037000000000000001 /* PerformanceOptimizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceOptimizer.swift; sourceTree = "<group>"; };
+		B1000039000000000000001 /* LocalizationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationHelper.swift; sourceTree = "<group>"; };
+		B1000041000000000000001 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B1000042000000000000001 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Localizable.strings"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +72,8 @@
 				B1000016000000000000001 /* MenuBarManager.swift */,
 				B1000035000000000000001 /* UpdateManager.swift */,
 				B1000037000000000000001 /* PerformanceOptimizer.swift */,
+				B1000039000000000000001 /* LocalizationHelper.swift */,
+				B1000040000000000000001 /* Localizable.strings */,
 				B1000006000000000000001 /* Assets.xcassets */,
 				B1000023000000000000001 /* Preview Content */,
 			);
@@ -89,6 +96,7 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -131,6 +139,7 @@
 			knownRegions = (
 				en,
 				Base,
+				"pt-BR",
 			);
 			mainGroup = B1000020000000000000001;
 			packageReferences = (
@@ -152,6 +161,7 @@
 			files = (
 				B1000007000000000000001 /* Preview Assets.xcassets in Resources */,
 				B1000005000000000000001 /* Assets.xcassets in Resources */,
+				B1000043000000000000001 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -169,11 +179,24 @@
 				B1000015000000000000001 /* MenuBarManager.swift in Sources */,
 				B1000034000000000000001 /* UpdateManager.swift in Sources */,
 				B1000036000000000000001 /* PerformanceOptimizer.swift in Sources */,
+				B1000038000000000000001 /* LocalizationHelper.swift in Sources */,
 				B1000001000000000000001 /* GranulayApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		B1000040000000000000001 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B1000041000000000000001 /* en */,
+				B1000042000000000000001 /* pt-BR */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		B1000030000000000000001 /* Debug */ = {

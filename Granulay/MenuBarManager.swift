@@ -98,7 +98,7 @@ class MenuBarManager: ObservableObject {
         let menu = NSMenu()
 
         let toggleItem = NSMenuItem(
-            title: isGrainEnabled ? "Desativar Efeito" : "Ativar Efeito",
+            title: isGrainEnabled ? LocalizationKeys.Menu.disableEffect.localized : LocalizationKeys.Menu.enableEffect.localized,
             action: #selector(toggleGrain),
             keyEquivalent: ""
         )
@@ -108,7 +108,7 @@ class MenuBarManager: ObservableObject {
         menu.addItem(NSMenuItem.separator())
 
         let settingsItem = NSMenuItem(
-            title: "Configurações...",
+            title: LocalizationKeys.Menu.settings.localized,
             action: #selector(openSettings),
             keyEquivalent: ""
         )
@@ -118,7 +118,7 @@ class MenuBarManager: ObservableObject {
         menu.addItem(NSMenuItem.separator())
 
         let checkUpdatesItem = NSMenuItem(
-            title: "Verificar Atualizações...",
+            title: LocalizationKeys.Menu.checkUpdates.localized,
             action: #selector(checkForUpdates),
             keyEquivalent: ""
         )
@@ -128,7 +128,7 @@ class MenuBarManager: ObservableObject {
         menu.addItem(NSMenuItem.separator())
 
         let quitItem = NSMenuItem(
-            title: "Sair",
+            title: LocalizationKeys.Menu.quit.localized,
             action: #selector(quit),
             keyEquivalent: ""
         )
@@ -158,7 +158,7 @@ class MenuBarManager: ObservableObject {
         guard let menu = statusItem?.menu else { return }
 
         if let toggleItem = menu.item(at: 0) {
-            toggleItem.title = isGrainEnabled ? "Desativar Efeito" : "Ativar Efeito"
+            toggleItem.title = isGrainEnabled ? LocalizationKeys.Menu.disableEffect.localized : LocalizationKeys.Menu.enableEffect.localized
         }
     }
 
@@ -200,7 +200,7 @@ class MenuBarManager: ObservableObject {
 
             settingsWindow?.minSize = NSSize(width: 480, height: 500)
 
-            settingsWindow?.title = "Configurações do Granulay"
+            settingsWindow?.title = LocalizationKeys.Settings.windowTitle.localized
             settingsWindow?.contentView = hostingView
             settingsWindow?.center()
             settingsWindow?.isReleasedWhenClosed = false
