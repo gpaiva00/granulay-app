@@ -13,9 +13,7 @@ class MenuBarManager: ObservableObject {
     @Published var isGrainEnabled = false {
         didSet {
             updateOverlay()
-            if saveSettingsAutomatically {
-                saveSettings()
-            }
+            saveSettings()
         }
     }
 
@@ -28,37 +26,23 @@ class MenuBarManager: ObservableObject {
     @Published var grainStyle: GrainStyle = .fine {
         didSet {
             overlayWindow?.updateGrainStyle(grainStyle)
-            if saveSettingsAutomatically {
-                saveSettings()
-            }
+            saveSettings()
         }
     }
 
     @Published var preserveBrightness = true {
         didSet {
             overlayWindow?.updatePreserveBrightness(preserveBrightness)
-            if saveSettingsAutomatically {
-                saveSettings()
-            }
+            saveSettings()
         }
     }
 
-    @Published var saveSettingsAutomatically = true {
-        didSet {
-            UserDefaults.standard.set(
-                saveSettingsAutomatically, forKey: "saveSettingsAutomatically")
-            if saveSettingsAutomatically {
-                saveSettings()
-            }
-        }
-    }
+
 
     @Published var showInDock = false {
         didSet {
             updateDockVisibility()
-            if saveSettingsAutomatically {
-                saveSettings()
-            }
+            saveSettings()
         }
     }
 
@@ -72,9 +56,7 @@ class MenuBarManager: ObservableObject {
         intensityDebouncer.invalidate()
         intensityDebouncer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false) { _ in
             self.overlayWindow?.updateGrainIntensity(self.grainIntensity)
-            if self.saveSettingsAutomatically {
-                self.saveSettings()
-            }
+            self.saveSettings()
         }
     }
 
@@ -219,30 +201,24 @@ class MenuBarManager: ObservableObject {
     }
 
     private func loadSettings() {
-        saveSettingsAutomatically =
-            UserDefaults.standard.object(forKey: "saveSettingsAutomatically") as? Bool ?? true
-
-        // Carrega a configuração da Dock independentemente do salvamento automático
+        // Carrega todas as configurações salvas
         showInDock = UserDefaults.standard.object(forKey: "showInDock") as? Bool ?? false
+        isGrainEnabled = UserDefaults.standard.bool(forKey: "isGrainEnabled")
 
-        if saveSettingsAutomatically {
-            isGrainEnabled = UserDefaults.standard.bool(forKey: "isGrainEnabled")
-
-            // Primeiro carregamos o estilo para poder usar a intensidade recomendada
-            if let styleRawValue = UserDefaults.standard.string(forKey: "grainStyle"),
-                let style = GrainStyle(rawValue: styleRawValue)
-            {
-                grainStyle = style
-            } else {
-                grainStyle = .fine
-            }
-
-            grainIntensity =
-                UserDefaults.standard.object(forKey: "grainIntensity") as? Double
-                ?? grainStyle.recommendedIntensity
-            preserveBrightness =
-                UserDefaults.standard.object(forKey: "preserveBrightness") as? Bool ?? true
+        // Primeiro carregamos o estilo para poder usar a intensidade recomendada
+        if let styleRawValue = UserDefaults.standard.string(forKey: "grainStyle"),
+            let style = GrainStyle(rawValue: styleRawValue)
+        {
+            grainStyle = style
+        } else {
+            grainStyle = .fine
         }
+
+        grainIntensity =
+            UserDefaults.standard.object(forKey: "grainIntensity") as? Double
+            ?? grainStyle.recommendedIntensity
+        preserveBrightness =
+            UserDefaults.standard.object(forKey: "preserveBrightness") as? Bool ?? true
     }
 
     private func saveSettings() {
@@ -263,9 +239,6 @@ class MenuBarManager: ObservableObject {
         isGrainEnabled = false
         preserveBrightness = true
         showInDock = false
-
-        if saveSettingsAutomatically {
-            saveSettings()
-        }
+        saveSettings()
     }
 }

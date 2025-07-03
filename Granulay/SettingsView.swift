@@ -79,14 +79,14 @@ struct HeaderView: View {
                     .font(.title)
                     .fontWeight(.semibold)
 
-                Text(LocalizationKeys.App.beta.localized)
-                    .font(.caption)
-                    .fontWeight(.bold)
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 2)
-                    .background(Color.orange)
-                    .cornerRadius(8)
+//                Text(LocalizationKeys.App.beta.localized)
+//                    .font(.caption)
+//                    .fontWeight(.bold)
+//                    .foregroundColor(.white)
+//                    .padding(.horizontal, 8)
+//                    .padding(.vertical, 2)
+//                    .background(Color.orange)
+//                    .cornerRadius(8)
             }
 
             Text(LocalizationKeys.App.tagline.localized)
@@ -231,27 +231,6 @@ struct ControlsSection: View {
                 Divider()
 
                 HStack {
-                    Text(LocalizationKeys.Settings.saveAutomatically.localized)
-                        .font(.subheadline)
-
-                    Spacer()
-
-                    Toggle(
-                        "",
-                        isOn: Binding(
-                            get: { menuBarManager.saveSettingsAutomatically },
-                            set: { newValue in
-                                menuBarManager.saveSettingsAutomatically = newValue
-                            }
-                        )
-                    )
-                    .toggleStyle(SwitchToggleStyle())
-                    .disabled(isLoading)
-                }
-
-                Divider()
-
-                HStack {
                     Text(LocalizationKeys.Settings.showInDock.localized)
                         .font(.subheadline)
 
@@ -342,14 +321,6 @@ struct ActionButtons: View {
     var body: some View {
         VStack(spacing: 12) {
             HStack {
-                Button(LocalizationKeys.Settings.export.localized) {
-                    menuBarManager.saveSettingsManually()
-                }
-                .buttonStyle(BorderedButtonStyle())
-                .disabled(isLoading || menuBarManager.saveSettingsAutomatically)
-
-                Spacer()
-
                 Button(LocalizationKeys.Settings.reset.localized) {
                     withLoadingDelay {
                         menuBarManager.resetToDefaults()
@@ -357,18 +328,15 @@ struct ActionButtons: View {
                 }
                 .buttonStyle(BorderedButtonStyle())
                 .disabled(isLoading)
+                
+                Spacer()
             }
 
             HStack(alignment: .center) {
                 Text("v\(appVersion)").font(.caption).foregroundColor(.secondary)
             }
 
-            if !menuBarManager.saveSettingsAutomatically {
-                Text(LocalizationKeys.Settings.saveAutomaticallyDescription.localized)
-                .font(.caption)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-            }
+
         }
     }
 }
