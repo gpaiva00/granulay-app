@@ -13,6 +13,7 @@
 // Menu Bar
 "menu.enable_effect" = "Enable Effect";
 "menu.disable_effect" = "Disable Effect";
+"menu.lofi_station" = "Lo-Fi Station";
 "menu.settings" = "Settings...";
 "menu.check_updates" = "Check for Updates...";
 "menu.quit" = "Quit";
@@ -85,6 +86,13 @@
 "alert.export.success" = "Settings exported successfully!";
 "alert.import.success" = "Settings imported successfully!";
 "alert.import.error" = "Error importing settings. Please check if the file is valid.";
+
+// Lo-Fi Music
+"lofi.title" = "Lo-Fi Station";
+"lofi.playing" = "Playing";
+"lofi.stopped" = "Stopped";
+"lofi.volume" = "Volume";
+"lofi.station" = "Station";
 
 // File Operations
 "file.export.title" = "Export Settings";

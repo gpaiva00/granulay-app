@@ -34,6 +34,7 @@ struct LocalizationKeys {
     struct Menu {
         static let enableEffect = "menu.enable_effect"
         static let disableEffect = "menu.disable_effect"
+        static let lofiStation = "menu.lofi_station"
         static let settings = "menu.settings"
         static let checkUpdates = "menu.check_updates"
         static let quit = "menu.quit"
@@ -120,6 +121,15 @@ struct LocalizationKeys {
             static let success = "alert.import.success"
             static let error = "alert.import.error"
         }
+    }
+    
+    // MARK: - Lo-Fi Music
+    struct LoFi {
+        static let title = "lofi.title"
+        static let playing = "lofi.playing"
+        static let stopped = "lofi.stopped"
+        static let volume = "lofi.volume"
+        static let station = "lofi.station"
     }
     
     // MARK: - File Operations

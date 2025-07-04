@@ -6,6 +6,9 @@
 
 set -e
 
+# Diretório do script
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 # Configurações
 REPO_OWNER="gpaiva00"
 APP_REPO="granulay-app" 
@@ -201,32 +204,28 @@ cat > "$RELEASE_NOTES_FILE" << EOF
     <p style="margin-bottom: 16px;">$RELEASE_DESCRIPTION</p>
     
     <h3 style="color: #333; margin: 20px 0 12px 0;">$NOVIDADES_TITULO</h3>
-    <ul style="margin: 0; padding-left: 20px;">
-        <li style="margin-bottom: 8px;">🔧 <strong>Melhorias de performance</strong> e estabilidade</li>
-        <li style="margin-bottom: 8px;">✨ <strong>Redesign</strong> na tela de configurações para simplificar os estilos de grão e intensidade.</li>
-        <li style="margin-bottom: 8px;">✨ <strong>Nova seção de feedback</strong> na tela de configurações.</li>
-    </ul>
-    
-    <h3 style="color: #333; margin: 20px 0 12px 0;">✨ Recursos existentes:</h3>
-    <ul style="margin: 0; padding-left: 20px;">
-        <li style="margin-bottom: 8px;">🎨 <strong>Vintage grain effect</strong> for the entire screen</li>
-        <li style="margin-bottom: 8px;">⚙️ <strong>Customizable settings</strong> for intensity and style</li>
-        <li style="margin-bottom: 8px;">🖥️ <strong>Multi-monitor support</strong> with individual settings</li>
-        <li style="margin-bottom: 8px;">🔧 <strong>Menu bar integration</strong> for quick access</li>
-        <li style="margin-bottom: 8px;">💡 <strong>Brightness preservation</strong> option</li>
-        <li style="margin-bottom: 8px;">🎯 <strong>4 grain styles:</strong> Fine, Medium, Coarse, Vintage</li>
-    </ul>
-    
-    <h3 style="color: #333; margin: 20px 0 12px 0;">🔧 System Requirements:</h3>
-    <ul style="margin: 0; padding-left: 20px;">
-        <li style="margin-bottom: 4px;">macOS 13.0 (Ventura) or later</li>
-        <li style="margin-bottom: 4px;">Apple Silicon or Intel Mac</li>
-        <li style="margin-bottom: 4px;">4GB RAM minimum</li>
-    </ul>$BETA_NOTICE
+    $(cat "$SCRIPT_DIR/new-update.html")
+    $BETA_NOTICE
 </div>
 EOF
 
 success "Release notes criadas: $RELEASE_NOTES_FILE"
+
+# Perguntar se deve fazer upload para GitHub
+echo ""
+echo "📦 Arquivos da release gerados localmente:"
+echo "   - dist/Granulay-$VERSION.dmg"
+echo "   - dist/Granulay-$VERSION.html"
+echo ""
+read -p "🚀 Deseja fazer upload para o GitHub e publicar a release? (s/N): " -n 1 -r
+echo ""
+
+if [[ ! $REPLY =~ ^[SsYy]$ ]]; then
+    echo ""
+    success "Arquivos da release gerados com sucesso em ./dist/"
+    echo "Para publicar posteriormente, execute novamente o script e confirme o upload."
+    exit 0
+fi
 
 # STEP 6: Upload automatizado para GitHub Releases usando GitHub CLI
 log "📤 Criando release no GitHub e fazendo upload..."

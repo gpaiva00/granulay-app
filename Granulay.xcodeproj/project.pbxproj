@@ -19,6 +19,8 @@
 		B1000036000000000000001 /* PerformanceOptimizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000037000000000000001 /* PerformanceOptimizer.swift */; };
 		B1000038000000000000001 /* LocalizationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000039000000000000001 /* LocalizationHelper.swift */; };
 		B1000043000000000000001 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B1000040000000000000001 /* Localizable.strings */; };
+		B1000044000000000000001 /* LoFiMusicManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000045000000000000001 /* LoFiMusicManager.swift */; };
+		B1000046000000000000001 /* LoFiControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000047000000000000001 /* LoFiControlsView.swift */; };
 		C0D1BFC72DE7DE09009D1D15 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = C0D1BFC62DE7DE09009D1D15 /* Sparkle */; };
 /* End PBXBuildFile section */
 
@@ -38,6 +40,8 @@
 		B1000039000000000000001 /* LocalizationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationHelper.swift; sourceTree = "<group>"; };
 		B1000041000000000000001 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B1000042000000000000001 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		B1000045000000000000001 /* LoFiMusicManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoFiMusicManager.swift; sourceTree = "<group>"; };
+		B1000047000000000000001 /* LoFiControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoFiControlsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +77,8 @@
 				B1000035000000000000001 /* UpdateManager.swift */,
 				B1000037000000000000001 /* PerformanceOptimizer.swift */,
 				B1000039000000000000001 /* LocalizationHelper.swift */,
+				B1000045000000000000001 /* LoFiMusicManager.swift */,
+				B1000047000000000000001 /* LoFiControlsView.swift */,
 				B1000040000000000000001 /* Localizable.strings */,
 				B1000006000000000000001 /* Assets.xcassets */,
 				B1000023000000000000001 /* Preview Content */,
@@ -180,6 +186,8 @@
 				B1000034000000000000001 /* UpdateManager.swift in Sources */,
 				B1000036000000000000001 /* PerformanceOptimizer.swift in Sources */,
 				B1000038000000000000001 /* LocalizationHelper.swift in Sources */,
+				B1000044000000000000001 /* LoFiMusicManager.swift in Sources */,
+				B1000046000000000000001 /* LoFiControlsView.swift in Sources */,
 				B1000001000000000000001 /* GranulayApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -9,6 +9,7 @@ class MenuBarManager: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private var intensityDebouncer = Timer()
     private let updateManager = UpdateManager.shared
+    private let musicManager = LoFiMusicManager.shared
 
     @Published var isGrainEnabled = false {
         didSet {
@@ -86,6 +87,18 @@ class MenuBarManager: ObservableObject {
         )
         toggleItem.target = self
         menu.addItem(toggleItem)
+
+        menu.addItem(NSMenuItem.separator())
+
+        // Lo-Fi Station submenu
+        let lofiItem = NSMenuItem(
+            title: LocalizationKeys.Menu.lofiStation.localized,
+            action: nil,
+            keyEquivalent: ""
+        )
+        let lofiSubmenu = createLoFiSubmenu()
+        lofiItem.submenu = lofiSubmenu
+        menu.addItem(lofiItem)
 
         menu.addItem(NSMenuItem.separator())
 
@@ -198,6 +211,86 @@ class MenuBarManager: ObservableObject {
 
     @objc private func checkForUpdates() {
         updateManager.checkForUpdates()
+    }
+    
+    private func createLoFiSubmenu() -> NSMenu {
+        let submenu = NSMenu()
+        
+        // Play/Pause
+        let playPauseTitle = musicManager.isPlaying ? "Pause" : "Play"
+        let playPauseItem = NSMenuItem(
+            title: playPauseTitle,
+            action: #selector(toggleLoFiPlayback),
+            keyEquivalent: ""
+        )
+        playPauseItem.target = self
+        submenu.addItem(playPauseItem)
+        
+        // Stop
+        let stopItem = NSMenuItem(
+            title: "Stop",
+            action: #selector(stopLoFi),
+            keyEquivalent: ""
+        )
+        stopItem.target = self
+        submenu.addItem(stopItem)
+        
+        submenu.addItem(NSMenuItem.separator())
+        
+        // Previous Station
+        let previousItem = NSMenuItem(
+            title: "Previous Station",
+            action: #selector(previousStation),
+            keyEquivalent: ""
+        )
+        previousItem.target = self
+        submenu.addItem(previousItem)
+        
+        // Next Station
+        let nextItem = NSMenuItem(
+            title: "Next Station",
+            action: #selector(nextStation),
+            keyEquivalent: ""
+        )
+        nextItem.target = self
+        submenu.addItem(nextItem)
+        
+        submenu.addItem(NSMenuItem.separator())
+        
+        // Current Station Info
+        let stationInfo = NSMenuItem(
+            title: "\(LocalizationKeys.LoFi.station.localized): \(musicManager.currentStation)",
+            action: nil,
+            keyEquivalent: ""
+        )
+        stationInfo.isEnabled = false
+        submenu.addItem(stationInfo)
+        
+        return submenu
+    }
+    
+    @objc private func toggleLoFiPlayback() {
+        if musicManager.isPlaying {
+            musicManager.pause()
+        } else {
+            musicManager.play()
+        }
+        updateMenuTitle()
+    }
+    
+    @objc private func stopLoFi() {
+        musicManager.stop()
+        updateMenuTitle()
+    }
+    
+    @objc private func previousStation() {
+        musicManager.previousStation()
+        updateMenuTitle()
+    }
+    
+    @objc private func nextStation() {
+        musicManager.nextStation()
+        updateMenuTitle()
     }
 
     private func loadSettings() {
