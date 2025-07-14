@@ -150,10 +150,10 @@ class UpdateManager: NSObject, ObservableObject, SPUUpdaterDelegate {
     
     // MARK: - SPUUpdaterDelegate
     
-    // Permite canal beta
+    // Permite todos os canais (padrão e beta)
     func allowedChannels(for updater: SPUUpdater) -> Set<String> {
-        let channels: Set<String> = ["beta"]
-        print("Canais permitidos: \(channels)")
+        let channels: Set<String> = [] // Array vazio permite todos os canais
+        print("Canais permitidos: todos (array vazio)")
         return channels
     }
     

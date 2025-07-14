@@ -114,8 +114,12 @@ success "Pré-requisitos OK"
 # STEP 2: Atualizar versão no Info.plist
 log "📝 Atualizando versão no Info.plist..."
 
-# Extrair número da versão para CFBundleVersion (ex: 1.0.5 -> 5)
-VERSION_NUMBER=$(echo "$VERSION" | cut -d'.' -f3)
+# Gerar número sequencial para CFBundleVersion baseado na versão completa
+# Converte versão como 1.1.2 para um número sequencial (ex: 1001002)
+MAJOR=$(echo "$VERSION" | cut -d'.' -f1)
+MINOR=$(echo "$VERSION" | cut -d'.' -f2)
+PATCH=$(echo "$VERSION" | cut -d'.' -f3)
+VERSION_NUMBER=$((MAJOR * 1000000 + MINOR * 1000 + PATCH))
 
 # Atualizar CFBundleShortVersionString (procurar pela linha seguinte após a key)
 sed -i.bak '/CFBundleShortVersionString/{n;s/<string>.*<\/string>/<string>'$VERSION_STRING'<\/string>/;}' Granulay/Info.plist
@@ -178,54 +182,19 @@ create-dmg \
 
 success "DMG criado: dist/Granulay-$VERSION.dmg"
 
-# STEP 5: Criar release notes HTML
-log "📄 Criando arquivo de release notes..."
+# STEP 5: Usar release notes HTML existente
+log "📄 Usando arquivo de release notes existente..."
 RELEASE_NOTES_FILE="dist/Granulay-$VERSION.html"
 
-# Determinar o tipo de novidades baseado no canal
-if [ "$IS_PRODUCTION" = "true" ]; then
-    RELEASE_TITLE="🎉 Granulay $VERSION_STRING Release!"
-    RELEASE_DESCRIPTION="Nova versão estável do Granulay com melhorias e correções!"
-    NOVIDADES_TITULO="✨ Novidades na versão $VERSION_STRING:"
-    BETA_NOTICE=""
-else
-    RELEASE_TITLE="🎉 Granulay $VERSION_STRING Beta Release!"
-    RELEASE_DESCRIPTION="Nova versão beta do Granulay com melhorias e novas funcionalidades!"
-    NOVIDADES_TITULO="✨ Novidades na versão $VERSION_STRING:"
-    BETA_NOTICE="
-    <p style=\"margin-top: 20px; padding: 12px; background: #f0f9ff; border-left: 4px solid #0ea5e9; border-radius: 4px;\">
-        <strong>Beta Notice:</strong> This is a beta release. Please report any issues to our support team.
-    </p>"
+# Verificar se o arquivo release-notes.html existe
+if [ ! -f "release-notes.html" ]; then
+    error "Arquivo release-notes.html não encontrado. Crie o arquivo primeiro."
 fi
 
-cat > "$RELEASE_NOTES_FILE" << EOF
-<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6;">
-    <h2 style="color: #4F46E5; margin-bottom: 16px;">$RELEASE_TITLE</h2>
-    <p style="margin-bottom: 16px;">$RELEASE_DESCRIPTION</p>
-    
-    <h3 style="color: #333; margin: 20px 0 12px 0;">$NOVIDADES_TITULO</h3>
-    $(cat "$SCRIPT_DIR/new-update.html")
-    $BETA_NOTICE
-</div>
-EOF
+# Copiar o arquivo release-notes.html para o diretório dist
+cp "release-notes.html" "$RELEASE_NOTES_FILE"
 
-success "Release notes criadas: $RELEASE_NOTES_FILE"
-
-# Perguntar se deve fazer upload para GitHub
-echo ""
-echo "📦 Arquivos da release gerados localmente:"
-echo "   - dist/Granulay-$VERSION.dmg"
-echo "   - dist/Granulay-$VERSION.html"
-echo ""
-read -p "🚀 Deseja fazer upload para o GitHub e publicar a release? (s/N): " -n 1 -r
-echo ""
-
-if [[ ! $REPLY =~ ^[SsYy]$ ]]; then
-    echo ""
-    success "Arquivos da release gerados com sucesso em ./dist/"
-    echo "Para publicar posteriormente, execute novamente o script e confirme o upload."
-    exit 0
-fi
+success "Release notes copiadas de release-notes.html para: $RELEASE_NOTES_FILE"
 
 # STEP 6: Upload automatizado para GitHub Releases usando GitHub CLI
 log "📤 Criando release no GitHub e fazendo upload..."
