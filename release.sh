@@ -111,8 +111,12 @@ success "Pré-requisitos OK"
 # STEP 2: Atualizar versão no Info.plist
 log "📝 Atualizando versão no Info.plist..."
 
-# Extrair número da versão para CFBundleVersion (ex: 1.0.5 -> 5)
-VERSION_NUMBER=$(echo "$VERSION" | cut -d'.' -f3)
+# Gerar número sequencial para CFBundleVersion baseado na versão completa
+# Converte versão como 1.1.2 para um número sequencial (ex: 1001002)
+MAJOR=$(echo "$VERSION" | cut -d'.' -f1)
+MINOR=$(echo "$VERSION" | cut -d'.' -f2)
+PATCH=$(echo "$VERSION" | cut -d'.' -f3)
+VERSION_NUMBER=$((MAJOR * 1000000 + MINOR * 1000 + PATCH))
 
 # Atualizar CFBundleShortVersionString (procurar pela linha seguinte após a key)
 sed -i.bak '/CFBundleShortVersionString/{n;s/<string>.*<\/string>/<string>'$VERSION_STRING'<\/string>/;}' Granulay/Info.plist
@@ -175,58 +179,19 @@ create-dmg \
 
 success "DMG criado: dist/Granulay-$VERSION.dmg"
 
-# STEP 5: Criar release notes HTML
-log "📄 Criando arquivo de release notes..."
+# STEP 5: Usar release notes HTML existente
+log "📄 Usando arquivo de release notes existente..."
 RELEASE_NOTES_FILE="dist/Granulay-$VERSION.html"
 
-# Determinar o tipo de novidades baseado no canal
-if [ "$IS_PRODUCTION" = "true" ]; then
-    RELEASE_TITLE="🎉 Granulay $VERSION_STRING Release!"
-    RELEASE_DESCRIPTION="Nova versão estável do Granulay com melhorias e correções!"
-    NOVIDADES_TITULO="✨ Novidades na versão $VERSION_STRING:"
-    BETA_NOTICE=""
-else
-    RELEASE_TITLE="🎉 Granulay $VERSION_STRING Beta Release!"
-    RELEASE_DESCRIPTION="Nova versão beta do Granulay com melhorias e novas funcionalidades!"
-    NOVIDADES_TITULO="✨ Novidades na versão $VERSION_STRING:"
-    BETA_NOTICE="
-    <p style=\"margin-top: 20px; padding: 12px; background: #f0f9ff; border-left: 4px solid #0ea5e9; border-radius: 4px;\">
-        <strong>Beta Notice:</strong> This is a beta release. Please report any issues to our support team.
-    </p>"
+# Verificar se o arquivo release-notes.html existe
+if [ ! -f "release-notes.html" ]; then
+    error "Arquivo release-notes.html não encontrado. Crie o arquivo primeiro."
 fi
 
-cat > "$RELEASE_NOTES_FILE" << EOF
-<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6;">
-    <h2 style="color: #4F46E5; margin-bottom: 16px;">$RELEASE_TITLE</h2>
-    <p style="margin-bottom: 16px;">$RELEASE_DESCRIPTION</p>
-    
-    <h3 style="color: #333; margin: 20px 0 12px 0;">$NOVIDADES_TITULO</h3>
-    <ul style="margin: 0; padding-left: 20px;">
-        <li style="margin-bottom: 8px;">🔧 <strong>Melhorias de performance</strong> e estabilidade</li>
-        <li style="margin-bottom: 8px;">✨ <strong>Redesign</strong> na tela de configurações para simplificar os estilos de grão e intensidade.</li>
-        <li style="margin-bottom: 8px;">✨ <strong>Nova seção de feedback</strong> na tela de configurações.</li>
-    </ul>
-    
-    <h3 style="color: #333; margin: 20px 0 12px 0;">✨ Recursos existentes:</h3>
-    <ul style="margin: 0; padding-left: 20px;">
-        <li style="margin-bottom: 8px;">🎨 <strong>Vintage grain effect</strong> for the entire screen</li>
-        <li style="margin-bottom: 8px;">⚙️ <strong>Customizable settings</strong> for intensity and style</li>
-        <li style="margin-bottom: 8px;">🖥️ <strong>Multi-monitor support</strong> with individual settings</li>
-        <li style="margin-bottom: 8px;">🔧 <strong>Menu bar integration</strong> for quick access</li>
-        <li style="margin-bottom: 8px;">💡 <strong>Brightness preservation</strong> option</li>
-        <li style="margin-bottom: 8px;">🎯 <strong>4 grain styles:</strong> Fine, Medium, Coarse, Vintage</li>
-    </ul>
-    
-    <h3 style="color: #333; margin: 20px 0 12px 0;">🔧 System Requirements:</h3>
-    <ul style="margin: 0; padding-left: 20px;">
-        <li style="margin-bottom: 4px;">macOS 13.0 (Ventura) or later</li>
-        <li style="margin-bottom: 4px;">Apple Silicon or Intel Mac</li>
-        <li style="margin-bottom: 4px;">4GB RAM minimum</li>
-    </ul>$BETA_NOTICE
-</div>
-EOF
+# Copiar o arquivo release-notes.html para o diretório dist
+cp "release-notes.html" "$RELEASE_NOTES_FILE"
 
-success "Release notes criadas: $RELEASE_NOTES_FILE"
+success "Release notes copiadas de release-notes.html para: $RELEASE_NOTES_FILE"
 
 # STEP 6: Upload automatizado para GitHub Releases usando GitHub CLI
 log "📤 Criando release no GitHub e fazendo upload..."
