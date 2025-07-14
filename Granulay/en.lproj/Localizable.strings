@@ -93,6 +93,11 @@
 "lofi.stopped" = "Stopped";
 "lofi.volume" = "Volume";
 "lofi.station" = "Station";
+"lofi.play" = "Play";
+"lofi.pause" = "Pause";
+"lofi.stop" = "Stop";
+"lofi.previous_station" = "Previous Station";
+"lofi.next_station" = "Next Station";
 
 // File Operations
 "file.export.title" = "Export Settings";

@@ -35,7 +35,7 @@ struct SettingsView: View {
             // Sidebar
             VStack(alignment: .leading, spacing: 0) {
                 HeaderView()
-                    .padding(.horizontal, 16)
+                    .padding(.horizontal, 28)
                     .padding(.vertical, 20)
                 
                 Divider()
@@ -64,7 +64,7 @@ struct SettingsView: View {
                 .padding(.horizontal, 16)
                 .padding(.bottom, 16)
             }
-            .frame(width: 180)
+            .frame(width: 200)
             .background(Color(NSColor.controlBackgroundColor))
             
             // Conteúdo principal
@@ -142,9 +142,24 @@ struct CategoryRow: View {
                     .frame(width: 16, height: 16)
                     .foregroundColor(isSelected ? .accentColor : .secondary)
                 
-                Text(category.rawValue)
-                    .font(.subheadline)
-                    .foregroundColor(isSelected ? .primary : .secondary)
+                HStack(spacing: 6) {
+                    Text(category.rawValue)
+                        .font(.subheadline)
+                        .foregroundColor(isSelected ? .primary : .secondary)
+                    
+                    if category == .lofi {
+                        Text(LocalizationKeys.App.beta.localized)
+                            .font(.caption2)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(
+                                RoundedRectangle(cornerRadius: 4)
+                                    .fill(Color.orange)
+                            )
+                    }
+                }
                 
                 Spacer()
             }

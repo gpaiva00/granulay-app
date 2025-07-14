@@ -130,6 +130,11 @@ struct LocalizationKeys {
         static let stopped = "lofi.stopped"
         static let volume = "lofi.volume"
         static let station = "lofi.station"
+        static let play = "lofi.play"
+        static let pause = "lofi.pause"
+        static let stop = "lofi.stop"
+        static let previousStation = "lofi.previous_station"
+        static let nextStation = "lofi.next_station"
     }
     
     // MARK: - File Operations

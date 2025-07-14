@@ -217,7 +217,7 @@ class MenuBarManager: ObservableObject {
         let submenu = NSMenu()
         
         // Play/Pause
-        let playPauseTitle = musicManager.isPlaying ? "Pause" : "Play"
+        let playPauseTitle = musicManager.isPlaying ? LocalizationKeys.LoFi.pause.localized : LocalizationKeys.LoFi.play.localized
         let playPauseItem = NSMenuItem(
             title: playPauseTitle,
             action: #selector(toggleLoFiPlayback),
@@ -228,7 +228,7 @@ class MenuBarManager: ObservableObject {
         
         // Stop
         let stopItem = NSMenuItem(
-            title: "Stop",
+            title: LocalizationKeys.LoFi.stop.localized,
             action: #selector(stopLoFi),
             keyEquivalent: ""
         )
@@ -239,7 +239,7 @@ class MenuBarManager: ObservableObject {
         
         // Previous Station
         let previousItem = NSMenuItem(
-            title: "Previous Station",
+            title: LocalizationKeys.LoFi.previousStation.localized,
             action: #selector(previousStation),
             keyEquivalent: ""
         )
@@ -248,7 +248,7 @@ class MenuBarManager: ObservableObject {
         
         // Next Station
         let nextItem = NSMenuItem(
-            title: "Next Station",
+            title: LocalizationKeys.LoFi.nextStation.localized,
             action: #selector(nextStation),
             keyEquivalent: ""
         )

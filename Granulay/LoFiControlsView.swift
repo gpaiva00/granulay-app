@@ -15,11 +15,11 @@ struct LoFiControlsView: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text(LocalizationKeys.LoFi.title.localized)
-                .font(.headline)
-            
-            VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading) {
+//            Text(LocalizationKeys.LoFi.title.localized)
+//                .font(.headline)
+//            
+            VStack(alignment: .leading, spacing: 16) {
                 // Status da música
                 HStack {
                     Image(systemName: musicManager.isPlaying ? "music.note" : "music.note.list")
@@ -27,11 +27,11 @@ struct LoFiControlsView: View {
                     
                     VStack(alignment: .leading, spacing: 2) {
                         Text(musicManager.currentStation)
-                            .font(.subheadline)
+                            .font(.headline)
                             .fontWeight(.medium)
                         
                         Text(musicManager.isPlaying ? LocalizationKeys.LoFi.playing.localized : LocalizationKeys.LoFi.stopped.localized)
-                            .font(.caption)
+                            .font(.subheadline)
                             .foregroundColor(.secondary)
                     }
                     
@@ -130,7 +130,7 @@ struct LoFiControlsView: View {
                     }
                 }
             }
-            .padding(16)
+            .padding(8)
             .background(Color(NSColor.controlBackgroundColor))
             .cornerRadius(12)
         }
