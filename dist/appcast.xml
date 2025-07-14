@@ -4,11 +4,11 @@
         <title>Granulay</title>
         <item>
             <title>1.1.2</title>
-            <pubDate>Sun, 13 Jul 2025 22:05:27 -0300</pubDate>
-            <sparkle:version>2</sparkle:version>
+            <pubDate>Sun, 13 Jul 2025 22:13:42 -0300</pubDate>
+            <sparkle:version>1001002</sparkle:version>
             <sparkle:shortVersionString>1.1.2</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/gpaiva00/granulay-app/releases/download/v1.1.2/Granulay-1.1.2.dmg" length="5758745" type="application/octet-stream" sparkle:edSignature="9pFQl6UE2PIx0TRs0vS2095QWOkqLDDMPwghceuCoEPHnCXqXZYwUdjzcbnHzDP6d0vR1fLJ0owSRXq8bTzjCw=="/>
+            <enclosure url="https://github.com/gpaiva00/granulay-app/releases/download/v1.1.2/Granulay-1.1.2.dmg" length="5758741" type="application/octet-stream" sparkle:edSignature="hnQSL5ZfBPhSItW9s/RYl66wE1PONuUUamwo8jJRR8Ctbo/4rJpYY6R+ayGP2D+4pn5BCcuxNCiIJJ7GvKQFBw=="/>
         </item>
     </channel>
 </rss>
