@@ -3,11 +3,21 @@ import Security
 import SwiftUI
 
 enum SettingsCategory: String, CaseIterable {
-    case appearance = "Aparência"
-    case behavior = "Comportamento"
-    case lofi = "Estação Lo-Fi"
-    case updates = "Atualizações"
-    case support = "Suporte"
+    case appearance = "appearance"
+    case behavior = "behavior"
+    case lofi = "lofi"
+    case updates = "updates"
+    case support = "support"
+    
+    var localizedName: String {
+        switch self {
+        case .appearance: return LocalizationKeys.Settings.Category.appearance.localized
+        case .behavior: return LocalizationKeys.Settings.Category.behavior.localized
+        case .lofi: return LocalizationKeys.Settings.Category.lofi.localized
+        case .updates: return LocalizationKeys.Settings.Category.updates.localized
+        case .support: return LocalizationKeys.Settings.Category.support.localized
+        }
+    }
     
     var icon: String {
         switch self {
@@ -143,7 +153,7 @@ struct CategoryRow: View {
                     .foregroundColor(isSelected ? .accentColor : .secondary)
                 
                 HStack(spacing: 6) {
-                    Text(category.rawValue)
+                    Text(category.localizedName)
                         .font(.subheadline)
                         .foregroundColor(isSelected ? .primary : .secondary)
                     
@@ -213,11 +223,11 @@ struct AppearanceSettingsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 24) {
             VStack(alignment: .leading, spacing: 16) {
-                Text("Efeito Grain")
+                Text(LocalizationKeys.Settings.Appearance.title.localized)
                     .font(.title2)
                     .fontWeight(.semibold)
                 
-                Text("Configure a aparência do efeito grain na tela.")
+                Text(LocalizationKeys.Settings.Appearance.description.localized)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
@@ -355,11 +365,11 @@ struct BehaviorSettingsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 24) {
             VStack(alignment: .leading, spacing: 16) {
-                Text("Comportamento")
+                Text(LocalizationKeys.Settings.Behavior.title.localized)
                     .font(.title2)
                     .fontWeight(.semibold)
                 
-                Text("Configure como o app se comporta no sistema.")
+                Text(LocalizationKeys.Settings.Behavior.description.localized)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
@@ -392,11 +402,11 @@ struct BehaviorSettingsView: View {
             SettingsCard {
                 VStack(alignment: .leading, spacing: 16) {
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("Redefinir Configurações")
+                        Text(LocalizationKeys.Settings.Behavior.resetTitle.localized)
                             .font(.subheadline)
                             .fontWeight(.medium)
                         
-                        Text("Restaura todas as configurações para os valores padrão.")
+                        Text(LocalizationKeys.Settings.Behavior.resetDescription.localized)
                             .font(.caption)
                             .foregroundColor(.secondary)
                         
@@ -415,14 +425,6 @@ struct BehaviorSettingsView: View {
                 }
             }
             
-            // Versão do app
-            HStack {
-                Spacer()
-                Text("v\(appVersion)")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                Spacer()
-            }
         }
     }
 }
@@ -435,11 +437,11 @@ struct UpdatesSettingsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 24) {
             VStack(alignment: .leading, spacing: 16) {
-                Text("Atualizações")
+                Text(LocalizationKeys.Settings.UpdatesSection.title.localized)
                     .font(.title2)
                     .fontWeight(.semibold)
                 
-                Text("Mantenha o Granulay sempre atualizado.")
+                Text(LocalizationKeys.Settings.UpdatesSection.description.localized)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
@@ -487,11 +489,11 @@ struct LoFiSettingsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 24) {
             VStack(alignment: .leading, spacing: 16) {
-                Text("Estação Lo-Fi")
+                Text(LocalizationKeys.Settings.LoFiSection.title.localized)
                     .font(.title2)
                     .fontWeight(.semibold)
                 
-                Text("Controle sua música lo-fi ambiente para maior concentração.")
+                Text(LocalizationKeys.Settings.LoFiSection.description.localized)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
@@ -503,7 +505,7 @@ struct LoFiSettingsView: View {
             
             Spacer()
         }
-        .padding(24)
+        
     }
 }
 
@@ -519,11 +521,11 @@ struct SupportSettingsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 24) {
             VStack(alignment: .leading, spacing: 16) {
-                Text("Suporte")
+                Text(LocalizationKeys.Settings.Support.title.localized)
                     .font(.title2)
                     .fontWeight(.semibold)
                 
-                Text("Envie feedback ou reporte problemas.")
+                Text(LocalizationKeys.Settings.Support.description.localized)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
@@ -578,7 +580,7 @@ struct SupportSettingsView: View {
     
     private func sendFeedback() {
         guard !feedbackMessage.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            errorMessage = LocalizationKeys.Settings.feedbackValidation.localized
+            errorMessage = LocalizationKeys.Settings.Feedback.validation.localized
             showError = true
             return
         }
@@ -601,7 +603,7 @@ struct SupportSettingsView: View {
             self.errorMessage = LocalizationKeys.Settings.feedbackError.localized
             self.showError = true
             self.isLoading = false
-            self.loadingMessage = "Aplicando alterações..."
+            self.loadingMessage = LocalizationKeys.Loading.applyingChanges.localized
             return
         }
 
@@ -634,7 +636,7 @@ struct SupportSettingsView: View {
                         self.errorMessage = "\(LocalizationKeys.Settings.feedbackError.localized): \(error.localizedDescription)"
                         self.showError = true
                         self.isLoading = false
-                        self.loadingMessage = "Aplicando alterações..."
+                        self.loadingMessage = LocalizationKeys.Loading.applyingChanges.localized
                         return
                     }
 
@@ -644,7 +646,7 @@ struct SupportSettingsView: View {
                         self.errorMessage = "\(LocalizationKeys.Settings.feedbackError.localized): \(httpResponse.statusCode)"
                         self.showError = true
                         self.isLoading = false
-                        self.loadingMessage = "Aplicando alterações..."
+                        self.loadingMessage = LocalizationKeys.Loading.applyingChanges.localized
                         return
                     }
 
@@ -652,7 +654,7 @@ struct SupportSettingsView: View {
                     self.feedbackMessage = ""
                     self.isLoading = false
                     self.showFeedbackSent = true
-                    self.loadingMessage = "Aplicando alterações..."
+                    self.loadingMessage = LocalizationKeys.Loading.applyingChanges.localized
 
                     // Esconde a mensagem de sucesso após 3 segundos
                     DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
@@ -668,7 +670,7 @@ struct SupportSettingsView: View {
             self.errorMessage = "\(LocalizationKeys.Settings.feedbackError.localized): \(error.localizedDescription)"
             self.showError = true
             self.isLoading = false
-            self.loadingMessage = "Aplicando alterações..."
+            self.loadingMessage = LocalizationKeys.Loading.applyingChanges.localized
         }
     }
 }

@@ -54,13 +54,34 @@
 "settings.download_update" = "Download Update";
 "settings.install_update" = "Install Update";
 
+// Settings - Categories
+"settings.category.appearance" = "Appearance";
+"settings.category.behavior" = "Behavior";
+"settings.category.lofi" = "Lo-Fi Station";
+"settings.category.updates" = "Updates";
+"settings.category.support" = "Support";
+
+// Settings - Section Titles and Descriptions
+"settings.appearance.title" = "Grain Effect";
+"settings.appearance.description" = "Configure the appearance of the grain effect on screen.";
+"settings.behavior.title" = "Behavior";
+"settings.behavior.description" = "Configure how the app behaves in the system.";
+"settings.behavior.reset_title" = "Reset Settings";
+"settings.behavior.reset_description" = "Restores all settings to default values.";
+"settings.updates.title" = "Updates";
+"settings.updates.description" = "Keep Granulay always up to date.";
+"settings.lofi.title" = "Lo-Fi Station";
+"settings.lofi.description" = "Control your ambient lo-fi music for better concentration.";
+"settings.support.title" = "Support";
+"settings.support.description" = "Send feedback or report issues.";
+
 // Settings - Feedback
 "settings.feedback" = "Feedback";
 "settings.feedback.placeholder" = "Share your experience, report bugs, or suggest improvements...";
 "settings.feedback.send" = "Send Feedback";
 "settings.feedback.sent" = "Feedback sent successfully!";
 "settings.feedback.error" = "Error sending feedback. Please try again.";
-"settings.feedbackValidation" = "Please enter a message before sending.";
+"settings.feedback.validation" = "Please enter a message before sending.";
 
 // Settings - Actions
 "settings.reset" = "Reset to Defaults";

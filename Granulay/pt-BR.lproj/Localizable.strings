@@ -54,6 +54,27 @@
 "settings.download_update" = "Baixar Atualização";
 "settings.install_update" = "Instalar Atualização";
 
+// Settings - Categories
+"settings.category.appearance" = "Aparência";
+"settings.category.behavior" = "Comportamento";
+"settings.category.lofi" = "Estação Lo-Fi";
+"settings.category.updates" = "Atualizações";
+"settings.category.support" = "Suporte";
+
+// Settings - Section Titles and Descriptions
+"settings.appearance.title" = "Efeito Granulay";
+"settings.appearance.description" = "Configure a aparência do efeito na tela.";
+"settings.behavior.title" = "Comportamento";
+"settings.behavior.description" = "Configure como o app se comporta no sistema.";
+"settings.behavior.reset_title" = "Redefinir Configurações";
+"settings.behavior.reset_description" = "Restaura todas as configurações para os valores padrão.";
+"settings.updates.title" = "Atualizações";
+"settings.updates.description" = "Mantenha o Granulay sempre atualizado.";
+"settings.lofi.title" = "Estação Lo-Fi";
+"settings.lofi.description" = "Controle sua música lo-fi ambiente para maior concentração.";
+"settings.support.title" = "Suporte";
+"settings.support.description" = "Envie feedback ou reporte problemas.";
+
 // Settings - Feedback
 "settings.feedback" = "Feedback";
 "settings.feedback.placeholder" = "Compartilhe sua experiência, reporte bugs ou sugira melhorias...";

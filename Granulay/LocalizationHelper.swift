@@ -70,13 +70,55 @@ struct LocalizationKeys {
         static let feedbackSend = "settings.feedback.send"
         static let feedbackSent = "settings.feedback.sent"
         static let feedbackError = "settings.feedback.error"
-        static let feedbackValidation = "settings.feedbackValidation"
+        static let feedbackValidation = "settings.feedback.validation"
         static let reset = "settings.reset"
         static let resetDescription = "settings.reset.description"
         static let export = "settings.export"
         static let exportDescription = "settings.export.description"
         static let importSettings = "settings.import"
         static let importDescription = "settings.import.description"
+        
+        // MARK: - Feedback
+        struct Feedback {
+            static let validation = "settings.feedback.validation"
+        }
+        
+        // MARK: - Categories
+        struct Category {
+            static let appearance = "settings.category.appearance"
+            static let behavior = "settings.category.behavior"
+            static let lofi = "settings.category.lofi"
+            static let updates = "settings.category.updates"
+            static let support = "settings.category.support"
+        }
+        
+        // MARK: - Section Titles and Descriptions
+        struct Appearance {
+            static let title = "settings.appearance.title"
+            static let description = "settings.appearance.description"
+        }
+        
+        struct Behavior {
+            static let title = "settings.behavior.title"
+            static let description = "settings.behavior.description"
+            static let resetTitle = "settings.behavior.reset_title"
+            static let resetDescription = "settings.behavior.reset_description"
+        }
+        
+        struct UpdatesSection {
+            static let title = "settings.updates.title"
+            static let description = "settings.updates.description"
+        }
+        
+        struct LoFiSection {
+            static let title = "settings.lofi.title"
+            static let description = "settings.lofi.description"
+        }
+        
+        struct Support {
+            static let title = "settings.support.title"
+            static let description = "settings.support.description"
+        }
         
         // MARK: - Intensity
         struct Intensity {
