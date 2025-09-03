@@ -7,7 +7,6 @@
 
 // App Info
 "app.name" = "Granulay";
-"app.tagline" = "Efeito granulado vintage para sua tela";
 "app.beta" = "BETA";
 
 // Menu Bar
@@ -15,7 +14,7 @@
 "menu.disable_effect" = "Desativar Efeito";
 "menu.lofi_station" = "Estação Lo-Fi";
 "menu.settings" = "Configurações...";
-"menu.check_updates" = "Verificar Atualizações...";
+
 "menu.quit" = "Sair";
 
 // Settings - General
@@ -41,25 +40,15 @@
 "settings.show_in_dock" = "Mostrar no Dock";
 "settings.show_in_dock.description" = "Exibe o ícone do app no Dock";
 
-// Settings - Updates
-"settings.updates" = "Atualizações";
-"settings.check_updates" = "Verificar Atualizações";
-"settings.auto_updates" = "Atualizações Automáticas";
-"settings.auto_updates.description" = "Baixa e instala atualizações automaticamente";
-"settings.current_version" = "Versão Atual";
-"settings.latest_version" = "Última Versão";
-"settings.up_to_date" = "Atualizado";
-"settings.update_available" = "Atualização Disponível";
-"settings.checking_updates" = "Verificando atualizações...";
-"settings.download_update" = "Baixar Atualização";
-"settings.install_update" = "Instalar Atualização";
+
 
 // Settings - Categories
 "settings.category.appearance" = "Aparência";
 "settings.category.behavior" = "Comportamento";
 "settings.category.lofi" = "Estação Lo-Fi";
-"settings.category.updates" = "Atualizações";
+
 "settings.category.support" = "Suporte";
+"settings.category.purchase" = "Atualizar";
 
 // Settings - Section Titles and Descriptions
 "settings.appearance.title" = "Efeito Granulay";
@@ -68,8 +57,7 @@
 "settings.behavior.description" = "Configure como o app se comporta no sistema.";
 "settings.behavior.reset_title" = "Redefinir Configurações";
 "settings.behavior.reset_description" = "Restaura todas as configurações para os valores padrão.";
-"settings.updates.title" = "Atualizações";
-"settings.updates.description" = "Mantenha o Granulay sempre atualizado.";
+
 "settings.lofi.title" = "Estação Lo-Fi";
 "settings.lofi.description" = "Controle sua música lo-fi ambiente para maior concentração.";
 "settings.support.title" = "Suporte";
@@ -93,7 +81,7 @@
 
 // Loading and Status
 "loading.applying_changes" = "Aplicando alterações...";
-"loading.checking_updates" = "Verificando atualizações...";
+
 "loading.sending_feedback" = "Enviando feedback...";
 "loading.resetting" = "Restaurando configurações...";
 "loading.exporting" = "Exportando configurações...";
@@ -124,3 +112,22 @@
 "file.export.title" = "Exportar Configurações";
 "file.import.title" = "Importar Configurações";
 "file.settings.extension" = "granulay";
+
+// Trial Version
+"trial.title" = "Granulay Trial";
+"trial.subtitle" = "Experimente o efeito granulado vintage";
+"trial.limitations.title" = "Limitações da Versão Trial";
+"trial.limitations.grain_style" = "• Estilo de grão limitado apenas ao Fino";
+"trial.limitations.intensity" = "• Intensidade de grão limitada apenas ao Fraco";
+"trial.limitations.brightness" = "• Preservar brilho desativado";
+"trial.limitations.lofi" = "• Estação Lo-Fi não disponível";
+"trial.limitations.behavior" = "• Configurações de comportamento não disponíveis";
+"trial.full_version.title" = "Recursos da Versão Completa";
+"trial.full_version.all_styles" = "• Todos os estilos de grão (Fino, Médio, Grosso, Vintage)";
+"trial.full_version.all_intensities" = "• Todos os níveis de intensidade (Fraco, Médio, Forte)";
+"trial.full_version.brightness" = "• Opção de preservar brilho";
+"trial.full_version.lofi" = "• Estação Lo-Fi completa com múltiplas estações";
+"trial.full_version.behavior" = "• Personalização completa de comportamento";
+"trial.full_version.updates" = "• Atualizações automáticas";
+"trial.purchase.button" = "Obter Versão Completa";
+"trial.purchase.description" = "Desbloqueie todos os recursos e apoie o desenvolvimento";

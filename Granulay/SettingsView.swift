@@ -6,33 +6,45 @@ enum SettingsCategory: String, CaseIterable {
     case appearance = "appearance"
     case behavior = "behavior"
     case lofi = "lofi"
-    case updates = "updates"
     case support = "support"
-    
+    case purchase = "purchase"
+
     var localizedName: String {
         switch self {
         case .appearance: return LocalizationKeys.Settings.Category.appearance.localized
         case .behavior: return LocalizationKeys.Settings.Category.behavior.localized
         case .lofi: return LocalizationKeys.Settings.Category.lofi.localized
-        case .updates: return LocalizationKeys.Settings.Category.updates.localized
         case .support: return LocalizationKeys.Settings.Category.support.localized
+        case .purchase: return LocalizationKeys.Settings.Category.purchase.localized
         }
     }
-    
+
     var icon: String {
         switch self {
         case .appearance: return "paintbrush"
         case .behavior: return "gearshape"
         case .lofi: return "music.note"
-        case .updates: return "arrow.triangle.2.circlepath"
         case .support: return "questionmark.circle"
+        case .purchase: return "cart"
         }
+    }
+
+    static var availableCategories: [SettingsCategory] {
+        if TrialConfig.isTrialVersion {
+            return [.appearance, .behavior, .lofi, .support, .purchase]
+        } else {
+            return [.appearance, .behavior, .lofi, .support]
+        }
+    }
+
+    var isDisabledInTrial: Bool {
+        if !TrialConfig.isTrialVersion { return false }
+        return self == .behavior || self == .lofi || self == .support
     }
 }
 
 struct SettingsView: View {
     @EnvironmentObject var menuBarManager: MenuBarManager
-    @StateObject private var updateManager = UpdateManager.shared
     @State private var selectedCategory: SettingsCategory = .appearance
     @State private var isLoading = false
     @State private var feedbackMessage = ""
@@ -45,28 +57,30 @@ struct SettingsView: View {
             // Sidebar
             VStack(alignment: .leading, spacing: 0) {
                 HeaderView()
-                    .padding(.horizontal, 28)
+                    .padding(.horizontal, 18)
                     .padding(.vertical, 20)
-                
-                Divider()
-                
+
                 VStack(alignment: .leading, spacing: 4) {
-                    ForEach(SettingsCategory.allCases, id: \.self) { category in
+                    ForEach(SettingsCategory.availableCategories, id: \.self) { category in
                         CategoryRow(
                             category: category,
                             isSelected: selectedCategory == category
                         ) {
-                            selectedCategory = category
+                            if category == .purchase {
+                                openPurchaseURL()
+                            } else if !category.isDisabledInTrial {
+                                selectedCategory = category
+                            }
                         }
                     }
                 }
                 .padding(.vertical, 12)
-                
+
                 Spacer()
-                
+
                 // Versão no rodapé
                 HStack {
-                    Text("v\(appVersion)")
+                    Text("v\(TrialConfig.appVersion)")
                         .font(.caption)
                         .foregroundColor(.secondary)
                     Spacer()
@@ -76,7 +90,7 @@ struct SettingsView: View {
             }
             .frame(width: 200)
             .background(Color(NSColor.controlBackgroundColor))
-            
+
             // Conteúdo principal
             ScrollView {
                 VStack(spacing: 0) {
@@ -89,9 +103,6 @@ struct SettingsView: View {
                             .environmentObject(menuBarManager)
                     case .lofi:
                         LoFiSettingsView(isLoading: $isLoFiLoading)
-                    case .updates:
-                        UpdatesSettingsView(isLoading: $isLoading)
-                            .environmentObject(updateManager)
                     case .support:
                         SupportSettingsView(
                             feedbackMessage: $feedbackMessage,
@@ -99,6 +110,8 @@ struct SettingsView: View {
                             showFeedbackSent: $showFeedbackSent,
                             loadingMessage: $loadingMessage
                         )
+                    case .purchase:
+                        PurchaseSettingsView()
                     }
                 }
                 .padding(24)
@@ -113,6 +126,12 @@ struct SettingsView: View {
                 }
             }
         )
+    }
+
+    private func openPurchaseURL() {
+        if let url = URL(string: TrialConfig.purchaseURL) {
+            NSWorkspace.shared.open(url)
+        }
     }
 }
 
@@ -144,19 +163,23 @@ struct CategoryRow: View {
     let category: SettingsCategory
     let isSelected: Bool
     let action: () -> Void
-    
+
     var body: some View {
         Button(action: action) {
             HStack(spacing: 12) {
                 Image(systemName: category.icon)
                     .frame(width: 16, height: 16)
-                    .foregroundColor(isSelected ? .accentColor : .secondary)
-                
+                    .foregroundColor(
+                        category.isDisabledInTrial
+                            ? .secondary.opacity(0.5) : (isSelected ? .accentColor : .secondary))
+
                 HStack(spacing: 6) {
                     Text(category.localizedName)
                         .font(.subheadline)
-                        .foregroundColor(isSelected ? .primary : .secondary)
-                    
+                        .foregroundColor(
+                            category.isDisabledInTrial
+                                ? .secondary.opacity(0.5) : (isSelected ? .primary : .secondary))
+
                     if category == .lofi {
                         Text(LocalizationKeys.App.beta.localized)
                             .font(.caption2)
@@ -166,11 +189,19 @@ struct CategoryRow: View {
                             .padding(.vertical, 2)
                             .background(
                                 RoundedRectangle(cornerRadius: 4)
-                                    .fill(Color.orange)
+                                    .fill(
+                                        category.isDisabledInTrial
+                                            ? Color.orange.opacity(0.5) : Color.orange)
                             )
                     }
+
+                    if category.isDisabledInTrial {
+                        Image(systemName: "lock.fill")
+                            .font(.caption2)
+                            .foregroundColor(.secondary.opacity(0.5))
+                    }
                 }
-                
+
                 Spacer()
             }
             .padding(.horizontal, 16)
@@ -181,12 +212,13 @@ struct CategoryRow: View {
             )
         }
         .buttonStyle(PlainButtonStyle())
+        .disabled(category.isDisabledInTrial)
     }
 }
 
 struct HeaderView: View {
     var body: some View {
-        VStack(spacing: 8) {
+        HStack(spacing: 8) {
             Image("SettingsViewIcon")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
@@ -196,11 +228,7 @@ struct HeaderView: View {
             Text("Granulay")
                 .font(.title2)
                 .fontWeight(.semibold)
-
-            Text(LocalizationKeys.App.tagline.localized)
-                .font(.caption)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
+            
         }
     }
 }
@@ -226,12 +254,12 @@ struct AppearanceSettingsView: View {
                 Text(LocalizationKeys.Settings.Appearance.title.localized)
                     .font(.title2)
                     .fontWeight(.semibold)
-                
+
                 Text(LocalizationKeys.Settings.Appearance.description.localized)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
-            
+
             SettingsCard {
                 VStack(alignment: .leading, spacing: 16) {
                     HStack {
@@ -268,9 +296,13 @@ struct AppearanceSettingsView: View {
                                 }
                             }
                             .buttonStyle(
-                                IntensityButtonStyle(isSelected: menuBarManager.grainIntensity <= 0.15)
+                                IntensityButtonStyle(
+                                    isSelected: menuBarManager.grainIntensity <= 0.15)
                             )
-                            .disabled(!menuBarManager.isGrainEnabled || isLoading)
+                            .disabled(
+                                !menuBarManager.isGrainEnabled || isLoading
+                                    || (TrialConfig.isTrialVersion && menuBarManager.isGrainEnabled)
+                            )
 
                             Button(LocalizationKeys.Settings.Intensity.medium.localized) {
                                 withLoadingDelay {
@@ -282,7 +314,10 @@ struct AppearanceSettingsView: View {
                                     isSelected: menuBarManager.grainIntensity > 0.15
                                         && menuBarManager.grainIntensity <= 0.25)
                             )
-                            .disabled(!menuBarManager.isGrainEnabled || isLoading)
+                            .disabled(
+                                !menuBarManager.isGrainEnabled || isLoading
+                                    || (TrialConfig.isTrialVersion && menuBarManager.isGrainEnabled)
+                            )
 
                             Button(LocalizationKeys.Settings.Intensity.strong.localized) {
                                 withLoadingDelay {
@@ -290,9 +325,13 @@ struct AppearanceSettingsView: View {
                                 }
                             }
                             .buttonStyle(
-                                IntensityButtonStyle(isSelected: menuBarManager.grainIntensity > 0.25)
+                                IntensityButtonStyle(
+                                    isSelected: menuBarManager.grainIntensity > 0.25)
                             )
-                            .disabled(!menuBarManager.isGrainEnabled || isLoading)
+                            .disabled(
+                                !menuBarManager.isGrainEnabled || isLoading
+                                    || (TrialConfig.isTrialVersion && menuBarManager.isGrainEnabled)
+                            )
                         }
                         .frame(maxWidth: .infinity)
                     }
@@ -311,9 +350,14 @@ struct AppearanceSettingsView: View {
                                     }
                                 }
                                 .buttonStyle(
-                                    IntensityButtonStyle(isSelected: menuBarManager.grainStyle == style)
+                                    IntensityButtonStyle(
+                                        isSelected: menuBarManager.grainStyle == style)
                                 )
-                                .disabled(!menuBarManager.isGrainEnabled || isLoading)
+                                .disabled(
+                                    !menuBarManager.isGrainEnabled || isLoading
+                                        || (TrialConfig.isTrialVersion
+                                            && menuBarManager.isGrainEnabled)
+                                )
                             }
                         }
                         .frame(maxWidth: .infinity)
@@ -339,7 +383,9 @@ struct AppearanceSettingsView: View {
                             )
                         )
                         .toggleStyle(SwitchToggleStyle())
-                        .disabled(!menuBarManager.isGrainEnabled || isLoading)
+                        .disabled(
+                            !menuBarManager.isGrainEnabled || isLoading
+                                || !TrialConfig.canPreserveBrightness)
                     }
                 }
             }
@@ -368,12 +414,12 @@ struct BehaviorSettingsView: View {
                 Text(LocalizationKeys.Settings.Behavior.title.localized)
                     .font(.title2)
                     .fontWeight(.semibold)
-                
+
                 Text(LocalizationKeys.Settings.Behavior.description.localized)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
-            
+
             SettingsCard {
                 VStack(alignment: .leading, spacing: 16) {
                     HStack {
@@ -398,18 +444,18 @@ struct BehaviorSettingsView: View {
                     }
                 }
             }
-            
+
             SettingsCard {
                 VStack(alignment: .leading, spacing: 16) {
                     VStack(alignment: .leading, spacing: 12) {
                         Text(LocalizationKeys.Settings.Behavior.resetTitle.localized)
                             .font(.subheadline)
                             .fontWeight(.medium)
-                        
+
                         Text(LocalizationKeys.Settings.Behavior.resetDescription.localized)
                             .font(.caption)
                             .foregroundColor(.secondary)
-                        
+
                         HStack {
                             Button(LocalizationKeys.Settings.reset.localized) {
                                 withLoadingDelay {
@@ -418,94 +464,43 @@ struct BehaviorSettingsView: View {
                             }
                             .buttonStyle(BorderedButtonStyle())
                             .disabled(isLoading)
-                            
+
                             Spacer()
                         }
                     }
                 }
             }
-            
+
         }
     }
 }
 
-// MARK: - Updates Settings
-struct UpdatesSettingsView: View {
-    @EnvironmentObject var updateManager: UpdateManager
-    @Binding var isLoading: Bool
 
-    var body: some View {
-        VStack(alignment: .leading, spacing: 24) {
-            VStack(alignment: .leading, spacing: 16) {
-                Text(LocalizationKeys.Settings.UpdatesSection.title.localized)
-                    .font(.title2)
-                    .fontWeight(.semibold)
-                
-                Text(LocalizationKeys.Settings.UpdatesSection.description.localized)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            }
-            
-            SettingsCard {
-                VStack(alignment: .leading, spacing: 16) {
-                    HStack {
-                        Text(LocalizationKeys.Settings.autoUpdates.localized)
-                            .font(.subheadline)
-
-                        Spacer()
-
-                        Toggle("", isOn: $updateManager.automaticUpdatesEnabled)
-                            .toggleStyle(SwitchToggleStyle())
-                            .disabled(isLoading)
-                    }
-
-                    if !updateManager.automaticUpdatesEnabled {
-                        Text(LocalizationKeys.Settings.autoUpdatesDescription.localized)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    }
-
-                    Divider()
-
-                    HStack {
-                        Button(LocalizationKeys.Settings.checkUpdates.localized) {
-                            updateManager.checkForUpdates()
-                        }
-                        .buttonStyle(BorderedButtonStyle())
-                        .disabled(isLoading)
-
-                        Spacer()
-                    }
-                }
-            }
-        }
-    }
-}
 
 // MARK: - LoFi Settings
 struct LoFiSettingsView: View {
     @Binding var isLoading: Bool
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 24) {
             VStack(alignment: .leading, spacing: 16) {
                 Text(LocalizationKeys.Settings.LoFiSection.title.localized)
                     .font(.title2)
                     .fontWeight(.semibold)
-                
+
                 Text(LocalizationKeys.Settings.LoFiSection.description.localized)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
-            
+
             SettingsCard {
                 LoFiControlsView(isLoading: $isLoading)
                     .disabled(isLoading)
             }
-            
+
             Spacer()
         }
-        
+
     }
 }
 
@@ -524,12 +519,12 @@ struct SupportSettingsView: View {
                 Text(LocalizationKeys.Settings.Support.title.localized)
                     .font(.title2)
                     .fontWeight(.semibold)
-                
+
                 Text(LocalizationKeys.Settings.Support.description.localized)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
-            
+
             SettingsCard {
                 VStack(alignment: .leading, spacing: 16) {
                     Text(LocalizationKeys.Settings.feedbackPlaceholder.localized)
@@ -577,7 +572,7 @@ struct SupportSettingsView: View {
             }
         }
     }
-    
+
     private func sendFeedback() {
         guard !feedbackMessage.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             errorMessage = LocalizationKeys.Settings.Feedback.validation.localized
@@ -608,15 +603,13 @@ struct SupportSettingsView: View {
         }
 
         let emailContent = feedbackMessage.trimmingCharacters(in: .whitespacesAndNewlines)
-        let appVersion =
-            Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
         let osVersion = ProcessInfo.processInfo.operatingSystemVersionString
 
         let emailBody = """
             <p><strong>Feedback do Granulay:</strong></p>
             <p>\(emailContent)</p>
             <hr>
-            <p><small>Versão do App: \(appVersion)<br>Sistema: macOS \(osVersion)</small></p>
+            <p><small>Versão do App: \(TrialConfig.appVersion)<br>Sistema: macOS \(osVersion)</small></p>
             """
 
         let emailData: [String: Any] = [
@@ -633,7 +626,8 @@ struct SupportSettingsView: View {
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 DispatchQueue.main.async {
                     if let error = error {
-                        self.errorMessage = "\(LocalizationKeys.Settings.feedbackError.localized): \(error.localizedDescription)"
+                        self.errorMessage =
+                            "\(LocalizationKeys.Settings.feedbackError.localized): \(error.localizedDescription)"
                         self.showError = true
                         self.isLoading = false
                         self.loadingMessage = LocalizationKeys.Loading.applyingChanges.localized
@@ -643,7 +637,8 @@ struct SupportSettingsView: View {
                     if let httpResponse = response as? HTTPURLResponse,
                         !(200...299).contains(httpResponse.statusCode)
                     {
-                        self.errorMessage = "\(LocalizationKeys.Settings.feedbackError.localized): \(httpResponse.statusCode)"
+                        self.errorMessage =
+                            "\(LocalizationKeys.Settings.feedbackError.localized): \(httpResponse.statusCode)"
                         self.showError = true
                         self.isLoading = false
                         self.loadingMessage = LocalizationKeys.Loading.applyingChanges.localized
@@ -667,7 +662,8 @@ struct SupportSettingsView: View {
         } catch {
             print("Erro ao enviar feedback: \(error.localizedDescription)")
 
-            self.errorMessage = "\(LocalizationKeys.Settings.feedbackError.localized): \(error.localizedDescription)"
+            self.errorMessage =
+                "\(LocalizationKeys.Settings.feedbackError.localized): \(error.localizedDescription)"
             self.showError = true
             self.isLoading = false
             self.loadingMessage = LocalizationKeys.Loading.applyingChanges.localized
@@ -678,11 +674,11 @@ struct SupportSettingsView: View {
 // MARK: - Reusable Components
 struct SettingsCard<Content: View>: View {
     let content: Content
-    
+
     init(@ViewBuilder content: () -> Content) {
         self.content = content()
     }
-    
+
     var body: some View {
         content
             .padding(20)
@@ -793,15 +789,9 @@ class KeychainManager {
     }
 }
 
-
-
 #Preview {
     SettingsView()
         .environmentObject(MenuBarManager())
-}
-
-private var appVersion: String {
-    Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
 }
 
 struct IntensityButtonStyle: ButtonStyle {

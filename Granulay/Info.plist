@@ -11,6 +11,8 @@
     </array>
     <key>CFBundleExecutable</key>
     <string>$(EXECUTABLE_NAME)</string>
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
     <key>CFBundleIdentifier</key>
     <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
     <key>CFBundleInfoDictionaryVersion</key>
@@ -20,23 +22,14 @@
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
-    <string>--trial-beta</string>
+    <string>1.0.0</string>
     <key>CFBundleVersion</key>
-    <string>-1002003</string>
+    <string>1</string>
     <key>LSApplicationCategoryType</key>
     <string>public.app-category.utilities</string>
-    <key>SUFeedURL</key>
-    <string>https://gpaiva00.github.io/granulay-releases/appcast.xml</string>
-    <key>SUPublicEDKey</key>
-    <string>1/R/YjltBNH2neoLmTLbIkPbbph9qdFcKJO3hAcsRDE=</string>
-    <key>SUAutomaticallyUpdate</key>
-    <false/>
-    <key>SUCheckAtStartup</key>
-    <true/>
-    <key>SUEnableInstallerLauncherService</key>
-    <true/>
-    <key>ResendApiKey</key>
-    <string>re_a4iN2Cvt_CSnKrDJo5i8r2pkmQwLvVjK9</string>
+    <!-- ResendApiKey removido para versão App Store -->
+    <!-- <key>ResendApiKey</key>
+    <string>re_a4iN2Cvt_CSnKrDJo5i8r2pkmQwLvVjK9</string> -->
     <key>NSHumanReadableCopyright</key>
     <string></string>
     <key>NSAppTransportSecurity</key>

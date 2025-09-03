@@ -7,7 +7,6 @@
 
 // App Info
 "app.name" = "Granulay";
-"app.tagline" = "Vintage grain effect for your screen";
 "app.beta" = "BETA";
 
 // Menu Bar
@@ -15,7 +14,7 @@
 "menu.disable_effect" = "Disable Effect";
 "menu.lofi_station" = "Lo-Fi Station";
 "menu.settings" = "Settings...";
-"menu.check_updates" = "Check for Updates...";
+
 "menu.quit" = "Quit";
 
 // Settings - General
@@ -41,25 +40,16 @@
 "settings.show_in_dock" = "Show in Dock";
 "settings.show_in_dock.description" = "Displays the app icon in the Dock";
 
-// Settings - Updates
-"settings.updates" = "Updates";
-"settings.check_updates" = "Check for Updates";
-"settings.auto_updates" = "Automatic Updates";
-"settings.auto_updates.description" = "Downloads and installs updates automatically";
-"settings.current_version" = "Current Version";
-"settings.latest_version" = "Latest Version";
-"settings.up_to_date" = "Up to Date";
-"settings.update_available" = "Update Available";
-"settings.checking_updates" = "Checking for updates...";
-"settings.download_update" = "Download Update";
-"settings.install_update" = "Install Update";
+
 
 // Settings - Categories
 "settings.category.appearance" = "Appearance";
 "settings.category.behavior" = "Behavior";
 "settings.category.lofi" = "Lo-Fi Station";
-"settings.category.updates" = "Updates";
+
 "settings.category.support" = "Support";
+"settings.category.purchase" = "Upgrade";
+
 
 // Settings - Section Titles and Descriptions
 "settings.appearance.title" = "Grain Effect";
@@ -68,8 +58,7 @@
 "settings.behavior.description" = "Configure how the app behaves in the system.";
 "settings.behavior.reset_title" = "Reset Settings";
 "settings.behavior.reset_description" = "Restores all settings to default values.";
-"settings.updates.title" = "Updates";
-"settings.updates.description" = "Keep Granulay always up to date.";
+
 "settings.lofi.title" = "Lo-Fi Station";
 "settings.lofi.description" = "Control your ambient lo-fi music for better concentration.";
 "settings.support.title" = "Support";
@@ -93,7 +82,7 @@
 
 // Loading and Status
 "loading.applying_changes" = "Applying changes...";
-"loading.checking_updates" = "Checking for updates...";
+
 "loading.sending_feedback" = "Sending feedback...";
 "loading.resetting" = "Resetting settings...";
 "loading.exporting" = "Exporting settings...";
@@ -124,3 +113,22 @@
 "file.export.title" = "Export Settings";
 "file.import.title" = "Import Settings";
 "file.settings.extension" = "granulay";
+
+// Trial Version
+"trial.title" = "Granulay Trial";
+"trial.subtitle" = "Experience the vintage grain effect";
+"trial.limitations.title" = "Trial Limitations";
+"trial.limitations.grain_style" = "• Grain style limited to Fine only";
+"trial.limitations.intensity" = "• Grain intensity limited to Weak only";
+"trial.limitations.brightness" = "• Preserve brightness disabled";
+"trial.limitations.lofi" = "• Lo-Fi Station not available";
+"trial.limitations.behavior" = "• Behavior settings not available";
+"trial.full_version.title" = "Full Version Features";
+"trial.full_version.all_styles" = "• All grain styles (Fine, Medium, Coarse, Vintage)";
+"trial.full_version.all_intensities" = "• All intensity levels (Weak, Medium, Strong)";
+"trial.full_version.brightness" = "• Preserve brightness option";
+"trial.full_version.lofi" = "• Complete Lo-Fi Station with multiple stations";
+"trial.full_version.behavior" = "• Full behavior customization";
+"trial.full_version.updates" = "• Automatic updates";
+"trial.purchase.button" = "Get Full Version";
+"trial.purchase.description" = "Unlock all features and support development";

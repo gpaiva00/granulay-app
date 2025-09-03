@@ -15,13 +15,15 @@
 		B1000011000000000000001 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000012000000000000001 /* SettingsView.swift */; };
 		B1000013000000000000001 /* GrainEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000014000000000000001 /* GrainEffect.swift */; };
 		B1000015000000000000001 /* MenuBarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000016000000000000001 /* MenuBarManager.swift */; };
-		B1000034000000000000001 /* UpdateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000035000000000000001 /* UpdateManager.swift */; };
+
 		B1000036000000000000001 /* PerformanceOptimizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000037000000000000001 /* PerformanceOptimizer.swift */; };
 		B1000038000000000000001 /* LocalizationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000039000000000000001 /* LocalizationHelper.swift */; };
 		B1000043000000000000001 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B1000040000000000000001 /* Localizable.strings */; };
 		B1000044000000000000001 /* LoFiMusicManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000045000000000000001 /* LoFiMusicManager.swift */; };
 		B1000046000000000000001 /* LoFiControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000047000000000000001 /* LoFiControlsView.swift */; };
-		C0D1BFC72DE7DE09009D1D15 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = C0D1BFC62DE7DE09009D1D15 /* Sparkle */; };
+		B1000048000000000000001 /* TrialConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000049000000000000001 /* TrialConfig.swift */; };
+		B1000050000000000000001 /* PurchaseSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000051000000000000001 /* PurchaseSettingsView.swift */; };
+
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,13 +37,15 @@
 		B1000016000000000000001 /* MenuBarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarManager.swift; sourceTree = "<group>"; };
 		B1000017000000000000001 /* Granulay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Granulay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1000018000000000000001 /* Granulay.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Granulay.entitlements; sourceTree = "<group>"; };
-		B1000035000000000000001 /* UpdateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateManager.swift; sourceTree = "<group>"; };
+
 		B1000037000000000000001 /* PerformanceOptimizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceOptimizer.swift; sourceTree = "<group>"; };
 		B1000039000000000000001 /* LocalizationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationHelper.swift; sourceTree = "<group>"; };
 		B1000041000000000000001 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B1000042000000000000001 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		B1000045000000000000001 /* LoFiMusicManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoFiMusicManager.swift; sourceTree = "<group>"; };
 		B1000047000000000000001 /* LoFiControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoFiControlsView.swift; sourceTree = "<group>"; };
+		B1000049000000000000001 /* TrialConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrialConfig.swift; sourceTree = "<group>"; };
+		B1000051000000000000001 /* PurchaseSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseSettingsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -49,7 +53,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C0D1BFC72DE7DE09009D1D15 /* Sparkle in Frameworks */,
+
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -74,11 +78,13 @@
 				B1000012000000000000001 /* SettingsView.swift */,
 				B1000014000000000000001 /* GrainEffect.swift */,
 				B1000016000000000000001 /* MenuBarManager.swift */,
-				B1000035000000000000001 /* UpdateManager.swift */,
+	
 				B1000037000000000000001 /* PerformanceOptimizer.swift */,
 				B1000039000000000000001 /* LocalizationHelper.swift */,
 				B1000045000000000000001 /* LoFiMusicManager.swift */,
 				B1000047000000000000001 /* LoFiControlsView.swift */,
+				B1000049000000000000001 /* TrialConfig.swift */,
+				B1000051000000000000001 /* PurchaseSettingsView.swift */,
 				B1000040000000000000001 /* Localizable.strings */,
 				B1000006000000000000001 /* Assets.xcassets */,
 				B1000023000000000000001 /* Preview Content */,
@@ -102,7 +108,6 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -131,7 +136,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1630;
+				LastUpgradeCheck = 1640;
 				TargetAttributes = {
 					B1000024000000000000001 = {
 						CreatedOnToolsVersion = 15.0;
@@ -149,7 +154,7 @@
 			);
 			mainGroup = B1000020000000000000001;
 			packageReferences = (
-				C0D1BFC52DE7DE09009D1D15 /* XCRemoteSwiftPackageReference "Sparkle" */,
+
 			);
 			productRefGroup = B1000022000000000000001 /* Products */;
 			projectDirPath = "";
@@ -183,11 +188,13 @@
 				B1000011000000000000001 /* SettingsView.swift in Sources */,
 				B1000013000000000000001 /* GrainEffect.swift in Sources */,
 				B1000015000000000000001 /* MenuBarManager.swift in Sources */,
-				B1000034000000000000001 /* UpdateManager.swift in Sources */,
+	
 				B1000036000000000000001 /* PerformanceOptimizer.swift in Sources */,
 				B1000038000000000000001 /* LocalizationHelper.swift in Sources */,
 				B1000044000000000000001 /* LoFiMusicManager.swift in Sources */,
 				B1000046000000000000001 /* LoFiControlsView.swift in Sources */,
+				B1000048000000000000001 /* TrialConfig.swift in Sources */,
+				B1000050000000000000001 /* PurchaseSettingsView.swift in Sources */,
 				B1000001000000000000001 /* GranulayApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -212,6 +219,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -276,6 +284,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -335,12 +344,48 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = Granulay/Granulay.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Distribution";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_ASSET_PATHS = Granulay/Assets.xcassets;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = TB76NB7VWG;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Granulay/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Granulay;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.granulay.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		B1000033000000000000001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CODE_SIGN_ENTITLEMENTS = Granulay/Granulay.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = Granulay/Assets.xcassets;
+				DEVELOPMENT_TEAM = TB76NB7VWG;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -357,9 +402,74 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
-			name = Debug;
+			name = Release;
 		};
-		B1000033000000000000001 /* Release */ = {
+		B1000052000000000000001 /* Trial Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = TB76NB7VWG;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG TRIAL_VERSION";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = "Trial Debug";
+		};
+		B1000053000000000000001 /* Trial Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -383,12 +493,12 @@
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.granulay.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.granulay.trial;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
-			name = Release;
+			name = "Trial Debug";
 		};
 /* End XCBuildConfiguration section */
 
@@ -398,6 +508,7 @@
 			buildConfigurations = (
 				B1000032000000000000001 /* Debug */,
 				B1000033000000000000001 /* Release */,
+				B1000053000000000000001 /* Trial Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -407,6 +518,7 @@
 			buildConfigurations = (
 				B1000030000000000000001 /* Debug */,
 				B1000031000000000000001 /* Release */,
+				B1000052000000000000001 /* Trial Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -414,22 +526,11 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		C0D1BFC52DE7DE09009D1D15 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/sparkle-project/Sparkle";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.7.0;
-			};
-		};
+
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		C0D1BFC62DE7DE09009D1D15 /* Sparkle */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C0D1BFC52DE7DE09009D1D15 /* XCRemoteSwiftPackageReference "Sparkle" */;
-			productName = Sparkle;
-		};
+
 /* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B1000028000000000000001 /* Project object */;

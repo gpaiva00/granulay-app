@@ -13,7 +13,7 @@ extension String {
     var localized: String {
         return NSLocalizedString(self, comment: "")
     }
-    
+
     /// Returns the localized string with arguments
     func localized(with arguments: CVarArg...) -> String {
         return String(format: NSLocalizedString(self, comment: ""), arguments: arguments)
@@ -22,24 +22,24 @@ extension String {
 
 // MARK: - Localization Keys
 struct LocalizationKeys {
-    
+
     // MARK: - App Info
     struct App {
         static let name = "app.name"
         static let tagline = "app.tagline"
         static let beta = "app.beta"
     }
-    
+
     // MARK: - Menu Bar
     struct Menu {
         static let enableEffect = "menu.enable_effect"
         static let disableEffect = "menu.disable_effect"
         static let lofiStation = "menu.lofi_station"
         static let settings = "menu.settings"
-        static let checkUpdates = "menu.check_updates"
+
         static let quit = "menu.quit"
     }
-    
+
     // MARK: - Settings
     struct Settings {
         static let windowTitle = "settings.window_title"
@@ -54,17 +54,7 @@ struct LocalizationKeys {
         static let saveAutomaticallyDescription = "settings.save_automatically.description"
         static let showInDock = "settings.show_in_dock"
         static let showInDockDescription = "settings.show_in_dock.description"
-        static let updates = "settings.updates"
-        static let checkUpdates = "settings.check_updates"
-        static let autoUpdates = "settings.auto_updates"
-        static let autoUpdatesDescription = "settings.auto_updates.description"
-        static let currentVersion = "settings.current_version"
-        static let latestVersion = "settings.latest_version"
-        static let upToDate = "settings.up_to_date"
-        static let updateAvailable = "settings.update_available"
-        static let checkingUpdates = "settings.checking_updates"
-        static let downloadUpdate = "settings.download_update"
-        static let installUpdate = "settings.install_update"
+
         static let feedback = "settings.feedback"
         static let feedbackPlaceholder = "settings.feedback.placeholder"
         static let feedbackSend = "settings.feedback.send"
@@ -77,56 +67,54 @@ struct LocalizationKeys {
         static let exportDescription = "settings.export.description"
         static let importSettings = "settings.import"
         static let importDescription = "settings.import.description"
-        
+
         // MARK: - Feedback
         struct Feedback {
             static let validation = "settings.feedback.validation"
         }
-        
+
         // MARK: - Categories
         struct Category {
             static let appearance = "settings.category.appearance"
             static let behavior = "settings.category.behavior"
             static let lofi = "settings.category.lofi"
-            static let updates = "settings.category.updates"
+
             static let support = "settings.category.support"
+            static let purchase = "settings.category.purchase"
         }
-        
+
         // MARK: - Section Titles and Descriptions
         struct Appearance {
             static let title = "settings.appearance.title"
             static let description = "settings.appearance.description"
         }
-        
+
         struct Behavior {
             static let title = "settings.behavior.title"
             static let description = "settings.behavior.description"
             static let resetTitle = "settings.behavior.reset_title"
             static let resetDescription = "settings.behavior.reset_description"
         }
-        
-        struct UpdatesSection {
-            static let title = "settings.updates.title"
-            static let description = "settings.updates.description"
-        }
-        
+
+
+
         struct LoFiSection {
             static let title = "settings.lofi.title"
             static let description = "settings.lofi.description"
         }
-        
+
         struct Support {
             static let title = "settings.support.title"
             static let description = "settings.support.description"
         }
-        
+
         // MARK: - Intensity
         struct Intensity {
             static let weak = "settings.intensity.weak"
             static let medium = "settings.intensity.medium"
             static let strong = "settings.intensity.strong"
         }
-        
+
         // MARK: - Grain Style
         struct GrainStyle {
             static let fine = "settings.grain_style.fine"
@@ -135,17 +123,17 @@ struct LocalizationKeys {
             static let vintage = "settings.grain_style.vintage"
         }
     }
-    
+
     // MARK: - Loading
     struct Loading {
         static let applyingChanges = "loading.applying_changes"
-        static let checkingUpdates = "loading.checking_updates"
+
         static let sendingFeedback = "loading.sending_feedback"
         static let resetting = "loading.resetting"
         static let exporting = "loading.exporting"
         static let importing = "loading.importing"
     }
-    
+
     // MARK: - Alerts
     struct Alert {
         struct Reset {
@@ -154,17 +142,17 @@ struct LocalizationKeys {
             static let confirm = "alert.reset.confirm"
             static let cancel = "alert.reset.cancel"
         }
-        
+
         struct Export {
             static let success = "alert.export.success"
         }
-        
+
         struct Import {
             static let success = "alert.import.success"
             static let error = "alert.import.error"
         }
     }
-    
+
     // MARK: - Lo-Fi Music
     struct LoFi {
         static let title = "lofi.title"
@@ -178,17 +166,17 @@ struct LocalizationKeys {
         static let previousStation = "lofi.previous_station"
         static let nextStation = "lofi.next_station"
     }
-    
+
     // MARK: - File Operations
     struct File {
         struct Export {
             static let title = "file.export.title"
         }
-        
+
         struct Import {
             static let title = "file.import.title"
         }
-        
+
         struct Settings {
             static let fileExtension = "file.settings.extension"
         }

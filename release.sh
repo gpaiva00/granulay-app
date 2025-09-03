@@ -42,18 +42,21 @@ error() {
 
 # Verificar argumentos
 if [ $# -eq 0 ]; then
-    error "Uso: $0 <versao> [--production|--channel beta]
+    error "Uso: $0 <versao> [--production|--channel beta|--trial]
     
 Exemplos:
   ./release.sh 1.0.1               # Release beta (padrão)
   ./release.sh 1.0.1 --channel beta   # Release beta (explícito)
-  ./release.sh 1.0.1 --production     # Release de produção"
+  ./release.sh 1.0.1 --production     # Release de produção
+  ./release.sh 1.0.1 --trial          # Release trial (automático)"
 fi
 
 VERSION="$1"
 IS_PRODUCTION="false"
+IS_TRIAL="false"
 CHANNEL="beta"
 VERSION_STRING="$VERSION-beta"
+BUILD_CONFIGURATION="Release"
 
 # Processar segundo argumento se fornecido
 if [ $# -gt 1 ]; then
@@ -61,15 +64,22 @@ if [ $# -gt 1 ]; then
         IS_PRODUCTION="true"
         CHANNEL="stable"
         VERSION_STRING="$VERSION"
+        BUILD_CONFIGURATION="Release"
+    elif [ "${2:-}" = "--trial" ]; then
+        IS_TRIAL="true"
+        CHANNEL="trial"
+        VERSION_STRING="$VERSION-trial"
+        BUILD_CONFIGURATION="Trial Release"
     elif [ "${2:-}" = "--channel" ] && [ "${3:-}" = "beta" ]; then
         # Explicitamente definindo como beta (já é o padrão, mas deixamos claro)
         IS_PRODUCTION="false"
         CHANNEL="beta"
         VERSION_STRING="$VERSION-beta"
+        BUILD_CONFIGURATION="Release"
     elif [ "${2:-}" = "--channel" ]; then
-        error "Canal inválido. Use: --channel beta ou --production"
+        error "Canal inválido. Use: --channel beta, --production ou --trial"
     else
-        error "Parâmetro inválido: ${2:-}. Use --production ou --channel beta"
+        error "Parâmetro inválido: ${2:-}. Use --production, --channel beta ou --trial"
     fi
 fi
 
@@ -77,8 +87,8 @@ echo "
 🚀 =====================================
    GRANULAY RELEASE AUTOMÁTICO v$VERSION
    Canal: $CHANNEL
-=====================================
-"
+   Configuração: $BUILD_CONFIGURATION
+====================================="
 
 # STEP 1: Verificações iniciais
 log "📋 Verificando pré-requisitos..."
@@ -141,14 +151,18 @@ mkdir -p build dist
 
 xcodebuild -project Granulay.xcodeproj \
            -scheme Granulay \
-           -configuration Release \
+           -configuration "$BUILD_CONFIGURATION" \
            -derivedDataPath build/DerivedData \
            -destination "platform=macOS" \
            -allowProvisioningUpdates \
            build
 
-# Copiar app para dist
-cp -R build/DerivedData/Build/Products/Release/Granulay.app dist/
+# Copiar app para dist (ajustar caminho baseado na configuração)
+if [ "$IS_TRIAL" = "true" ]; then
+    cp -R "build/DerivedData/Build/Products/Trial Release/Granulay.app" dist/
+else
+    cp -R build/DerivedData/Build/Products/Release/Granulay.app dist/
+fi
 success "Build completo"
 
 # # STEP 4: Criar ZIP
@@ -208,6 +222,9 @@ fi
 if [ "$IS_PRODUCTION" = "true" ]; then
     PRERELEASE_FLAG=""
     RELEASE_TITLE="Granulay $VERSION_STRING"
+elif [ "$IS_TRIAL" = "true" ]; then
+    PRERELEASE_FLAG="--prerelease"
+    RELEASE_TITLE="Granulay $VERSION_STRING Trial"
 else
     PRERELEASE_FLAG="--prerelease"
     RELEASE_TITLE="Granulay $VERSION_STRING Beta"
@@ -241,6 +258,10 @@ if [ "$IS_PRODUCTION" = "true" ]; then
     CHANNEL_PARAM=""
     DOWNLOAD_URL_PREFIX="https://github.com/$REPO_OWNER/$APP_REPO/releases/download/v$VERSION_STRING/"
     log "Gerando appcast para canal padrão (produção)"
+elif [ "$IS_TRIAL" = "true" ]; then
+    CHANNEL_PARAM="--channel trial"
+    DOWNLOAD_URL_PREFIX="https://github.com/$REPO_OWNER/$APP_REPO/releases/download/v$VERSION_STRING/"
+    log "Gerando appcast para canal trial"
 else
     CHANNEL_PARAM="--channel beta"
     DOWNLOAD_URL_PREFIX="https://github.com/$REPO_OWNER/$APP_REPO/releases/download/v$VERSION_STRING/"

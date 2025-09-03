@@ -8,7 +8,6 @@ class MenuBarManager: ObservableObject {
     private var settingsWindow: NSWindow?
     private var cancellables = Set<AnyCancellable>()
     private var intensityDebouncer = Timer()
-    private let updateManager = UpdateManager.shared
     private let musicManager = LoFiMusicManager.shared
 
     @Published var isGrainEnabled = false {
@@ -20,12 +19,25 @@ class MenuBarManager: ObservableObject {
 
     @Published var grainIntensity: Double = GrainStyle.fine.recommendedIntensity {
         didSet {
+            // Aplicar limitações da versão trial
+            if TrialConfig.isTrialVersion {
+                let clampedValue = min(max(grainIntensity, TrialConfig.allowedIntensityRange.lowerBound), TrialConfig.allowedIntensityRange.upperBound)
+                if grainIntensity != clampedValue {
+                    grainIntensity = clampedValue
+                    return
+                }
+            }
             debouncedIntensityUpdate()
         }
     }
 
     @Published var grainStyle: GrainStyle = .fine {
         didSet {
+            // Aplicar limitações da versão trial
+            if TrialConfig.isTrialVersion && !TrialConfig.allowedGrainStyles.contains(grainStyle) {
+                grainStyle = .fine // Forçar estilo "fine" na versão trial
+                return
+            }
             overlayWindow?.updateGrainStyle(grainStyle)
             saveSettings()
         }
@@ -33,6 +45,11 @@ class MenuBarManager: ObservableObject {
 
     @Published var preserveBrightness = true {
         didSet {
+            // Aplicar limitações da versão trial
+            if TrialConfig.isTrialVersion && preserveBrightness {
+                preserveBrightness = false // Forçar desativação na versão trial
+                return
+            }
             overlayWindow?.updatePreserveBrightness(preserveBrightness)
             saveSettings()
         }
@@ -49,8 +66,18 @@ class MenuBarManager: ObservableObject {
 
     init() {
         loadSettings()
+        applyTrialLimitations()
         setupMenuBar()
         setupOverlayWindow()
+    }
+    
+    private func applyTrialLimitations() {
+        if TrialConfig.isTrialVersion {
+            // Forçar configurações da versão trial
+            grainStyle = .fine
+            grainIntensity = min(max(grainIntensity, TrialConfig.allowedIntensityRange.lowerBound), TrialConfig.allowedIntensityRange.upperBound)
+            preserveBrightness = false
+        }
     }
 
     private func debouncedIntensityUpdate() {
@@ -90,17 +117,19 @@ class MenuBarManager: ObservableObject {
 
         menu.addItem(NSMenuItem.separator())
 
-        // Lo-Fi Station submenu
-        let lofiItem = NSMenuItem(
-            title: LocalizationKeys.Menu.lofiStation.localized,
-            action: nil,
-            keyEquivalent: ""
-        )
-        let lofiSubmenu = createLoFiSubmenu()
-        lofiItem.submenu = lofiSubmenu
-        menu.addItem(lofiItem)
-
-        menu.addItem(NSMenuItem.separator())
+        // Lo-Fi Station submenu (apenas na versão completa)
+        if !TrialConfig.isTrialVersion {
+            let lofiItem = NSMenuItem(
+                title: LocalizationKeys.Menu.lofiStation.localized,
+                action: nil,
+                keyEquivalent: ""
+            )
+            let lofiSubmenu = createLoFiSubmenu()
+            lofiItem.submenu = lofiSubmenu
+            menu.addItem(lofiItem)
+            
+            menu.addItem(NSMenuItem.separator())
+        }
 
         let settingsItem = NSMenuItem(
             title: LocalizationKeys.Menu.settings.localized,
@@ -112,15 +141,7 @@ class MenuBarManager: ObservableObject {
 
         menu.addItem(NSMenuItem.separator())
 
-        let checkUpdatesItem = NSMenuItem(
-            title: LocalizationKeys.Menu.checkUpdates.localized,
-            action: #selector(checkForUpdates),
-            keyEquivalent: ""
-        )
-        checkUpdatesItem.target = self
-        menu.addItem(checkUpdatesItem)
 
-        menu.addItem(NSMenuItem.separator())
 
         let quitItem = NSMenuItem(
             title: LocalizationKeys.Menu.quit.localized,
@@ -209,9 +230,7 @@ class MenuBarManager: ObservableObject {
         NSApp.terminate(nil)
     }
 
-    @objc private func checkForUpdates() {
-        updateManager.checkForUpdates()
-    }
+
     
     private func createLoFiSubmenu() -> NSMenu {
         let submenu = NSMenu()
