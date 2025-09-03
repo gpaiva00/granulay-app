@@ -53,7 +53,11 @@ struct TrialConfig {
     
     // MARK: - Purchase Information
     
-    static let purchaseURL = "https://gabrielpaiva5.gumroad.com/l/granulay"
+    static let appStoreURL = "https://apps.apple.com/app/granulay/id123456789" // URL temporária - será atualizada quando publicado
+    
+    static var purchaseURL: String {
+        return appStoreURL // Prioriza App Store
+    }
     
     static var appDisplayName: String {
         if isTrialVersion {
@@ -64,10 +68,6 @@ struct TrialConfig {
     }
     
     static var appVersion: String {
-        if isTrialVersion {
-            return "1.0.0-trial"
-        } else {
-            return Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
-        }
+        return Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
     }
 }

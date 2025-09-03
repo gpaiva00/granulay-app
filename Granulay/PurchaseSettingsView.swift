@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct PurchaseSettingsView: View {
+    @State private var showingAlert = false
+    @State private var alertMessage = ""
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             Text("Versão Trial")
@@ -97,9 +100,7 @@ struct PurchaseSettingsView: View {
             VStack(spacing: 16) {
                 // Botão de compra com destaque especial
                 Button(action: {
-                    if let url = URL(string: TrialConfig.purchaseURL) {
-                        NSWorkspace.shared.open(url)
-                    }
+                    openPurchaseStore()
                 }) {
                     HStack(spacing: 8) {
                         Image(systemName: "cart.fill")
@@ -134,6 +135,21 @@ struct PurchaseSettingsView: View {
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+    }
+    
+    private func openPurchaseStore() {
+        // Tenta abrir a App Store primeiro
+        if let appStoreURL = URL(string: TrialConfig.purchaseURL) {
+            do {
+                _ = try NSWorkspace.shared.open(appStoreURL, options: [], configuration: [:])
+            } catch {
+                // Se falhar, mostra alerta informativo
+                DispatchQueue.main.async {
+                    alertMessage = "O Granulay ainda não está disponível na App Store."
+                    showingAlert = true
+                }
+            }
+        }
     }
 }
 

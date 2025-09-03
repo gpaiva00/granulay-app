@@ -1,6 +1,7 @@
 import Foundation
 import Security
 import SwiftUI
+import AVFoundation
 
 enum SettingsCategory: String, CaseIterable {
     case appearance = "appearance"
@@ -78,15 +79,17 @@ struct SettingsView: View {
 
                 Spacer()
 
-                // Versão no rodapé
-                HStack {
-                    Text("v\(TrialConfig.appVersion)")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    Spacer()
+                // Versão no rodapé (exibida apenas na versão completa)
+                if !TrialConfig.isTrialVersion {
+                    HStack {
+                        Text("v\(TrialConfig.appVersion)")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        Spacer()
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 16)
                 }
-                .padding(.horizontal, 16)
-                .padding(.bottom, 16)
             }
             .frame(width: 200)
             .background(Color(NSColor.controlBackgroundColor))
@@ -299,10 +302,6 @@ struct AppearanceSettingsView: View {
                                 IntensityButtonStyle(
                                     isSelected: menuBarManager.grainIntensity <= 0.15)
                             )
-                            .disabled(
-                                !menuBarManager.isGrainEnabled || isLoading
-                                    || (TrialConfig.isTrialVersion && menuBarManager.isGrainEnabled)
-                            )
 
                             Button(LocalizationKeys.Settings.Intensity.medium.localized) {
                                 withLoadingDelay {
@@ -313,10 +312,6 @@ struct AppearanceSettingsView: View {
                                 IntensityButtonStyle(
                                     isSelected: menuBarManager.grainIntensity > 0.15
                                         && menuBarManager.grainIntensity <= 0.25)
-                            )
-                            .disabled(
-                                !menuBarManager.isGrainEnabled || isLoading
-                                    || (TrialConfig.isTrialVersion && menuBarManager.isGrainEnabled)
                             )
 
                             Button(LocalizationKeys.Settings.Intensity.strong.localized) {
@@ -332,6 +327,7 @@ struct AppearanceSettingsView: View {
                                 !menuBarManager.isGrainEnabled || isLoading
                                     || (TrialConfig.isTrialVersion && menuBarManager.isGrainEnabled)
                             )
+                            .opacity(TrialConfig.isTrialVersion ? 0.5 : 1.0)
                         }
                         .frame(maxWidth: .infinity)
                     }
@@ -358,6 +354,7 @@ struct AppearanceSettingsView: View {
                                         || (TrialConfig.isTrialVersion
                                             && menuBarManager.isGrainEnabled)
                                 )
+                                .opacity(TrialConfig.isTrialVersion && (style == .medium || style == .coarse || style == .vintage) ? 0.5 : 1.0)
                             }
                         }
                         .frame(maxWidth: .infinity)

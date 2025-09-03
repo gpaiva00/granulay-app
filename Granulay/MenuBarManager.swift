@@ -57,7 +57,7 @@ class MenuBarManager: ObservableObject {
 
 
 
-    @Published var showInDock = false {
+    @Published var showInDock = true {
         didSet {
             updateDockVisibility()
             saveSettings()
@@ -314,7 +314,7 @@ class MenuBarManager: ObservableObject {
 
     private func loadSettings() {
         // Carrega todas as configurações salvas
-        showInDock = UserDefaults.standard.object(forKey: "showInDock") as? Bool ?? false
+        showInDock = UserDefaults.standard.object(forKey: "showInDock") as? Bool ?? true
         isGrainEnabled = UserDefaults.standard.bool(forKey: "isGrainEnabled")
 
         // Primeiro carregamos o estilo para poder usar a intensidade recomendada
