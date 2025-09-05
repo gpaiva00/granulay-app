@@ -233,7 +233,9 @@ func createGrainTexture(size: CGSize, style: GrainStyle) -> NSImage? {
         return nil
     }
 
-    return NSImage(cgImage: cgImage, size: size)
+    let nsImage = NSImage(cgImage: cgImage, size: size)
+
+    return nsImage
 }
 
 // MARK: - GrainStyle Extension for Hybrid Implementation

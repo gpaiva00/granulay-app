@@ -17,7 +17,7 @@ class MenuBarManager: ObservableObject {
         }
     }
 
-    @Published var grainIntensity: Double = GrainStyle.fine.recommendedIntensity {
+    @Published var grainIntensity: Double = GrainStyle.medium.recommendedIntensity {
         didSet {
             // Aplicar limitações da versão trial
             if TrialConfig.isTrialVersion {
@@ -31,7 +31,7 @@ class MenuBarManager: ObservableObject {
         }
     }
 
-    @Published var grainStyle: GrainStyle = .fine {
+    @Published var grainStyle: GrainStyle = .medium {
         didSet {
             // Aplicar limitações da versão trial
             if TrialConfig.isTrialVersion && !TrialConfig.allowedGrainStyles.contains(grainStyle) {
@@ -158,6 +158,7 @@ class MenuBarManager: ObservableObject {
         overlayWindow = GrainOverlayWindow()
         overlayWindow?.updateGrainIntensity(grainIntensity)
         overlayWindow?.updateGrainStyle(grainStyle)
+        overlayWindow?.updatePreserveBrightness(preserveBrightness)
     }
 
     private func updateOverlay() {
@@ -346,8 +347,8 @@ class MenuBarManager: ObservableObject {
     }
 
     func resetToDefaults() {
-        grainIntensity = GrainStyle.fine.recommendedIntensity
-        grainStyle = .fine
+        grainIntensity = GrainStyle.medium.recommendedIntensity
+        grainStyle = .medium
         isGrainEnabled = false
         preserveBrightness = true
         showInDock = false

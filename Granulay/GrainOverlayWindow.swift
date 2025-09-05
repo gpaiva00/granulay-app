@@ -6,7 +6,7 @@ class GrainOverlayWindow: NSObject, ObservableObject {
     private var overlayWindows: [NSWindow] = []
     private var hostingViews: [NSHostingView<GrainEffect>] = []
     private var currentIntensity: Double = 0.3
-    private var currentStyle: GrainStyle = .fine
+    private var currentStyle: GrainStyle = .medium
     private var currentPreserveBrightness: Bool = true
     private var updateTimer: Timer?
     private var pendingUpdate = false
@@ -112,13 +112,42 @@ class GrainOverlayWindow: NSObject, ObservableObject {
     }
     
     func showOverlay() {
-        for window in overlayWindows {
-            window.orderFrontRegardless()
-            // Força refresh da geometria da janela
+
+        // Garantir que as janelas estão configuradas
+        if overlayWindows.isEmpty {
+            setupOverlayWindows()
+        }
+        
+
+        
+        // Garantir configuração correta das janelas
+        for (_, window) in overlayWindows.enumerated() {
+
+            window.level = NSWindow.Level(rawValue: Int(CGWindowLevelForKey(.screenSaverWindow)) + 1)
+            window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .ignoresCycle]
+            window.isOpaque = false
+            window.hasShadow = false
+            window.ignoresMouseEvents = true
+            
+            // Garantir que a janela está configurada corretamente
             if let screen = window.screen {
                 window.setFrame(screen.frame, display: true, animate: false)
             }
+            
+            // Mostrar a janela
+
+            window.orderFrontRegardless()
+            window.display()
+            
+            // Forçar atualização visual
+            if let contentView = window.contentView {
+                contentView.needsDisplay = true
+            }
         }
+        
+        // Forçar uma atualização imediata
+
+        performUpdate()
     }
     
     func hideOverlay() {
@@ -169,6 +198,12 @@ class GrainOverlayWindow: NSObject, ObservableObject {
             
             // Atualiza a view existente ao invés de recriar
             hostingView.rootView = grainEffect
+            
+            // Forçar redesenho
+            hostingView.needsDisplay = true
+            if index < overlayWindows.count {
+                overlayWindows[index].display()
+            }
         }
         
         // Força refresh das janelas para garantir aplicação uniforme

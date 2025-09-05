@@ -657,7 +657,7 @@ struct SupportSettingsView: View {
 
             task.resume()
         } catch {
-            print("Erro ao enviar feedback: \(error.localizedDescription)")
+            
 
             self.errorMessage =
                 "\(LocalizationKeys.Settings.feedbackError.localized): \(error.localizedDescription)"
@@ -720,7 +720,7 @@ class KeychainManager {
         _ = deleteApiKey()
 
         guard let data = apiKey.data(using: .utf8) else {
-            print("Erro ao converter a chave da API para dados")
+
             return false
         }
 
@@ -738,7 +738,7 @@ class KeychainManager {
         if status == errSecSuccess {
             return true
         } else {
-            print("Erro ao salvar a chave da API no Keychain: \(status)")
+
             return false
         }
     }
@@ -761,7 +761,7 @@ class KeychainManager {
             return apiKey
         } else {
             if status != errSecItemNotFound {
-                print("Erro ao recuperar a chave da API do Keychain: \(status)")
+    
             }
             return nil
         }
@@ -780,7 +780,7 @@ class KeychainManager {
         if status == errSecSuccess || status == errSecItemNotFound {
             return true
         } else {
-            print("Erro ao excluir a chave da API do Keychain: \(status)")
+
             return false
         }
     }

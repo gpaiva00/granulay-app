@@ -140,13 +140,13 @@ struct PurchaseSettingsView: View {
     private func openPurchaseStore() {
         // Tenta abrir a App Store primeiro
         if let appStoreURL = URL(string: TrialConfig.purchaseURL) {
-            do {
-                _ = try NSWorkspace.shared.open(appStoreURL, options: [], configuration: [:])
-            } catch {
-                // Se falhar, mostra alerta informativo
-                DispatchQueue.main.async {
-                    alertMessage = "O Granulay ainda não está disponível na App Store."
-                    showingAlert = true
+            NSWorkspace.shared.open(appStoreURL, configuration: NSWorkspace.OpenConfiguration()) { (app, error) in
+                if let error = error {
+                    // Se falhar, mostra alerta informativo
+                    DispatchQueue.main.async {
+                        alertMessage = "O Granulay ainda não está disponível na App Store."
+                        showingAlert = true
+                    }
                 }
             }
         }

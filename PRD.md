@@ -1,10 +1,10 @@
 # PRD - Product Requirements Document
-# Granulay - Vintage Grain Effect for macOS
+# Granulay - Vintage Grain Effect
 
 ## 📋 Visão Geral do Produto
 
 ### Descrição
-Granulay é um aplicativo macOS que adiciona efeito de grão vintage em tempo real para toda a tela, proporcionando uma experiência visual nostálgica e cinematográfica. O aplicativo opera como uma sobreposição transparente que pode ser ativada/desativada facilmente através da barra de menu.
+Granulay é um aplicativo que adiciona efeito de grão vintage em tempo real para toda a tela, proporcionando uma experiência visual nostálgica e cinematográfica. O aplicativo opera como uma sobreposição transparente que pode ser ativada/desativada facilmente através da barra de menu.
 
 ### Proposta de Valor
 - **Experiência Visual Única**: Transforma qualquer tela em uma experiência cinematográfica vintage

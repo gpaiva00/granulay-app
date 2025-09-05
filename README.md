@@ -1,6 +1,6 @@
 # Granulay
 
-**Vintage grain effect for macOS** - Um aplicativo que adiciona efeito de grão vintage em tempo real para toda a tela, proporcionando uma experiência visual nostálgica e cinematográfica.
+**Vintage grain effect** - Um aplicativo que adiciona efeito de grão vintage em tempo real para toda a tela, proporcionando uma experiência visual nostálgica e cinematográfica.
 
 ## 🎯 Proposta de Valor
 

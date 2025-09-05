@@ -28,7 +28,7 @@ class LoFiMusicManager: ObservableObject {
     func play() {
         guard let urlString = stations[currentStation],
               let url = URL(string: urlString) else { 
-            print("URL inválida para a estação: \(currentStation)")
+
             return 
         }
         
