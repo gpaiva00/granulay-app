@@ -183,21 +183,6 @@ struct CategoryRow: View {
                             category.isDisabledInTrial
                                 ? .secondary.opacity(0.5) : (isSelected ? .primary : .secondary))
 
-                    if category == .lofi {
-                        Text(LocalizationKeys.App.beta.localized)
-                            .font(.caption2)
-                            .fontWeight(.semibold)
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(
-                                RoundedRectangle(cornerRadius: 4)
-                                    .fill(
-                                        category.isDisabledInTrial
-                                            ? Color.orange.opacity(0.5) : Color.orange)
-                            )
-                    }
-
                     if category.isDisabledInTrial {
                         Image(systemName: "lock.fill")
                             .font(.caption2)
