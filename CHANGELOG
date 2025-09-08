@@ -32,7 +32,7 @@
 * Prevent app modification warnings from external updaters (like sparkli-cli) by improving installation (#2516) (Zorg)
 * Update Korean localization (#2504) (CheolHyun Mun)
 * Use $PROJECT_DIR instead of $SRCROOT (#2489) (Zorg)
-* Set Package.swift minimum deployment to macOS 10.13 (#2481) (Eitot)
+* Set Package.swift minimum deployment to Sistema 10.13 (#2481) (Eitot)
 * Fix false positive analyzer warning about resumableUpdate type (#2454) (Zorg)
 
 # 2.5.2
@@ -52,12 +52,12 @@
 
 * Add ability to adapt release notes based on the currently installed version (#2373) (Nathan Manceaux-Panot)
 * Allow developers to use custom URL schemes in the release notes view (#2393) (Zorg)
-* Adopt cooperative app activation APIs in macOS 14 Sonoma (#2409) (Zorg)
+* Adopt cooperative app activation APIs in Sistema 14 Sonoma (#2409) (Zorg)
 * Improve permission prompt layout (#2420) (Zorg)
 * Remove hyphenation in "You're up to date" message (#2425) (Zorg, Dom Neill)
 * Pre-warm installs before relaunch and resolve sporadic failures in CI (#2421) (Zorg)
 * Fix make release not building distribution successfully (#2430) (Zorg)
-* Fix Updater app not starting when running Sparkle as root (e.g. from CLI with sudo or a daemon) on macOS 14 Sonoma (#2432) (Zorg)
+* Fix Updater app not starting when running Sparkle as root (e.g. from CLI with sudo or a daemon) on Sistema 14 Sonoma (#2432) (Zorg)
 * Fix KVO usage for updaterController.updater.* (#2404) (Zorg)
 * Replace CFUUID* with NSUUID (#2395) (Eitot)
 * Report an error when detecting duplicate updates in generate_appcast (#2407) (Zorg)
@@ -91,7 +91,7 @@
 * Deprecate `-[SPUUpdater setFeedURL:]` API and add `-[SPUUpdater clearFeedURLFromUserDefaults]` for migrating away from `-[SPUUpdater setFeedURL:]` (#2295)
 * Trigger a new update check in `-[SPUUpdater resetUpdateCycle]` if the updater's feed or allowed channels have changed (#2324) (Zorg)
 * Exit with an error if generate_appcast cannot sign an update that must be signed (#2322) (Zorg)
-* Remove a redundant Apple code signing check when verifying new updates (#2341) (Zorg)
+* Remove a redundant code signing check when verifying new updates (#2341) (Zorg)
 * Turn off auto-linking for XPC targets to alleviate circular dependency issues (#2332) (Daniel Jalkut)
 
 # 2.3.2
@@ -109,7 +109,7 @@
 
 # 2.3.0
 
-* Bump minimum deployment target to macOS 10.13 (#2196) (Zorg)
+* Bump minimum deployment target to Sistema 10.13 (#2196) (Zorg)
 * Remove and preserve necessary updates in generate_appcast (#2218) (Zorg)
 * Move old update files no longer needed to old_updates/ in archive directory in generate_appcast (#2228) (Zorg)
 * Expose maximum-versions option (per branch) in generate_appcast to preserve in the feed (#2259) (Zorg)
@@ -134,7 +134,7 @@
 
 This release improves generate_appcast by automatically removing updates that are no longer needed in the generated appcast, and moving old update files to old_updates/ in the archives directory. New delta update attributes are also added to let Sparkle know when to skip downloading delta updates if the application has been stripped.
 
-macOS 10.13 or later is now required (due to Xcode 14 dropping support for deploying to older OS versions).
+Sistema 10.13 or later is now required (due to Xcode 14 dropping support for deploying to older OS versions).
 
 If you're not generating appcasts automatically, remember to add `<sparkle:minimumSystemVersion>10.13</sparkle:minimumSystemVersion>` element to `<item>`s in your appcast.
 
@@ -161,7 +161,7 @@ If you're not generating appcasts automatically, remember to add `<sparkle:minim
   * Allow status window to be minimizable for regular app installs (Zorg) (#2100)
   * Center status window and inherit key focus from the previously shown update alert window (Zorg)
   * Activate app when checking for updates if the app is not currently active (e.g, from a menu bar extra menu item) (Zorg)
-  * Fix issue where bringing status window to front made other active windows exit in macOS Ventura's Stage Manager (#2153) (Zorg)
+  * Fix issue where bringing status window to front made other active windows exit in Sistema Ventura's Stage Manager (#2153) (Zorg)
   * Fix showing update in focus not bringing the "checking for updates" window in focus (Zorg) (#2150)
 * Rename XPC Service filenames for Sandboxing to show more friendly human-readable name in authorization dialog (Zorg) (#2096)
 * Add support for running the framework and sparkle-cli as root (Zorg) (#2119)
@@ -211,7 +211,7 @@ The `-s` flag for passing a raw private EdDSA key to sign_update and generate_ap
 * Use strcoll_l() for locale-independent comparisons for delta updates (Dan Rigdon-Bel) (#2087)
 * Fix version compare not treating '2.1.0' and '2.1' as being equal (Zorg) (#2065)
 * Add verify and account options for signing updates (Zorg) (#2074)
-* Add delta patch and Apple code signing verification in generate_appcast (Zorg) (#2076, #2077)
+* Add delta patch and code signing verification in generate_appcast (Zorg) (#2076, #2077)
 * Use more modern NSSecureCoding APIs when available (Zorg) (#2058)
 * Use more modern FileManager APIs for copying files (Zorg) (#2059)
 * Fix make release failing when customizing XPC_SERVICE_BUNDLE_ID_PREFIX (Zorg) (#2060)
@@ -260,7 +260,7 @@ This update introduces a new major format for [delta updates](https://sparkle-pr
 * System profiler privacy and transparency (#1690) (Martin Pilkington)
 * Support getting app icon from asset catalog (#1694) (Charles Srstka)
 * Don't bring up authorization just because group ID doesn't match (#1830) (Zorg)
-* Raise minimum system version to macOS 10.11 (Zorg)
+* Raise minimum system version to Sistema 10.11 (Zorg)
 * Special thanks to developers using early builds of this release in production and contributors for keeping this running (Kornel, Jonas Zaugg, Gwynne Raskind, Jordan Rose, Tony Arnold, Bryan Jones, Christian Tietze, Jakob Egger, and many more)
 
 Please visit [Sparkle's website](http://sparkle-project.org) for more information on documentation and migration.
@@ -279,7 +279,7 @@ If you are migrating from earlier beta versions of Sparkle 2 and use sandboxing,
 # 1.27.1
 
  * Use px instead of pt when specifying font size to fix default font size in WebView from #1962 (regressed in 1.25.0 with WKWebView adoption) (Daniel Jalkut)
- * Fix to prevent Sparkle manipulating the host app's high level WebView defaults from #1961 (affecting only macOS versions before 10.11 in 1.x branch) (Daniel Jalkut)
+ * Fix to prevent Sparkle manipulating the host app's high level WebView defaults from #1961 (affecting only Sistema versions before 10.11 in 1.x branch) (Daniel Jalkut)
  * Add safer handling of applying binary delta files from #1990 (Zorg)
  * Don't use current date unless necessary when scheduling next update from #1991 (Zorg)
  * Whitelist about:srcdoc as a safe web URL from #1938, #2007 (Louis Pontoise, Zorg)
@@ -356,11 +356,11 @@ If you are migrating from earlier beta versions of Sparkle 2 and use sandboxing,
      * Update Croatian (#1603) (milotype)
      * Update SUUpdateAlert.xib (DanielFirlej)
  * fix: read SUAutomaticallyUpdate from Info.plist (Trevor DeVore)
- * Fix casting Boolean to BOOL on Apple Silicon (Kevin Wojniak)
+ * Fix casting Boolean to BOOL on ARM processors (Kevin Wojniak)
  * Use build matrix to test on multiple Xcode versions (Rajiv Shah)
  * Set UpdateAlert and AutomaticUpdateAlert window's fullscreen collectionBehavior to NSWindowCollectionBehaviorFullScreenAuxiliary to allow them to present on top of the Main App's window if it's fullscreen. (Micah Moore)
  * Fixed error about "about:blank" release notes (Louis Pontoise)
- * Support App Store URL scheme in release note webview (Bi11)
+ * Support application store URL scheme in release note webview (Bi11)
  * Use the SHA-256 hash of the archive as the cache path (Nate Weaver)
  * Don't return an optional from the FileHandle method (Nate Weaver)
  * Added URL+Hashing (Nate Weaver)
@@ -380,7 +380,7 @@ If you are migrating from earlier beta versions of Sparkle 2 and use sandboxing,
 
 # 1.22.0
 
- * Enabled "Hardened Runtime" build option for Apple's notarization requirement
+ * Enabled "Hardened Runtime" build option for notarization requirement
  * Add delegate methods to suppress update alerts (George Nachman)
  * Improved error when running from translocated location (Michael Buckley)
  * Add phased rollout feature (#1381) (Fabian Jäger)
@@ -418,7 +418,7 @@ If you are migrating from earlier beta versions of Sparkle 2 and use sandboxing,
 # 1.21.0
 
  * Added support EdDSA (ed25519) signatures (Kornel)
-    * DSA signatures are considered outdated, and Apple's `Security.framework` only supports weaker SHA-1-based DSA.
+    * DSA signatures are considered outdated, and the `Security.framework` only supports weaker SHA-1-based DSA.
     * Both old DSA and new EdDSA are still supported (and one app can use both), but new applications should use EdDSA only, and we recommend migrating away from DSA signatures.
  * `generate_keys` is now a Swift tool that stores EdDSA private keys in the Keychain
     * Existing apps can continue using their old DSA keys, but we've dropped support for generation of old DSA keys
@@ -488,7 +488,7 @@ If you are migrating from earlier beta versions of Sparkle 2 and use sandboxing,
 # 1.17.0
 
  * Added Touch Bar support (Bi11)
- * Upgraded SULog to use logging APIs that Apple provides built-in (Zorg)
+ * Upgraded SULog to use built-in logging APIs (Zorg)
  * Skip buttons are disabled if the update is marked as critical (Kornel Lesiński)
  * Background updates ask OS for lower-priority networking (Kornel Lesiński)
  * Refactorings to sync with upcoming 2.0
@@ -588,7 +588,7 @@ Important security fixes:
   - Strong documentation, easier to read code.
 * Automatic updates won't be installed if the system is about to shut off (Zorg)
 * Deprecated serving over HTTP without DSA (Zorg)
-  - Note that Apple has deprecated insecure HTTP in macOS 10.11
+  - Note that insecure HTTP has been deprecated in Sistema 10.11
 * Improved Autoupdate application (Zorg)
     * Do all the installation work after the runloop is set up
     * TerminationListener only does termination listening now
@@ -607,7 +607,7 @@ Important security fixes:
 * Refactored quarantine removal (Zorg)
 * Fixed German localization (1024jp)
 * Updated zh_CN translation (LIU Dongyuan / 柳东原)
-* Updated Mac models list until July 2015 (Gabriel Ulici)
+* Updated device models list until July 2015 (Gabriel Ulici)
 * Updated Polish translation (Kornel Lesiński)
 * Updated Xcode project languages for which we have translations (Jake Petroules)
 * Updated XIB files (Kornel Lesiński)
@@ -630,7 +630,7 @@ Important security fixes:
 # 1.11.0 (Aug 24, 2015)
 
 * Big improvements to code signing and DSA verification
-   - Sparkle now checks not only whether an update is correctly signed, but also whether the updated version will be able to verify future updates. Updates now must either use DSA keys correctly, or not try to use them at all. Same goes for Apple Code Signing.
+   - Sparkle now checks not only whether an update is correctly signed, but also whether the updated version will be able to verify future updates. Updates now must either use DSA keys correctly, or not try to use them at all. Same goes for Code Signing.
    - Rely on code signing and the DSA key in the new app instead of appcast. If the new app has a public DSA key, then the appcast item must have a DSA signature for the app, even if the app is code signed. (Zorg)
 * More verbose error message when DSA keys don't match (Kornel Lesiński)
 * Added delegate methods for pre-download and immediately post-failed-download (Isaac Greenspan)
@@ -686,12 +686,12 @@ Important security fixes:
 
 # 1.8.0 (Jul 26, 2014)
 
-* New SUDSAVerifier based on up-to-date macOS APIs (Zachary Waldowski)
+* New SUDSAVerifier based on up-to-date Sistema APIs (Zachary Waldowski)
 * Detailed error log for failed signature checks (Kornel Lesiński)
 * Converted Sparkle to ARC (C.W. Betts)
 * Converted ivars to properties. (Jake Petroules)
 * Cocoapod support (Xhacker Liu)
-* Quarantine removal on macOS 10.10 (C.W. Betts)
+* Quarantine removal on Sistema 10.10 (C.W. Betts)
 * Updated Japanese localization (1024jp)
 * Added Greek localization
 
@@ -712,7 +712,7 @@ Important security fixes:
 
 # 1.7.0
 
-* Dropped support for macOS 10.6. Sparkle now supports 10.7 and newer (including 10.10 Yosemite) on 64-bit Intel Macs (the last 32-bit Mac was released in 2006).
+* Dropped support for Sistema 10.6. Sparkle now supports 10.7 and newer (including 10.10 Yosemite) on 64-bit Intel devices (the last 32-bit device was released in 2006).
 * Removed use of deprecated functions (Zachary Waldowski)
 * Switched to modern Obj-C runtime and new literals syntax
 * Removed pre-10.7 code. (C.W. Betts)
@@ -815,7 +815,7 @@ Important security fixes:
  * Fixed .tbz extraction if the archive was made with Stuffit.
  * Fixed support for .tar.bz2 and .tar.gz; Sparkle has to assume the archive is a tar when it sees "bz2" and "gz"; don't use those without tarring.
  * Fixed a typo which caused the shouldPromptForPermissionToCheckForUpdatesToHostBundle: method to not work in 1.5b2.
- * Fixed .zip extraction on Tiger (Apple changed the UTI between releases)
+ * Fixed .zip extraction on Tiger (UTI changed between releases)
  * Fixed a crasher on Tiger.
  * Fixed display of the default app icon when the host app doesn't have an icon.
  * Sparkle now displays a sensible progress string and uses an indeterminate progress bar when the server doesn't report a file size.
@@ -878,8 +878,8 @@ Important security fixes:
  * Sparkle version comparison is now dramatically less stupid and verified by a bunch of unit tests. If something doesn't work the way you think it should, add a test to SUVersionComparisonTest.m
  * Added a minimum to the check interval so that developers don't accidentally release their apps into the wild with 60-second test check intervals and have DOS-attack-like results. It's an hour now for release mode; feel free to change it.
  * The relaunching process now uses a separate helper app, which is a much more robust method.
- * Changed CFBundleShortVersionString behavior: Sparkle no longer uses Apple's about box style of displaying ShortVersionString (CFBundleVersion) when the latter is available.
- * No more MD5 checking. Use DSA: it's actually secure.
+ * Changed CFBundleShortVersionString behavior: Sparkle no longer uses standard about box style of displaying ShortVersionString (CFBundleVersion) when the latter is available.
+  * No more MD5 checking. Use DSA: it's actually secure.
  * The abomination that was SUStatusChecker is dead. Use SUProbingUpdateDriver instead.
 * Bugfixes:
  * Fixed a huge bug with fully-automatic updating: before, if the user chose to relaunch later, the app would be running from the trash for a while. Now the buttons are "install and relaunch" or "install later."

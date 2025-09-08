@@ -110,7 +110,7 @@ Granulay é um aplicativo que adiciona efeito de grão vintage em tempo real par
 - **Latência**: Resposta instantânea (<50ms) para toggle do efeito
 
 ### RNF002 - Compatibilidade
-- **Sistema**: macOS 13.0 (Ventura) ou superior
+- **Sistema**: Sistema 13.0 (Ventura) ou superior
 - **Arquitetura**: Apple Silicon (M1/M2/M3) e Intel x86_64
 - **Monitores**: Suporte a múltiplos displays até 8K
 - **Memória**: Mínimo 4GB RAM
@@ -313,7 +313,7 @@ static var isLoFiEnabled: Bool {
 ### Stack Tecnológico
 - **Framework**: SwiftUI + AppKit
 - **Linguagem**: Swift 5.9+
-- **Minimum Deployment**: macOS 13.0
+- **Minimum Deployment**: Sistema 13.0
 - **Graphics**: Core Image + Metal
 - **Audio**: AVFoundation
 - **Networking**: URLSession
@@ -419,9 +419,9 @@ static var isLoFiEnabled: Bool {
 ## 🎨 Especificações de Design
 
 ### Identidade Visual
-- **Cores Primárias**: Sistema (adapta ao tema do macOS)
+- **Cores Primárias**: Sistema (adapta ao tema nativo)
 - **Ícone**: Minimalista, representa grão/textura
-- **Tipografia**: SF Pro (sistema macOS)
+- **Tipografia**: SF Pro (sistema nativo)
 - **Estilo**: Moderno, limpo, não intrusivo
 
 ### Interface Guidelines
@@ -480,7 +480,7 @@ static var isLoFiEnabled: Bool {
 
 ### Estratégia de Preços
 - **Modelo**: Pagamento único (lifetime)
-- **Preço**: Competitivo no mercado de utilities macOS
+- **Preço**: Competitivo no mercado de utilities desktop
 - **Trial**: Funcionalidades limitadas, sem tempo limite
 - **Valor**: Foco na proposta de valor única
 

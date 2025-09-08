@@ -606,7 +606,7 @@ struct SupportSettingsView: View {
             <p><strong>Feedback do Granulay:</strong></p>
             <p>\(emailContent)</p>
             <hr>
-            <p><small>Versão do App: \(TrialConfig.appVersion)<br>Sistema: macOS \(osVersion)</small></p>
+            <p><small>Versão do App: \(TrialConfig.appVersion)<br>Sistema: \(osVersion)</small></p>
             """
 
         let emailData: [String: Any] = [

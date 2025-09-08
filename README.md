@@ -69,7 +69,7 @@ xcodebuild -project Granulay.xcodeproj -scheme Granulay -configuration Release
 
 ## Requisitos do Sistema
 
-- **Sistema Operacional**: macOS 13.0 (Ventura) ou superior
+- **Sistema Operacional**: Sistema 13.0 (Ventura) ou superior
 - **Arquitetura**: Apple Silicon (M1/M2/M3) e Intel x86_64
 - **Memória**: 4GB RAM mínimo
 - **Monitores**: Suporte a múltiplos displays até 8K
@@ -78,7 +78,7 @@ xcodebuild -project Granulay.xcodeproj -scheme Granulay -configuration Release
 ## Desenvolvimento
 
 ### Configuração do Ambiente
-1. **Xcode 15.0+** com suporte ao macOS 13.0+
+1. **Xcode 15.0+** com suporte ao Sistema 13.0+
 2. **Certificados Apple Developer** configurados
 3. **Team ID**: TB76NB7VWG
 
@@ -111,7 +111,7 @@ xcodebuild -project Granulay.xcodeproj -scheme Granulay -configuration Release
 
 - **Swift 5.9+**: Linguagem principal
 - **SwiftUI**: Interface de usuário moderna
-- **AppKit**: Integração com sistema macOS
+- **AppKit**: Integração com sistema nativo
 - **Core Image**: Processamento de imagem
 - **Metal**: Aceleração gráfica
 - **AVFoundation**: Reprodução de áudio
