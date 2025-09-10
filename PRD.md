@@ -70,14 +70,16 @@ Granulay é um aplicativo que adiciona efeito de grão vintage em tempo real par
 - ✅ Opção de reset para configurações padrão
 
 ### RF004 - Sistema Lo-Fi
-**Descrição**: Reprodução de música Lo-Fi ambiente integrada
+**Descrição**: Reprodução de música Lo-Fi ambiente integrada com faixas royalty-free
 
 **Critérios de Aceitação**:
-- ✅ 4 estações Lo-Fi pré-configuradas
-- ✅ Controles de reprodução (Play/Pause/Stop)
-- ✅ Navegação entre estações (Anterior/Próxima)
+- ✅ 20 faixas Lo-Fi royalty-free do Pixabay
+- ✅ Controles de reprodução (Play/Pause/Stop/Previous/Next)
+- ✅ Modo shuffle e repeat
 - ✅ Controle de volume independente
 - ✅ Integração com menu da barra
+- ✅ Créditos dos artistas acessíveis
+- ✅ Licenciamento comercial completo
 
 ### RF005 - Sistema de Atualizações
 **Descrição**: Verificação e instalação automática de atualizações
@@ -171,11 +173,13 @@ Granulay é um aplicativo que adiciona efeito de grão vintage em tempo real par
 ### Fluxo 4: Sistema Lo-Fi
 ```
 1. Usuário acessa submenu "Lo-Fi Station"
-2. Seleciona estação desejada
-3. Clica em "Play" para iniciar reprodução
+2. Clica em "Play" para iniciar reprodução da playlist
+3. Sistema reproduz faixas em ordem ou modo shuffle
 4. Controla volume através do submenu
-5. Navega entre estações com Previous/Next
-6. Para reprodução com "Stop"
+5. Navega entre faixas com Previous/Next
+6. Ativa/desativa shuffle e repeat conforme desejado
+7. Visualiza créditos do artista da faixa atual
+8. Para reprodução com "Stop"
 ```
 
 ---
@@ -265,10 +269,14 @@ static var isTrialVersion: Bool {
 - **Configurações Avançadas**: Acesso total
 
 #### F002 - Sistema Lo-Fi Completo
-- **4 Estações**: Chill Lo-Fi, Jazz Lo-Fi, Study Beats, Sleep Lo-Fi
-- **Controles Completos**: Play/Pause/Stop/Previous/Next
+- **20 Faixas Royalty-Free**: Música Lo-Fi de alta qualidade do Pixabay
+- **Artistas Licenciados**: FASSounds, DELOSound, FreeMusicForVideo, Mikhail Smusev, e outros
+- **Conformidade Legal**: Documentação completa de licenças disponível em Pixabay_Music_License_Documentation.md
+- **Controles Completos**: Play/Pause/Stop/Previous/Next/Shuffle/Repeat
 - **Controle de Volume**: 0-100%
 - **Integração Menu**: Submenu completo na barra
+- **Créditos**: Atribuição completa dos artistas na interface
+- **Qualidade**: Faixas em MP3 de alta qualidade hospedadas em S3
 
 #### F003 - Configurações Avançadas
 - **Seção Comportamento**: Totalmente acessível

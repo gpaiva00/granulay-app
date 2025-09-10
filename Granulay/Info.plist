@@ -37,7 +37,10 @@
         <key>NSAllowsArbitraryLoads</key>
         <true/>
     </dict>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>This app uses audio capabilities for Lo-Fi music streaming.</string>
+    <!-- Music Licensing Information -->
+    <key>PixabayMusicLicense</key>
+    <string>All lo-fi music tracks are sourced from Pixabay.com under royalty-free license. Full attribution and licensing documentation available in app.</string>
+    <key>MusicAttribution</key>
+    <string>Music by various artists from Pixabay (pixabay.com/music/)</string>
 </dict>
 </plist>

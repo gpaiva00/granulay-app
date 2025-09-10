@@ -33,9 +33,9 @@ class MenuBarManager: ObservableObject {
 
     @Published var grainStyle: GrainStyle = .medium {
         didSet {
-            // Aplicar limitações da versão trial
+            // Apply trial version limitations
             if TrialConfig.isTrialVersion && !TrialConfig.allowedGrainStyles.contains(grainStyle) {
-                grainStyle = .fine // Forçar estilo "fine" na versão trial
+                grainStyle = .fine // Force "fine" style in trial version
                 return
             }
             overlayWindow?.updateGrainStyle(grainStyle)
@@ -45,9 +45,9 @@ class MenuBarManager: ObservableObject {
 
     @Published var preserveBrightness = true {
         didSet {
-            // Aplicar limitações da versão trial
+            // Apply trial version limitations
             if TrialConfig.isTrialVersion && preserveBrightness {
-                preserveBrightness = false // Forçar desativação na versão trial
+                preserveBrightness = false // Force disable in trial version
                 return
             }
             overlayWindow?.updatePreserveBrightness(preserveBrightness)
@@ -257,19 +257,19 @@ class MenuBarManager: ObservableObject {
         
         submenu.addItem(NSMenuItem.separator())
         
-        // Previous Station
+        // Previous Track
         let previousItem = NSMenuItem(
-            title: LocalizationKeys.LoFi.previousStation.localized,
-            action: #selector(previousStation),
+            title: NSLocalizedString("lofi.previous_track", comment: "Previous track menu item"),
+            action: #selector(previousTrack),
             keyEquivalent: ""
         )
         previousItem.target = self
         submenu.addItem(previousItem)
         
-        // Next Station
+        // Next Track
         let nextItem = NSMenuItem(
-            title: LocalizationKeys.LoFi.nextStation.localized,
-            action: #selector(nextStation),
+            title: NSLocalizedString("lofi.next_track", comment: "Next track menu item"),
+            action: #selector(nextTrack),
             keyEquivalent: ""
         )
         nextItem.target = self
@@ -277,14 +277,14 @@ class MenuBarManager: ObservableObject {
         
         submenu.addItem(NSMenuItem.separator())
         
-        // Current Station Info
-        let stationInfo = NSMenuItem(
-            title: "\(LocalizationKeys.LoFi.station.localized): \(musicManager.currentStation)",
+        // Current Track Info
+        let trackInfo = NSMenuItem(
+            title: String(format: NSLocalizedString("lofi.current_track", comment: "Current track info"), musicManager.currentTrack),
             action: nil,
             keyEquivalent: ""
         )
-        stationInfo.isEnabled = false
-        submenu.addItem(stationInfo)
+        trackInfo.isEnabled = false
+        submenu.addItem(trackInfo)
         
         return submenu
     }
@@ -303,13 +303,13 @@ class MenuBarManager: ObservableObject {
         updateMenuTitle()
     }
     
-    @objc private func previousStation() {
-        musicManager.previousStation()
+    @objc private func previousTrack() {
+        musicManager.previousTrack()
         updateMenuTitle()
     }
     
-    @objc private func nextStation() {
-        musicManager.nextStation()
+    @objc private func nextTrack() {
+        musicManager.nextTrack()
         updateMenuTitle()
     }
 

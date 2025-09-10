@@ -13,43 +13,43 @@ struct PurchaseSettingsView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text("Versão Trial")
+            Text(NSLocalizedString("purchase.trial.title", comment: "Trial version title"))
                 .font(.title2)
                 .fontWeight(.semibold)
             
             VStack(alignment: .leading, spacing: 12) {
-                Text("Você está usando a versão trial do Granulay com funcionalidades limitadas:")
+                Text(NSLocalizedString("purchase.trial.description", comment: "Trial version description"))
                     .foregroundColor(.secondary)
                 
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
                         Image(systemName: "checkmark.circle.fill")
                             .foregroundColor(.green)
-                        Text("Efeito de grão básico (estilo Fine, intensidade Fraca)")
+                        Text(NSLocalizedString("purchase.trial.basic_grain", comment: "Basic grain effect"))
                     }
                     
                     HStack {
                         Image(systemName: "xmark.circle.fill")
                             .foregroundColor(.red)
-                        Text("Todos os estilos e intensidades de grão")
+                        Text(NSLocalizedString("purchase.trial.all_grain_styles", comment: "All grain styles"))
                     }
                     
                     HStack {
                         Image(systemName: "xmark.circle.fill")
                             .foregroundColor(.red)
-                        Text("Funcionalidade Lo-Fi")
+                        Text(NSLocalizedString("purchase.trial.lofi_functionality", comment: "Lo-Fi functionality"))
                     }
                     
                     HStack {
                         Image(systemName: "xmark.circle.fill")
                             .foregroundColor(.red)
-                        Text("Configurações de comportamento")
+                        Text(NSLocalizedString("purchase.trial.behavior_settings", comment: "Behavior settings"))
                     }
                     
                     HStack {
                         Image(systemName: "xmark.circle.fill")
                             .foregroundColor(.red)
-                        Text("Preservar brilho")
+                        Text(NSLocalizedString("purchase.trial.preserve_brightness", comment: "Preserve brightness"))
                     }
                 }
                 .font(.system(size: 13))
@@ -58,38 +58,38 @@ struct PurchaseSettingsView: View {
             Divider()
             
             VStack(alignment: .leading, spacing: 12) {
-                Text("Desbloqueie todas as funcionalidades:")
+                Text(NSLocalizedString("purchase.unlock.title", comment: "Unlock all features"))
                     .font(.headline)
                 
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
                         Image(systemName: "checkmark.circle.fill")
                             .foregroundColor(.green)
-                        Text("Todos os estilos de grão (Fine, Medium, Coarse)")
+                        Text(NSLocalizedString("purchase.unlock.all_grain_styles", comment: "All grain styles"))
                     }
                     
                     HStack {
                         Image(systemName: "checkmark.circle.fill")
                             .foregroundColor(.green)
-                        Text("Todas as intensidades (Fraca, Média, Forte)")
+                        Text(NSLocalizedString("purchase.unlock.all_intensities", comment: "All intensities"))
                     }
                     
                     HStack {
                         Image(systemName: "checkmark.circle.fill")
                             .foregroundColor(.green)
-                        Text("Funcionalidade Lo-Fi completa")
+                        Text(NSLocalizedString("purchase.unlock.complete_lofi", comment: "Complete Lo-Fi functionality"))
                     }
                     
                     HStack {
                         Image(systemName: "checkmark.circle.fill")
                             .foregroundColor(.green)
-                        Text("Configurações avançadas de comportamento")
+                        Text(NSLocalizedString("purchase.unlock.advanced_settings", comment: "Advanced behavior settings"))
                     }
                     
                     HStack {
                         Image(systemName: "checkmark.circle.fill")
                             .foregroundColor(.green)
-                        Text("Opção de preservar brilho")
+                        Text(NSLocalizedString("purchase.unlock.preserve_brightness", comment: "Preserve brightness option"))
                     }
                 }
                 .font(.system(size: 13))
@@ -105,7 +105,7 @@ struct PurchaseSettingsView: View {
                     HStack(spacing: 8) {
                         Image(systemName: "cart.fill")
                             .font(.title3)
-                        Text("Comprar Versão Completa")
+                        Text(NSLocalizedString("purchase.button.title", comment: "Buy full version button"))
                             .font(.headline)
                             .fontWeight(.semibold)
                     }
@@ -126,7 +126,7 @@ struct PurchaseSettingsView: View {
                 .scaleEffect(1.0)
                 .animation(.easeInOut(duration: 0.1), value: false)
                 
-                Text("💎 Acesso completo e vitalício")
+                Text(NSLocalizedString("purchase.lifetime_access", comment: "Lifetime access message"))
                     .font(.caption)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
@@ -135,16 +135,23 @@ struct PurchaseSettingsView: View {
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .alert(NSLocalizedString("purchase.error.title", comment: "Error title"), isPresented: $showingAlert) {
+            Button(NSLocalizedString("purchase.error.ok", comment: "OK button")) {
+                showingAlert = false
+            }
+        } message: {
+            Text(alertMessage)
+        }
     }
     
     private func openPurchaseStore() {
         // Tenta abrir a App Store primeiro
         if let appStoreURL = URL(string: TrialConfig.purchaseURL) {
             NSWorkspace.shared.open(appStoreURL, configuration: NSWorkspace.OpenConfiguration()) { (app, error) in
-                if let error = error {
+                if error != nil {
                     // Se falhar, mostra alerta informativo
                     DispatchQueue.main.async {
-                        alertMessage = "O Granulay ainda não está disponível na App Store."
+                        alertMessage = NSLocalizedString("purchase.error.message", comment: "Purchase error message")
                         showingAlert = true
                     }
                 }

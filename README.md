@@ -50,7 +50,7 @@ O projeto é distribuído através da **App Store Connect** para garantir máxim
 ### Versão Completa
 - **Todos os estilos de grão**: Fine, Medium, Coarse, Vintage
 - **Intensidade total**: 0.1 a 1.0 (Weak, Medium, Strong)
-- **Lo-Fi Station completa**: 4 estações com controles de reprodução
+- **Lo-Fi Station completa**: 20 faixas royalty-free com controles avançados
 - **Configurações avançadas**: Acesso total a todas as opções
 - **Preservação de brilho**: Disponível
 
@@ -138,10 +138,20 @@ xcodebuild -project Granulay.xcodeproj -scheme Granulay -configuration Release
 - **Preservação de brilho**: Mantém luminosidade original da tela
 
 ### Lo-Fi Station Integrada
-- **4 estações pré-configuradas** com música ambiente
-- **Controles completos**: Play/Pause/Stop/Previous/Next
+- **20 faixas royalty-free** de música lo-fi ambiente
+- **Controles completos**: Play/Pause/Stop/Previous/Next/Shuffle/Repeat
 - **Volume independente** do sistema
 - **Integração com menu** da barra para acesso rápido
+- **Reprodução aleatória** e modo repetição
+- **Créditos dos artistas** acessíveis na interface
+
+**Música Licenciada**: Utiliza exclusivamente faixas royalty-free do Pixabay:
+- **Fonte**: Pixabay.com - plataforma de conteúdo livre
+- **Licença**: Royalty-free para uso comercial
+- **Artistas**: FASSounds, DELOSound, FreeMusicForVideo, Mikhail Smusev, e outros
+- **Qualidade**: Faixas em MP3 de alta qualidade
+
+Todas as faixas são totalmente licenciadas para uso comercial. Documentação completa de licenças disponível em `Pixabay_Music_License_Documentation.md`.
 
 ### Interface e Usabilidade
 - **Menu na barra**: Acesso rápido e não intrusivo

@@ -116,15 +116,15 @@ class PerformanceOptimizer: ObservableObject {
     func getCurrentPerformanceMetrics() -> (fps: Double, quality: String) {
         let quality: String
         if averageFPS >= 55 {
-            quality = "Excelente"
+            quality = NSLocalizedString("performance.quality.excellent", comment: "Excellent performance")
         } else if averageFPS >= 45 {
-            quality = "Boa"
+            quality = NSLocalizedString("performance.quality.good", comment: "Good performance")
         } else if averageFPS >= 30 {
-            quality = "Média"
+            quality = NSLocalizedString("performance.quality.medium", comment: "Medium performance")
         } else {
-            quality = "Baixa"
+            quality = NSLocalizedString("performance.quality.low", comment: "Low performance")
         }
         
         return (averageFPS, quality)
     }
-} 
+}

@@ -107,6 +107,60 @@
 "lofi.stop" = "Parar";
 "lofi.previous_station" = "Estação Anterior";
 "lofi.next_station" = "Próxima Estação";
+"lofi.next" = "Próxima";
+"lofi.previous" = "Anterior";
+"lofi.previous_track" = "Faixa Anterior";
+"lofi.next_track" = "Próxima Faixa";
+"lofi.current_track" = "Faixa: %@";
+"lofi.shuffle" = "Aleatório";
+"lofi.repeat" = "Repetir";
+"lofi.loading" = "Carregando...";
+"lofi.credits" = "Todas as faixas são royalty-free do Pixabay.com";
+"lofi.credits.button" = "Créditos Pixabay";
+"lofi.credits.format" = "Music by %@ from Pixabay (ID: %@)";
+
+// Purchase Settings
+"purchase.trial.title" = "Versão Trial";
+"purchase.trial.description" = "Você está usando a versão trial do Granulay com funcionalidades limitadas:";
+"purchase.trial.basic_grain" = "Efeito de grão básico (estilo Fine, intensidade Fraca)";
+"purchase.trial.all_grain_styles" = "Todos os estilos e intensidades de grão";
+"purchase.trial.lofi_functionality" = "Funcionalidade Lo-Fi";
+"purchase.trial.behavior_settings" = "Configurações de comportamento";
+"purchase.trial.preserve_brightness" = "Preservar brilho";
+"purchase.unlock.title" = "Desbloqueie todas as funcionalidades:";
+"purchase.unlock.all_grain_styles" = "Todos os estilos de grão (Fine, Medium, Coarse)";
+"purchase.unlock.all_intensities" = "Todas as intensidades (Fraca, Média, Forte)";
+"purchase.unlock.complete_lofi" = "Funcionalidade Lo-Fi completa";
+"purchase.unlock.advanced_settings" = "Configurações avançadas de comportamento";
+"purchase.unlock.preserve_brightness" = "Opção de preservar brilho";
+"purchase.button.title" = "Comprar Versão Completa";
+"purchase.lifetime_access" = "💎 Acesso completo e vitalício";
+"purchase.error.title" = "Erro";
+"purchase.error.message" = "Não foi possível abrir a loja. Tente novamente mais tarde.";
+"purchase.error.ok" = "OK";
+
+/* Lo-Fi Status Messages */
+"lofi.status.ready" = "Pronto para reproduzir";
+"lofi.status.failed" = "Falhou";
+"lofi.status.unknown" = "Desconhecido";
+"lofi.status.other" = "Outro";
+
+/* Lo-Fi Error Messages */
+"lofi.error.playback" = "Erro de reprodução";
+"lofi.error.code" = "Código do erro";
+"lofi.error.network" = "Erro de rede detectado, tentando novamente...";
+"lofi.error.unrecoverable" = "Erro não recuperável, pulando para próxima faixa";
+"lofi.error.max_retries" = "Máximo de tentativas atingido, pulando faixa";
+"lofi.error.no_network" = "Sem conexão de rede disponível para retry";
+
+/* Lo-Fi Success Messages */
+"lofi.success.track_completed" = "Faixa concluída naturalmente";
+"lofi.success.playback_started" = "Reprodução iniciada";
+"lofi.success.preparing" = "Preparando reprodução";
+
+/* Lo-Fi Retry Messages */
+"lofi.retry.attempt" = "Tentativa %d/%d";
+"lofi.retry.not_ready" = "Item não está pronto, tentando mesmo assim...";
 
 // File Operations
 "file.export.title" = "Exportar Configurações";
@@ -130,4 +184,10 @@
 "trial.full_version.behavior" = "• Personalização completa de comportamento";
 "trial.full_version.updates" = "• Atualizações automáticas";
 "trial.purchase.button" = "Obter Versão Completa";
+
+// Performance Quality
+"performance.quality.excellent" = "Excelente";
+"performance.quality.good" = "Boa";
+"performance.quality.medium" = "Média";
+"performance.quality.low" = "Baixa";
 "trial.purchase.description" = "Desbloqueie todos os recursos e apoie o desenvolvimento";

@@ -66,6 +66,131 @@
 
 // Settings - Feedback
 "settings.feedback" = "Feedback";
+"settings.feedback.placeholder" = "Share your experience, report bugs or suggest improvements...";
+"settings.feedback.send" = "Send Feedback";
+"settings.feedback.sent" = "Feedback sent successfully!";
+"settings.feedback.error" = "Error sending feedback. Please try again.";
+"settings.feedback.validation" = "Please enter a message before sending.";
+
+/* Settings Actions */
+"settings.reset" = "Reset to Defaults";
+"settings.reset.description" = "Return to original settings";
+"settings.export" = "Export Settings";
+"settings.export.description" = "Save your settings to a file";
+"settings.import" = "Import Settings";
+"settings.import.description" = "Load settings from a file";
+
+/* Loading Messages */
+"loading.applying_changes" = "Applying changes...";
+"loading.sending_feedback" = "Sending feedback...";
+"loading.resetting" = "Resetting settings...";
+"loading.exporting" = "Exporting settings...";
+"loading.importing" = "Importing settings...";
+
+/* Alert Messages */
+"alert.reset.title" = "Reset Settings";
+"alert.reset.message" = "Are you sure you want to reset all settings to default values?";
+"alert.reset.confirm" = "Reset";
+"alert.reset.cancel" = "Cancel";
+"alert.export.success" = "Settings exported successfully!";
+"alert.import.success" = "Settings imported successfully!";
+"alert.import.error" = "Error importing settings. Please check if the file is valid.";
+
+/* Lo-Fi Station */
+"lofi.title" = "Lo-Fi Station";
+"lofi.playing" = "Playing";
+"lofi.stopped" = "Stopped";
+"lofi.volume" = "Volume";
+"lofi.station" = "Station";
+"lofi.play" = "Play";
+"lofi.pause" = "Pause";
+"lofi.stop" = "Stop";
+"lofi.previous_station" = "Previous Station";
+"lofi.next_station" = "Next Station";
+"lofi.next" = "Next";
+"lofi.previous" = "Previous";
+"lofi.previous_track" = "Previous Track";
+"lofi.next_track" = "Next Track";
+"lofi.current_track" = "Track: %@";
+"lofi.shuffle" = "Shuffle";
+"lofi.repeat" = "Repeat";
+"lofi.loading" = "Loading...";
+"lofi.credits" = "All tracks are royalty-free from Pixabay.com";
+"lofi.credits.button" = "Pixabay Credits";
+"lofi.credits.format" = "Music by %@ from Pixabay (ID: %@)";
+
+// Purchase Settings
+"purchase.trial.title" = "Trial Version";
+"purchase.trial.description" = "You are using the trial version of Granulay with limited functionality:";
+"purchase.trial.basic_grain" = "Basic grain effect (Fine style, Weak intensity)";
+"purchase.trial.all_grain_styles" = "All grain styles and intensities";
+"purchase.trial.lofi_functionality" = "Lo-Fi functionality";
+"purchase.trial.behavior_settings" = "Behavior settings";
+"purchase.trial.preserve_brightness" = "Preserve brightness";
+"purchase.unlock.title" = "Unlock all features:";
+"purchase.unlock.all_grain_styles" = "All grain styles (Fine, Medium, Coarse)";
+"purchase.unlock.all_intensities" = "All intensities (Weak, Medium, Strong)";
+"purchase.unlock.complete_lofi" = "Complete Lo-Fi functionality";
+"purchase.unlock.advanced_settings" = "Advanced behavior settings";
+"purchase.unlock.preserve_brightness" = "Preserve brightness option";
+"purchase.button.title" = "Buy Full Version";
+"purchase.lifetime_access" = "💎 Complete and lifetime access";
+"purchase.error.title" = "Error";
+"purchase.error.message" = "Could not open the store. Please try again later.";
+"purchase.error.ok" = "OK";
+
+/* Lo-Fi Status Messages */
+"lofi.status.ready" = "Ready to play";
+"lofi.status.failed" = "Failed";
+"lofi.status.unknown" = "Unknown";
+"lofi.status.other" = "Other";
+
+/* Lo-Fi Error Messages */
+"lofi.error.playback" = "Playback error";
+"lofi.error.code" = "Error code";
+"lofi.error.network" = "Network error detected, retrying...";
+"lofi.error.unrecoverable" = "Unrecoverable error, skipping to next track";
+"lofi.error.max_retries" = "Maximum retries reached, skipping track";
+"lofi.error.no_network" = "No network connection available for retry";
+
+/* Lo-Fi Success Messages */
+"lofi.success.track_completed" = "Track completed naturally";
+"lofi.success.playback_started" = "Playback started";
+"lofi.success.preparing" = "Preparing playback";
+
+/* Lo-Fi Retry Messages */
+"lofi.retry.attempt" = "Attempt %d/%d";
+"lofi.retry.not_ready" = "Item not ready, trying anyway...";
+
+/* File Operations */
+"file.export.title" = "Export Settings";
+"file.import.title" = "Import Settings";
+"file.settings.extension" = "granulay";
+
+/* Trial Version */
+"trial.title" = "Granulay Trial";
+"trial.subtitle" = "Experience the vintage grain effect";
+"trial.limitations.title" = "Trial Version Limitations";
+"trial.limitations.grain_style" = "• Grain style limited to Fine only";
+"trial.limitations.intensity" = "• Grain intensity limited to Weak only";
+"trial.limitations.brightness" = "• Preserve brightness disabled";
+"trial.limitations.lofi" = "• Lo-Fi Station not available";
+"trial.limitations.behavior" = "• Behavior settings not available";
+"trial.full_version.title" = "Full Version Features";
+"trial.full_version.all_styles" = "• All grain styles (Fine, Medium, Coarse, Vintage)";
+"trial.full_version.all_intensities" = "• All intensity levels (Weak, Medium, Strong)";
+"trial.full_version.brightness" = "• Preserve brightness option";
+"trial.full_version.lofi" = "• Complete Lo-Fi Station with multiple stations";
+"trial.full_version.behavior" = "• Full behavior customization";
+"trial.full_version.updates" = "• Automatic updates";
+"trial.purchase.button" = "Get Full Version";
+
+// Performance Quality
+"performance.quality.excellent" = "Excellent";
+"performance.quality.good" = "Good";
+"performance.quality.medium" = "Medium";
+"performance.quality.low" = "Low";
+"trial.purchase.description" = "Unlock all features and support development";}]}}}
 "settings.feedback.placeholder" = "Share your experience, report bugs, or suggest improvements...";
 "settings.feedback.send" = "Send Feedback";
 "settings.feedback.sent" = "Feedback sent successfully!";
@@ -108,6 +233,36 @@
 "lofi.stop" = "Stop";
 "lofi.previous_station" = "Previous Station";
 "lofi.next_station" = "Next Station";
+"lofi.next" = "Next";
+"lofi.previous" = "Previous";
+"lofi.shuffle" = "Shuffle";
+"lofi.repeat" = "Repeat";
+"lofi.loading" = "Loading...";
+"lofi.credits" = "All tracks are royalty-free from Pixabay.com";
+"lofi.credits.format" = "Music by %@ from Pixabay (ID: %@)";
+
+/* Lo-Fi Status Messages */
+"lofi.status.ready" = "Ready to play";
+"lofi.status.failed" = "Failed";
+"lofi.status.unknown" = "Unknown";
+"lofi.status.other" = "Other";
+
+/* Lo-Fi Error Messages */
+"lofi.error.playback" = "Playback error";
+"lofi.error.code" = "Error code";
+"lofi.error.network" = "Network error detected, retrying...";
+"lofi.error.unrecoverable" = "Unrecoverable error, skipping to next track";
+"lofi.error.max_retries" = "Maximum retries reached, skipping track";
+"lofi.error.no_network" = "No network connection available for retry";
+
+/* Lo-Fi Success Messages */
+"lofi.success.track_completed" = "Track completed naturally";
+"lofi.success.playback_started" = "Playback started";
+"lofi.success.preparing" = "Preparing playback";
+
+/* Lo-Fi Retry Messages */
+"lofi.retry.attempt" = "Attempt %d/%d";
+"lofi.retry.not_ready" = "Item not ready, trying anyway...";
 
 // File Operations
 "file.export.title" = "Export Settings";
