@@ -23,18 +23,19 @@ struct TrialConfig {
     
     static var allowedGrainStyles: [GrainStyle] {
         if isTrialVersion {
-            return [.fine] // Apenas estilo "fino" na versão trial
+            return [.fine, .medium, .coarse] // Apenas estilo "fino" na versão trial
         } else {
             return GrainStyle.allCases
         }
     }
     
     static var allowedIntensityRange: ClosedRange<Double> {
-        if isTrialVersion {
-            return 0.1...0.3 // Apenas intensidade "fraca" na versão trial
-        } else {
-            return 0.1...1.0
-        }
+        return 0.1...1.0
+//        if isTrialVersion {
+//            return 0.1...0.3 // Apenas intensidade "fraca" na versão trial
+//        } else {
+//            return 0.1...1.0
+//        }
     }
     
     static var canPreserveBrightness: Bool {
@@ -53,7 +54,7 @@ struct TrialConfig {
     
     // MARK: - Purchase Information
     
-    static let appStoreURL = "https://apps.apple.com/app/granulay/id123456789" // URL temporária - será atualizada quando publicado
+    static let appStoreURL = "https://apps.apple.com/br/app/granulay/id6751862804?mt=12Granulay"
     
     static var purchaseURL: String {
         return appStoreURL // Prioriza App Store

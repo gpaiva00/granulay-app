@@ -287,6 +287,8 @@ struct AppearanceSettingsView: View {
                                 IntensityButtonStyle(
                                     isSelected: menuBarManager.grainIntensity <= 0.15)
                             )
+                            .disabled(!menuBarManager.isGrainEnabled)
+                            .opacity(menuBarManager.isGrainEnabled ? 1.0 : 0.5)
 
                             Button(LocalizationKeys.Settings.Intensity.medium.localized) {
                                 withLoadingDelay {
@@ -298,6 +300,8 @@ struct AppearanceSettingsView: View {
                                     isSelected: menuBarManager.grainIntensity > 0.15
                                         && menuBarManager.grainIntensity <= 0.25)
                             )
+                            .disabled(!menuBarManager.isGrainEnabled)
+                            .opacity(menuBarManager.isGrainEnabled ? 1.0 : 0.5)
 
                             Button(LocalizationKeys.Settings.Intensity.strong.localized) {
                                 withLoadingDelay {
@@ -308,11 +312,9 @@ struct AppearanceSettingsView: View {
                                 IntensityButtonStyle(
                                     isSelected: menuBarManager.grainIntensity > 0.25)
                             )
-                            .disabled(
-                                !menuBarManager.isGrainEnabled || isLoading
-                                    || (TrialConfig.isTrialVersion && menuBarManager.isGrainEnabled)
-                            )
-                            .opacity(TrialConfig.isTrialVersion ? 0.5 : 1.0)
+                            .disabled(!menuBarManager.isGrainEnabled)
+                            .opacity(menuBarManager.isGrainEnabled ? 1.0 : 0.5)
+                            
                         }
                         .frame(maxWidth: .infinity)
                     }
@@ -335,21 +337,30 @@ struct AppearanceSettingsView: View {
                                         isSelected: menuBarManager.grainStyle == style)
                                 )
                                 .disabled(
-                                    !menuBarManager.isGrainEnabled || isLoading
-                                        || (TrialConfig.isTrialVersion
-                                            && menuBarManager.isGrainEnabled)
+                                    !menuBarManager.isGrainEnabled
+                                        || (TrialConfig.isTrialVersion && style == .vintage)
                                 )
-                                .opacity(TrialConfig.isTrialVersion && (style == .medium || style == .coarse || style == .vintage) ? 0.5 : 1.0)
+                                .opacity((TrialConfig.isTrialVersion && style == .vintage) || !menuBarManager.isGrainEnabled ? 0.5 : 1.0)
                             }
                         }
                         .frame(maxWidth: .infinity)
                     }
 
                     Divider()
-
+                    
                     HStack {
-                        Text(LocalizationKeys.Settings.preserveBrightness.localized)
-                            .font(.subheadline)
+                        HStack(spacing: 6) {
+                            Text(LocalizationKeys.Settings.preserveBrightness.localized)
+                                .font(.subheadline)
+                            
+                            if (!TrialConfig.canPreserveBrightness) {
+                                Image(systemName: "lock.fill")
+                                    .font(.caption2)
+                                    .foregroundColor(.secondary.opacity(0.5))
+                            }
+                        }
+                        .opacity(TrialConfig.isTrialVersion ? 0.5 : 1.0)
+                        
 
                         Spacer()
 
