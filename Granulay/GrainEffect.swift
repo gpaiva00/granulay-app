@@ -154,9 +154,10 @@ struct GrainEffect: View {
                     if let texture = grainTexture {
                         Image(nsImage: texture)
                             .resizable(resizingMode: .tile)
-                            .opacity(preserveBrightness ? intensity * 0.5 : intensity)
+                            .interpolation(.none) // Otimização: Garante nitidez dos grãos (Pixel Perfect)
+                            .opacity(preserveBrightness ? intensity * 0.6 : intensity) // Ajuste de contraste/visibilidade
                             .blendMode(preserveBrightness ? .overlay : .multiply)
-                            .colorMultiply(preserveBrightness ? Color.white.opacity(0.7) : Color.white)
+                            .colorMultiply(preserveBrightness ? Color(white: 0.95) : Color.white)
                             .allowsHitTesting(false)
                             .drawingGroup(opaque: false, colorMode: .nonLinear)
                             .animation(.easeInOut(duration: 0.1), value: intensity)
@@ -189,24 +190,37 @@ func createGrainTexture(size: CGSize, style: GrainStyle) -> NSImage? {
     let context = GrainTextureCache.shared.ciContext
 
     guard let noiseFilter = CIFilter(name: "CIRandomGenerator") else { return nil }
-
     guard let noiseImage = noiseFilter.outputImage else { return nil }
 
-    guard let scaleFilter = CIFilter(name: "CILanczosScaleTransform") else { return nil }
-    scaleFilter.setValue(noiseImage, forKey: kCIInputImageKey)
-    scaleFilter.setValue(style.noiseScale, forKey: kCIInputScaleKey)
+    let processedImage: CIImage?
 
-    guard let scaledNoise = scaleFilter.outputImage else { return nil }
+    // Otimização: Para escalas >= 1.0, usamos Pixelate para garantir nitidez (hard edges).
+    // Para escalas < 1.0, mantemos Lanczos para downsampling suave de alta qualidade.
+    if style.noiseScale >= 1.0 {
+        // Crop primeiro para performance e limitar o processamento
+        let croppedNoise = noiseImage.cropped(to: CGRect(origin: .zero, size: size))
+        
+        if style.noiseScale > 1.001 {
+            guard let pixelateFilter = CIFilter(name: "CIPixelate") else { return nil }
+            pixelateFilter.setValue(croppedNoise, forKey: kCIInputImageKey)
+            pixelateFilter.setValue(style.noiseScale, forKey: kCIInputScaleKey)
+            processedImage = pixelateFilter.outputImage
+        } else {
+            processedImage = croppedNoise
+        }
+    } else {
+        guard let scaleFilter = CIFilter(name: "CILanczosScaleTransform") else { return nil }
+        scaleFilter.setValue(noiseImage, forKey: kCIInputImageKey)
+        scaleFilter.setValue(style.noiseScale, forKey: kCIInputScaleKey)
+        scaleFilter.setValue(1.0, forKey: kCIInputAspectRatioKey)
+        
+        processedImage = scaleFilter.outputImage?.cropped(to: CGRect(origin: .zero, size: size))
+    }
 
-    guard let cropFilter = CIFilter(name: "CICrop") else { return nil }
-    cropFilter.setValue(scaledNoise, forKey: kCIInputImageKey)
-    cropFilter.setValue(
-        CIVector(cgRect: CGRect(origin: .zero, size: size)), forKey: "inputRectangle")
-
-    guard let croppedImage = cropFilter.outputImage else { return nil }
+    guard let imageToColor = processedImage else { return nil }
 
     guard let colorFilter = CIFilter(name: "CIColorMatrix") else { return nil }
-    colorFilter.setValue(croppedImage, forKey: kCIInputImageKey)
+    colorFilter.setValue(imageToColor, forKey: kCIInputImageKey)
 
     switch style {
     case .fine:
