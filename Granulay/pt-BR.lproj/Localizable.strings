@@ -25,11 +25,6 @@
 "settings.intensity.weak" = "Fraco";
 "settings.intensity.medium" = "Médio";
 "settings.intensity.strong" = "Forte";
-"settings.grain_style" = "Estilo do Grão";
-"settings.grain_style.fine" = "Fino";
-"settings.grain_style.medium" = "Médio";
-"settings.grain_style.coarse" = "Grosso";
-"settings.grain_style.vintage" = "Vintage";
 "settings.preserve_brightness" = "Preservar Brilho";
 "settings.preserve_brightness.description" = "Mantém o brilho original da tela";
 
@@ -120,19 +115,6 @@
 "lofi.credits.format" = "Music by %@ from Pixabay (ID: %@)";
 
 // Purchase Settings
-"purchase.trial.title" = "Versão Trial";
-"purchase.trial.description" = "Você está usando a versão trial do Granulay com funcionalidades limitadas:";
-"purchase.trial.basic_grain" = "Efeito de grão básico (estilo Fine, intensidade Fraca)";
-"purchase.trial.all_grain_styles" = "Todos os estilos e intensidades de grão";
-"purchase.trial.lofi_functionality" = "Funcionalidade Lo-Fi";
-"purchase.trial.behavior_settings" = "Configurações de comportamento";
-"purchase.trial.preserve_brightness" = "Preservar brilho";
-"purchase.unlock.title" = "Desbloqueie todas as funcionalidades:";
-"purchase.unlock.all_grain_styles" = "Todos os estilos de grão (Fine, Medium, Coarse)";
-"purchase.unlock.all_intensities" = "Todas as intensidades (Fraca, Média, Forte)";
-"purchase.unlock.complete_lofi" = "Funcionalidade Lo-Fi completa";
-"purchase.unlock.advanced_settings" = "Configurações avançadas de comportamento";
-"purchase.unlock.preserve_brightness" = "Opção de preservar brilho";
 "purchase.button.title" = "Comprar Versão Completa";
 "purchase.lifetime_access" = "💎 Acesso completo e vitalício";
 "purchase.error.title" = "Erro";
@@ -170,12 +152,6 @@
 // Trial Version
 "trial.title" = "Granulay Trial";
 "trial.subtitle" = "Experimente o efeito granulado vintage";
-"trial.limitations.title" = "Limitações da Versão Trial";
-"trial.limitations.grain_style" = "• Estilo de grão limitado apenas ao Fino";
-"trial.limitations.intensity" = "• Intensidade de grão limitada apenas ao Fraco";
-"trial.limitations.brightness" = "• Preservar brilho desativado";
-"trial.limitations.lofi" = "• Estação Lo-Fi não disponível";
-"trial.limitations.behavior" = "• Configurações de comportamento não disponíveis";
 "trial.full_version.title" = "Recursos da Versão Completa";
 "trial.full_version.all_styles" = "• Todos os estilos de grão (Fino, Médio, Grosso, Vintage)";
 "trial.full_version.all_intensities" = "• Todos os níveis de intensidade (Fraco, Médio, Forte)";

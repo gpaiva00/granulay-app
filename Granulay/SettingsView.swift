@@ -8,7 +8,6 @@ enum SettingsCategory: String, CaseIterable {
     case behavior = "behavior"
     case lofi = "lofi"
     case support = "support"
-    case purchase = "purchase"
 
     var localizedName: String {
         switch self {
@@ -16,7 +15,6 @@ enum SettingsCategory: String, CaseIterable {
         case .behavior: return LocalizationKeys.Settings.Category.behavior.localized
         case .lofi: return LocalizationKeys.Settings.Category.lofi.localized
         case .support: return LocalizationKeys.Settings.Category.support.localized
-        case .purchase: return LocalizationKeys.Settings.Category.purchase.localized
         }
     }
 
@@ -26,21 +24,15 @@ enum SettingsCategory: String, CaseIterable {
         case .behavior: return "gearshape"
         case .lofi: return "music.note"
         case .support: return "questionmark.circle"
-        case .purchase: return "cart"
         }
     }
 
     static var availableCategories: [SettingsCategory] {
-        if TrialConfig.isTrialVersion {
-            return [.appearance, .behavior, .lofi, .support, .purchase]
-        } else {
-            return [.appearance, .behavior, .lofi, .support]
-        }
+        return [.appearance, .behavior, .lofi, .support]
     }
 
     var isDisabledInTrial: Bool {
-        if !TrialConfig.isTrialVersion { return false }
-        return self == .behavior || self == .lofi || self == .support
+        return false
     }
 }
 
@@ -67,9 +59,7 @@ struct SettingsView: View {
                             category: category,
                             isSelected: selectedCategory == category
                         ) {
-                            if category == .purchase {
-                                openPurchaseURL()
-                            } else if !category.isDisabledInTrial {
+                            if !category.isDisabledInTrial {
                                 selectedCategory = category
                             }
                         }
@@ -80,16 +70,14 @@ struct SettingsView: View {
                 Spacer()
 
                 // Versão no rodapé (exibida apenas na versão completa)
-                if !TrialConfig.isTrialVersion {
-                    HStack {
-                        Text("v\(TrialConfig.appVersion)")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        Spacer()
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 16)
+                HStack {
+                    Text("v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown")")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    Spacer()
                 }
+                .padding(.horizontal, 16)
+                .padding(.bottom, 16)
             }
             .frame(width: 200)
             .background(Color(NSColor.controlBackgroundColor))
@@ -113,8 +101,6 @@ struct SettingsView: View {
                             showFeedbackSent: $showFeedbackSent,
                             loadingMessage: $loadingMessage
                         )
-                    case .purchase:
-                        PurchaseSettingsView()
                     }
                 }
                 .padding(24)
@@ -129,12 +115,6 @@ struct SettingsView: View {
                 }
             }
         )
-    }
-
-    private func openPurchaseURL() {
-        if let url = URL(string: TrialConfig.purchaseURL) {
-            NSWorkspace.shared.open(url)
-        }
     }
 }
 
@@ -320,46 +300,12 @@ struct AppearanceSettingsView: View {
                     }
 
                     Divider()
-
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text(LocalizationKeys.Settings.grainStyle.localized)
-                            .font(.subheadline)
-
-                        HStack(spacing: 10) {
-                            ForEach(GrainStyle.allCases, id: \.self) { style in
-                                Button(style.localizedName) {
-                                    withLoadingDelay {
-                                        menuBarManager.grainStyle = style
-                                    }
-                                }
-                                .buttonStyle(
-                                    IntensityButtonStyle(
-                                        isSelected: menuBarManager.grainStyle == style)
-                                )
-                                .disabled(
-                                    !menuBarManager.isGrainEnabled
-                                        || (TrialConfig.isTrialVersion && style == .vintage)
-                                )
-                                .opacity((TrialConfig.isTrialVersion && style == .vintage) || !menuBarManager.isGrainEnabled ? 0.5 : 1.0)
-                            }
-                        }
-                        .frame(maxWidth: .infinity)
-                    }
-
-                    Divider()
                     
                     HStack {
                         HStack(spacing: 6) {
                             Text(LocalizationKeys.Settings.preserveBrightness.localized)
                                 .font(.subheadline)
-                            
-                            if (!TrialConfig.canPreserveBrightness) {
-                                Image(systemName: "lock.fill")
-                                    .font(.caption2)
-                                    .foregroundColor(.secondary.opacity(0.5))
-                            }
                         }
-                        .opacity(TrialConfig.isTrialVersion ? 0.5 : 1.0)
                         
 
                         Spacer()
@@ -377,8 +323,7 @@ struct AppearanceSettingsView: View {
                         )
                         .toggleStyle(SwitchToggleStyle())
                         .disabled(
-                            !menuBarManager.isGrainEnabled || isLoading
-                                || !TrialConfig.canPreserveBrightness)
+                            !menuBarManager.isGrainEnabled || isLoading)
                     }
                 }
             }
@@ -602,7 +547,7 @@ struct SupportSettingsView: View {
             <p><strong>Feedback do Granulay:</strong></p>
             <p>\(emailContent)</p>
             <hr>
-            <p><small>Versão do App: \(TrialConfig.appVersion)<br>Sistema: \(osVersion)</small></p>
+            <p><small>Versão do App: \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown")<br>Sistema: \(osVersion)</small></p>
             """
 
         let emailData: [String: Any] = [

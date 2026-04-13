@@ -46,7 +46,6 @@ struct LocalizationKeys {
         static let title = "settings.title"
         static let enableEffect = "settings.enable_effect"
         static let intensity = "settings.intensity"
-        static let grainStyle = "settings.grain_style"
         static let preserveBrightness = "settings.preserve_brightness"
         static let preserveBrightnessDescription = "settings.preserve_brightness.description"
         static let advanced = "settings.advanced"
@@ -115,13 +114,6 @@ struct LocalizationKeys {
             static let strong = "settings.intensity.strong"
         }
 
-        // MARK: - Grain Style
-        struct GrainStyle {
-            static let fine = "settings.grain_style.fine"
-            static let medium = "settings.grain_style.medium"
-            static let coarse = "settings.grain_style.coarse"
-            static let vintage = "settings.grain_style.vintage"
-        }
     }
 
     // MARK: - Loading

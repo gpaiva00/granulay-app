@@ -17,39 +17,14 @@ class MenuBarManager: ObservableObject {
         }
     }
 
-    @Published var grainIntensity: Double = GrainStyle.medium.recommendedIntensity {
+    @Published var grainIntensity: Double = 0.2 {
         didSet {
-            // Aplicar limitações da versão trial
-            if TrialConfig.isTrialVersion {
-                let clampedValue = min(max(grainIntensity, TrialConfig.allowedIntensityRange.lowerBound), TrialConfig.allowedIntensityRange.upperBound)
-                if grainIntensity != clampedValue {
-                    grainIntensity = clampedValue
-                    return
-                }
-            }
             debouncedIntensityUpdate()
-        }
-    }
-
-    @Published var grainStyle: GrainStyle = .medium {
-        didSet {
-            // Apply trial version limitations
-            if TrialConfig.isTrialVersion && !TrialConfig.allowedGrainStyles.contains(grainStyle) {
-                grainStyle = .fine // Force "fine" style in trial version
-                return
-            }
-            overlayWindow?.updateGrainStyle(grainStyle)
-            saveSettings()
         }
     }
 
     @Published var preserveBrightness = true {
         didSet {
-            // Apply trial version limitations
-            if TrialConfig.isTrialVersion && preserveBrightness {
-                preserveBrightness = false // Force disable in trial version
-                return
-            }
             overlayWindow?.updatePreserveBrightness(preserveBrightness)
             saveSettings()
         }
@@ -66,18 +41,8 @@ class MenuBarManager: ObservableObject {
 
     init() {
         loadSettings()
-        applyTrialLimitations()
         setupMenuBar()
         setupOverlayWindow()
-    }
-    
-    private func applyTrialLimitations() {
-        if TrialConfig.isTrialVersion {
-            // Forçar configurações da versão trial
-            grainStyle = .fine
-            grainIntensity = min(max(grainIntensity, TrialConfig.allowedIntensityRange.lowerBound), TrialConfig.allowedIntensityRange.upperBound)
-            preserveBrightness = false
-        }
     }
 
     private func debouncedIntensityUpdate() {
@@ -117,19 +82,17 @@ class MenuBarManager: ObservableObject {
 
         menu.addItem(NSMenuItem.separator())
 
-        // Lo-Fi Station submenu (apenas na versão completa)
-        if !TrialConfig.isTrialVersion {
-            let lofiItem = NSMenuItem(
-                title: LocalizationKeys.Menu.lofiStation.localized,
-                action: nil,
-                keyEquivalent: ""
-            )
-            let lofiSubmenu = createLoFiSubmenu()
-            lofiItem.submenu = lofiSubmenu
-            menu.addItem(lofiItem)
-            
-            menu.addItem(NSMenuItem.separator())
-        }
+        // Lo-Fi Station submenu
+        let lofiItem = NSMenuItem(
+            title: LocalizationKeys.Menu.lofiStation.localized,
+            action: nil,
+            keyEquivalent: ""
+        )
+        let lofiSubmenu = createLoFiSubmenu()
+        lofiItem.submenu = lofiSubmenu
+        menu.addItem(lofiItem)
+        
+        menu.addItem(NSMenuItem.separator())
 
         let settingsItem = NSMenuItem(
             title: LocalizationKeys.Menu.settings.localized,
@@ -157,7 +120,6 @@ class MenuBarManager: ObservableObject {
     private func setupOverlayWindow() {
         overlayWindow = GrainOverlayWindow()
         overlayWindow?.updateGrainIntensity(grainIntensity)
-        overlayWindow?.updateGrainStyle(grainStyle)
         overlayWindow?.updatePreserveBrightness(preserveBrightness)
     }
 
@@ -318,18 +280,22 @@ class MenuBarManager: ObservableObject {
         showInDock = UserDefaults.standard.object(forKey: "showInDock") as? Bool ?? true
         isGrainEnabled = UserDefaults.standard.bool(forKey: "isGrainEnabled")
 
-        // Primeiro carregamos o estilo para poder usar a intensidade recomendada
-        if let styleRawValue = UserDefaults.standard.string(forKey: "grainStyle"),
-            let style = GrainStyle(rawValue: styleRawValue)
-        {
-            grainStyle = style
+        let savedIntensity = UserDefaults.standard.object(forKey: "grainIntensity") as? Double
+
+        // Migrate old grainStyle key to intensity; prefer any explicitly saved intensity value
+        if let styleRawValue = UserDefaults.standard.string(forKey: "grainStyle") {
+            let mappedIntensity: Double
+            switch styleRawValue {
+            case "fine": mappedIntensity = 0.1
+            case "coarse", "vintage": mappedIntensity = 0.3
+            default: mappedIntensity = 0.2
+            }
+            grainIntensity = savedIntensity ?? mappedIntensity
+            UserDefaults.standard.removeObject(forKey: "grainStyle")
         } else {
-            grainStyle = .fine
+            grainIntensity = savedIntensity ?? 0.2
         }
 
-        grainIntensity =
-            UserDefaults.standard.object(forKey: "grainIntensity") as? Double
-            ?? grainStyle.recommendedIntensity
         preserveBrightness =
             UserDefaults.standard.object(forKey: "preserveBrightness") as? Bool ?? true
     }
@@ -337,7 +303,6 @@ class MenuBarManager: ObservableObject {
     private func saveSettings() {
         UserDefaults.standard.set(isGrainEnabled, forKey: "isGrainEnabled")
         UserDefaults.standard.set(grainIntensity, forKey: "grainIntensity")
-        UserDefaults.standard.set(grainStyle.rawValue, forKey: "grainStyle")
         UserDefaults.standard.set(preserveBrightness, forKey: "preserveBrightness")
         UserDefaults.standard.set(showInDock, forKey: "showInDock")
     }
@@ -347,8 +312,7 @@ class MenuBarManager: ObservableObject {
     }
 
     func resetToDefaults() {
-        grainIntensity = GrainStyle.medium.recommendedIntensity
-        grainStyle = .medium
+        grainIntensity = 0.2
         isGrainEnabled = false
         preserveBrightness = true
         showInDock = false

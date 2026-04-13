@@ -4,9 +4,8 @@ import Combine
 
 class GrainOverlayWindow: NSObject, ObservableObject {
     private var overlayWindows: [NSWindow] = []
-    private var hostingViews: [NSHostingView<GrainEffect>] = []
-    private var currentIntensity: Double = 0.3
-    private var currentStyle: GrainStyle = .medium
+    private var grainViews: [GrainLayerView] = []
+    private var currentIntensity: Double = 0.2
     private var currentPreserveBrightness: Bool = true
     private var updateTimer: Timer?
     private var pendingUpdate = false
@@ -75,18 +74,13 @@ class GrainOverlayWindow: NSObject, ObservableObject {
         // Garante que a janela cubra toda a tela de forma consistente
         window.setFrame(screen.frame, display: true, animate: false)
         
-        let grainEffect = GrainEffect(
-            intensity: currentIntensity,
-            style: currentStyle,
-            screenSize: screen.frame.size,
-            preserveBrightness: currentPreserveBrightness
-        )
+        let grainView = GrainLayerView(frame: screen.frame)
+        grainView.intensity = currentIntensity
+        grainView.preserveBrightness = currentPreserveBrightness
+        grainView.applyScale(screen.backingScaleFactor)
         
-        let hostingView = NSHostingView(rootView: grainEffect)
-        hostingView.frame = screen.frame
-        hostingViews.append(hostingView)
-        
-        window.contentView = hostingView
+        grainViews.append(grainView)
+        window.contentView = grainView
         
         return window
     }
@@ -96,7 +90,7 @@ class GrainOverlayWindow: NSObject, ObservableObject {
             window.orderOut(nil)
         }
         overlayWindows.removeAll()
-        hostingViews.removeAll()
+        grainViews.removeAll()
     }
     
     @objc private func screenConfigurationChanged() {
@@ -121,7 +115,7 @@ class GrainOverlayWindow: NSObject, ObservableObject {
 
         
         // Garantir configuração correta das janelas
-        for (_, window) in overlayWindows.enumerated() {
+        for window in overlayWindows {
 
             window.level = NSWindow.Level(rawValue: Int(CGWindowLevelForKey(.screenSaverWindow)) + 1)
             window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .ignoresCycle]
@@ -161,11 +155,6 @@ class GrainOverlayWindow: NSObject, ObservableObject {
         scheduleUpdate()
     }
     
-    func updateGrainStyle(_ style: GrainStyle) {
-        currentStyle = style
-        scheduleUpdate()
-    }
-    
     func updatePreserveBrightness(_ preserve: Bool) {
         currentPreserveBrightness = preserve
         scheduleUpdate()
@@ -185,22 +174,16 @@ class GrainOverlayWindow: NSObject, ObservableObject {
     }
     
     private func performUpdate() {
-        for (index, hostingView) in hostingViews.enumerated() {
+        for (index, grainView) in grainViews.enumerated() {
             guard index < NSScreen.screens.count else { continue }
             
             let screen = NSScreen.screens[index]
-            let grainEffect = GrainEffect(
-                intensity: currentIntensity,
-                style: currentStyle,
-                screenSize: screen.frame.size,
-                preserveBrightness: currentPreserveBrightness
-            )
-            
-            // Atualiza a view existente ao invés de recriar
-            hostingView.rootView = grainEffect
+            grainView.intensity = currentIntensity
+            grainView.preserveBrightness = currentPreserveBrightness
+            grainView.applyScale(screen.backingScaleFactor)
             
             // Forçar redesenho
-            hostingView.needsDisplay = true
+            grainView.needsDisplay = true
             if index < overlayWindows.count {
                 overlayWindows[index].display()
             }

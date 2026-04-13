@@ -25,11 +25,6 @@
 "settings.intensity.weak" = "Weak";
 "settings.intensity.medium" = "Medium";
 "settings.intensity.strong" = "Strong";
-"settings.grain_style" = "Grain Style";
-"settings.grain_style.fine" = "Fine";
-"settings.grain_style.medium" = "Medium";
-"settings.grain_style.coarse" = "Coarse";
-"settings.grain_style.vintage" = "Vintage";
 "settings.preserve_brightness" = "Preserve Brightness";
 "settings.preserve_brightness.description" = "Maintains the original screen brightness";
 
@@ -120,19 +115,6 @@
 "lofi.credits.format" = "Music by %@ from Pixabay (ID: %@)";
 
 // Purchase Settings
-"purchase.trial.title" = "Trial Version";
-"purchase.trial.description" = "You are using the trial version of Granulay with limited functionality:";
-"purchase.trial.basic_grain" = "Basic grain effect (Fine style, Weak intensity)";
-"purchase.trial.all_grain_styles" = "All grain styles and intensities";
-"purchase.trial.lofi_functionality" = "Lo-Fi functionality";
-"purchase.trial.behavior_settings" = "Behavior settings";
-"purchase.trial.preserve_brightness" = "Preserve brightness";
-"purchase.unlock.title" = "Unlock all features:";
-"purchase.unlock.all_grain_styles" = "All grain styles (Fine, Medium, Coarse)";
-"purchase.unlock.all_intensities" = "All intensities (Weak, Medium, Strong)";
-"purchase.unlock.complete_lofi" = "Complete Lo-Fi functionality";
-"purchase.unlock.advanced_settings" = "Advanced behavior settings";
-"purchase.unlock.preserve_brightness" = "Preserve brightness option";
 "purchase.button.title" = "Buy Full Version";
 "purchase.lifetime_access" = "💎 Complete and lifetime access";
 "purchase.error.title" = "Error";
@@ -170,12 +152,6 @@
 /* Trial Version */
 "trial.title" = "Granulay Trial";
 "trial.subtitle" = "Experience the vintage grain effect";
-"trial.limitations.title" = "Trial Version Limitations";
-"trial.limitations.grain_style" = "• Grain style limited to Fine only";
-"trial.limitations.intensity" = "• Grain intensity limited to Weak only";
-"trial.limitations.brightness" = "• Preserve brightness disabled";
-"trial.limitations.lofi" = "• Lo-Fi Station not available";
-"trial.limitations.behavior" = "• Behavior settings not available";
 "trial.full_version.title" = "Full Version Features";
 "trial.full_version.all_styles" = "• All grain styles (Fine, Medium, Coarse, Vintage)";
 "trial.full_version.all_intensities" = "• All intensity levels (Weak, Medium, Strong)";
@@ -272,12 +248,6 @@
 // Trial Version
 "trial.title" = "Granulay Trial";
 "trial.subtitle" = "Experience the vintage grain effect";
-"trial.limitations.title" = "Trial Limitations";
-"trial.limitations.grain_style" = "• Grain style limited to Fine only";
-"trial.limitations.intensity" = "• Grain intensity limited to Weak only";
-"trial.limitations.brightness" = "• Preserve brightness disabled";
-"trial.limitations.lofi" = "• Lo-Fi Station not available";
-"trial.limitations.behavior" = "• Behavior settings not available";
 "trial.full_version.title" = "Full Version Features";
 "trial.full_version.all_styles" = "• All grain styles (Fine, Medium, Coarse, Vintage)";
 "trial.full_version.all_intensities" = "• All intensity levels (Weak, Medium, Strong)";

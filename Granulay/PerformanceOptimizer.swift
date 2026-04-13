@@ -60,40 +60,14 @@ class PerformanceOptimizer: ObservableObject {
         let performanceRatio = averageFPS / targetFPS
         
         if performanceRatio < 0.8 { // Performance abaixo de 80%
-            applyPerformanceOptimizations()
+            DispatchQueue.main.async {
+                self.optimizeUpdateFrequency(reduce: true)
+            }
         } else if performanceRatio > 0.95 { // Performance boa
-            removePerformanceOptimizations()
+            DispatchQueue.main.async {
+                self.optimizeUpdateFrequency(reduce: false)
+            }
         }
-    }
-    
-    private func applyPerformanceOptimizations() {
-        DispatchQueue.main.async {
-            // Reduz qualidade da textura temporariamente
-            self.optimizeTextureQuality(reduce: true)
-            
-            // Reduz frequência de atualizações
-            self.optimizeUpdateFrequency(reduce: true)
-        }
-    }
-    
-    private func removePerformanceOptimizations() {
-        DispatchQueue.main.async {
-            // Restaura qualidade normal
-            self.optimizeTextureQuality(reduce: false)
-            
-            // Restaura frequência normal
-            self.optimizeUpdateFrequency(reduce: false)
-        }
-    }
-    
-    private func optimizeTextureQuality(reduce: Bool) {
-        let newSize = reduce ? CGSize(width: 256, height: 256) : CGSize(width: 512, height: 512)
-        
-        // Notifica o cache para ajustar qualidade
-        NotificationCenter.default.post(
-            name: .textureQualityChanged,
-            object: newSize
-        )
     }
     
     private func optimizeUpdateFrequency(reduce: Bool) {

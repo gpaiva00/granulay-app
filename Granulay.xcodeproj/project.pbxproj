@@ -20,8 +20,6 @@
 		B1000043000000000000001 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B1000040000000000000001 /* Localizable.strings */; };
 		B1000044000000000000001 /* LoFiMusicManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000045000000000000001 /* LoFiMusicManager.swift */; };
 		B1000046000000000000001 /* LoFiControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000047000000000000001 /* LoFiControlsView.swift */; };
-		B1000048000000000000001 /* TrialConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000049000000000000001 /* TrialConfig.swift */; };
-		B1000050000000000000001 /* PurchaseSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000051000000000000001 /* PurchaseSettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,8 +39,6 @@
 		B1000042000000000000001 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		B1000045000000000000001 /* LoFiMusicManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoFiMusicManager.swift; sourceTree = "<group>"; };
 		B1000047000000000000001 /* LoFiControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoFiControlsView.swift; sourceTree = "<group>"; };
-		B1000049000000000000001 /* TrialConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrialConfig.swift; sourceTree = "<group>"; };
-		B1000051000000000000001 /* PurchaseSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseSettingsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,8 +74,6 @@
 				B1000039000000000000001 /* LocalizationHelper.swift */,
 				B1000045000000000000001 /* LoFiMusicManager.swift */,
 				B1000047000000000000001 /* LoFiControlsView.swift */,
-				B1000049000000000000001 /* TrialConfig.swift */,
-				B1000051000000000000001 /* PurchaseSettingsView.swift */,
 				B1000040000000000000001 /* Localizable.strings */,
 				B1000006000000000000001 /* Assets.xcassets */,
 				B1000023000000000000001 /* Preview Content */,
@@ -186,8 +180,6 @@
 				B1000038000000000000001 /* LocalizationHelper.swift in Sources */,
 				B1000044000000000000001 /* LoFiMusicManager.swift in Sources */,
 				B1000046000000000000001 /* LoFiControlsView.swift in Sources */,
-				B1000048000000000000001 /* TrialConfig.swift in Sources */,
-				B1000050000000000000001 /* PurchaseSettingsView.swift in Sources */,
 				B1000001000000000000001 /* GranulayApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
