@@ -7,15 +7,17 @@ class GrainOverlayWindow: NSObject, ObservableObject {
     private var grainViews: [GrainLayerView] = []
     private var currentIntensity: Double = 0.2
     private var currentPreserveBrightness: Bool = true
-    private var updateTimer: Timer?
-    private var pendingUpdate = false
-    private var updateInterval: TimeInterval = 0.05
+    private var settingsUpdateTimer: Timer?
+    private var pendingSettingsUpdate = false
+    private var animationTimer: Timer?
+    private let settingsDebounceInterval: TimeInterval = 0.05
+    private var animationInterval: TimeInterval = GrainRenderTuning.baseAnimationInterval
+    private var updateFrequencyObserver: NSObjectProtocol?
     
     override init() {
         super.init()
         
-        // Preload texturas para melhor performance
-        GrainTextureCache.shared.preloadTextures()
+        GrainTextureCache.shared.preloadTextures(for: NSScreen.screens)
         
         setupPerformanceOptimizations()
         setupOverlayWindows()
@@ -29,18 +31,26 @@ class GrainOverlayWindow: NSObject, ObservableObject {
     }
     
     deinit {
+        if let updateFrequencyObserver {
+            NotificationCenter.default.removeObserver(updateFrequencyObserver)
+        }
         NotificationCenter.default.removeObserver(self)
-        updateTimer?.invalidate()
+        settingsUpdateTimer?.invalidate()
+        animationTimer?.invalidate()
     }
     
     private func setupPerformanceOptimizations() {
-        NotificationCenter.default.addObserver(
+        updateFrequencyObserver = NotificationCenter.default.addObserver(
             forName: .updateFrequencyChanged,
             object: nil,
             queue: .main
         ) { notification in
             if let newInterval = notification.object as? TimeInterval {
-                self.updateInterval = newInterval
+                self.animationInterval = min(
+                    GrainRenderTuning.maxAnimationInterval,
+                    max(GrainRenderTuning.minAnimationInterval, newInterval)
+                )
+                self.restartAnimationLoopIfVisible()
             }
         }
     }
@@ -77,6 +87,7 @@ class GrainOverlayWindow: NSObject, ObservableObject {
         let grainView = GrainLayerView(frame: screen.frame)
         grainView.intensity = currentIntensity
         grainView.preserveBrightness = currentPreserveBrightness
+        grainView.configureForScreen(screen)
         grainView.applyScale(screen.backingScaleFactor)
         
         grainViews.append(grainView)
@@ -89,6 +100,7 @@ class GrainOverlayWindow: NSObject, ObservableObject {
         for window in overlayWindows {
             window.orderOut(nil)
         }
+        stopAnimationLoop()
         overlayWindows.removeAll()
         grainViews.removeAll()
     }
@@ -96,8 +108,9 @@ class GrainOverlayWindow: NSObject, ObservableObject {
     @objc private func screenConfigurationChanged() {
         DispatchQueue.main.async {
             let wasVisible = !self.overlayWindows.isEmpty && self.overlayWindows.first?.isVisible == true
-            
+
             self.setupOverlayWindows()
+            GrainTextureCache.shared.preloadTextures(for: NSScreen.screens)
             
             if wasVisible {
                 self.showOverlay()
@@ -142,55 +155,88 @@ class GrainOverlayWindow: NSObject, ObservableObject {
         // Forçar uma atualização imediata
 
         performUpdate()
+        startAnimationLoop()
     }
     
     func hideOverlay() {
         for window in overlayWindows {
             window.orderOut(nil)
         }
+        stopAnimationLoop()
     }
     
     func updateGrainIntensity(_ intensity: Double) {
+        guard currentIntensity != intensity else { return }
         currentIntensity = intensity
-        scheduleUpdate()
+        scheduleSettingsUpdate()
     }
     
     func updatePreserveBrightness(_ preserve: Bool) {
+        guard currentPreserveBrightness != preserve else { return }
         currentPreserveBrightness = preserve
-        scheduleUpdate()
+        scheduleSettingsUpdate()
     }
     
     // Implementa debouncing para evitar atualizações excessivas
-    private func scheduleUpdate() {
-        guard !pendingUpdate else { return }
+    private func scheduleSettingsUpdate() {
+        guard !pendingSettingsUpdate else { return }
         
-        pendingUpdate = true
-        updateTimer?.invalidate()
+        pendingSettingsUpdate = true
+        settingsUpdateTimer?.invalidate()
         
-        updateTimer = Timer.scheduledTimer(withTimeInterval: updateInterval, repeats: false) { _ in
+        settingsUpdateTimer = Timer.scheduledTimer(withTimeInterval: settingsDebounceInterval, repeats: false) { _ in
             self.performUpdate()
-            self.pendingUpdate = false
+            self.pendingSettingsUpdate = false
         }
     }
     
     private func performUpdate() {
-        for (index, grainView) in grainViews.enumerated() {
-            guard index < NSScreen.screens.count else { continue }
+        for (index, window) in overlayWindows.enumerated() {
+            guard index < grainViews.count else { continue }
+            let grainView = grainViews[index]
             
-            let screen = NSScreen.screens[index]
             grainView.intensity = currentIntensity
             grainView.preserveBrightness = currentPreserveBrightness
-            grainView.applyScale(screen.backingScaleFactor)
+            if let screen = window.screen ?? NSScreen.main {
+                grainView.configureForScreen(screen)
+                grainView.applyScale(screen.backingScaleFactor)
+            }
             
             // Forçar redesenho
             grainView.needsDisplay = true
-            if index < overlayWindows.count {
-                overlayWindows[index].display()
-            }
+            window.display()
         }
         
         // Força refresh das janelas para garantir aplicação uniforme
         refreshAllWindows()
+    }
+    
+    private func startAnimationLoop() {
+        stopAnimationLoop()
+        
+        let timer = Timer(timeInterval: animationInterval, repeats: true) { [weak self] _ in
+            self?.advanceAnimationFrame()
+        }
+        timer.tolerance = animationInterval * 0.25
+        RunLoop.main.add(timer, forMode: .common)
+        animationTimer = timer
+    }
+    
+    private func stopAnimationLoop() {
+        animationTimer?.invalidate()
+        animationTimer = nil
+    }
+    
+    private func restartAnimationLoopIfVisible() {
+        if overlayWindows.contains(where: { $0.isVisible }) {
+            startAnimationLoop()
+        }
+    }
+    
+    private func advanceAnimationFrame() {
+        for grainView in grainViews {
+            grainView.advanceAnimationFrame()
+        }
     }
     
     private func refreshAllWindows() {
