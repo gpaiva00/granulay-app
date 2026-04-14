@@ -86,6 +86,11 @@ struct LocalizationKeys {
         struct Appearance {
             static let title = "settings.appearance.title"
             static let description = "settings.appearance.description"
+            static let motionTitle = "settings.appearance.motion_title"
+            static let motionMoving = "settings.appearance.motion_moving"
+            static let motionStatic = "settings.appearance.motion_static"
+            static let matteMode = "settings.appearance.matte_mode"
+            static let matteModeDescription = "settings.appearance.matte_mode.description"
         }
 
         struct Behavior {

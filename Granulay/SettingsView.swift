@@ -285,7 +285,7 @@ struct AppearanceSettingsView: View {
 
                             Button(LocalizationKeys.Settings.Intensity.strong.localized) {
                                 withLoadingDelay {
-                                    menuBarManager.grainIntensity = 0.3
+                                    menuBarManager.grainIntensity = 0.4
                                 }
                             }
                             .buttonStyle(
@@ -295,6 +295,38 @@ struct AppearanceSettingsView: View {
                             .disabled(!menuBarManager.isGrainEnabled)
                             .opacity(menuBarManager.isGrainEnabled ? 1.0 : 0.5)
                             
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+
+                    Divider()
+                    
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text(LocalizationKeys.Settings.Appearance.motionTitle.localized)
+                            .font(.subheadline)
+
+                        HStack(spacing: 10) {
+                            Button(LocalizationKeys.Settings.Appearance.motionMoving.localized) {
+                                withLoadingDelay {
+                                    menuBarManager.isGrainAnimated = true
+                                }
+                            }
+                            .buttonStyle(
+                                IntensityButtonStyle(isSelected: menuBarManager.isGrainAnimated)
+                            )
+                            .disabled(!menuBarManager.isGrainEnabled)
+                            .opacity(menuBarManager.isGrainEnabled ? 1.0 : 0.5)
+
+                            Button(LocalizationKeys.Settings.Appearance.motionStatic.localized) {
+                                withLoadingDelay {
+                                    menuBarManager.isGrainAnimated = false
+                                }
+                            }
+                            .buttonStyle(
+                                IntensityButtonStyle(isSelected: !menuBarManager.isGrainAnimated)
+                            )
+                            .disabled(!menuBarManager.isGrainEnabled)
+                            .opacity(menuBarManager.isGrainEnabled ? 1.0 : 0.5)
                         }
                         .frame(maxWidth: .infinity)
                     }

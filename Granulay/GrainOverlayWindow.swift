@@ -7,6 +7,8 @@ class GrainOverlayWindow: NSObject, ObservableObject {
     private var grainViews: [GrainLayerView] = []
     private var currentIntensity: Double = 0.2
     private var currentPreserveBrightness: Bool = true
+    private var currentGrainAnimated: Bool = true
+    private var currentMatteMode: Bool = false
     private var settingsUpdateTimer: Timer?
     private var pendingSettingsUpdate = false
     private var animationTimer: Timer?
@@ -17,7 +19,7 @@ class GrainOverlayWindow: NSObject, ObservableObject {
     override init() {
         super.init()
         
-        GrainTextureCache.shared.preloadTextures(for: NSScreen.screens)
+        GrainTextureCache.shared.preloadTextures(for: NSScreen.screens, isMatteMode: false)
         
         setupPerformanceOptimizations()
         setupOverlayWindows()
@@ -87,6 +89,8 @@ class GrainOverlayWindow: NSObject, ObservableObject {
         let grainView = GrainLayerView(frame: screen.frame)
         grainView.intensity = currentIntensity
         grainView.preserveBrightness = currentPreserveBrightness
+        grainView.isAnimated = currentGrainAnimated
+        grainView.isMatteMode = currentMatteMode
         grainView.configureForScreen(screen)
         grainView.applyScale(screen.backingScaleFactor)
         
@@ -110,7 +114,7 @@ class GrainOverlayWindow: NSObject, ObservableObject {
             let wasVisible = !self.overlayWindows.isEmpty && self.overlayWindows.first?.isVisible == true
 
             self.setupOverlayWindows()
-            GrainTextureCache.shared.preloadTextures(for: NSScreen.screens)
+            GrainTextureCache.shared.preloadTextures(for: NSScreen.screens, isMatteMode: self.currentMatteMode)
             
             if wasVisible {
                 self.showOverlay()
@@ -177,6 +181,25 @@ class GrainOverlayWindow: NSObject, ObservableObject {
         scheduleSettingsUpdate()
     }
     
+    func updateGrainAnimated(_ animated: Bool) {
+        guard currentGrainAnimated != animated else { return }
+        currentGrainAnimated = animated
+        for grainView in grainViews {
+            grainView.isAnimated = animated
+        }
+        if animated {
+            restartAnimationLoopIfVisible()
+        } else {
+            stopAnimationLoop()
+        }
+    }
+    
+    func updateMatteMode(_ matteMode: Bool) {
+        guard currentMatteMode != matteMode else { return }
+        currentMatteMode = matteMode
+        scheduleSettingsUpdate()
+    }
+    
     // Implementa debouncing para evitar atualizações excessivas
     private func scheduleSettingsUpdate() {
         guard !pendingSettingsUpdate else { return }
@@ -197,6 +220,8 @@ class GrainOverlayWindow: NSObject, ObservableObject {
             
             grainView.intensity = currentIntensity
             grainView.preserveBrightness = currentPreserveBrightness
+            grainView.isAnimated = currentGrainAnimated
+            grainView.isMatteMode = currentMatteMode
             if let screen = window.screen ?? NSScreen.main {
                 grainView.configureForScreen(screen)
                 grainView.applyScale(screen.backingScaleFactor)

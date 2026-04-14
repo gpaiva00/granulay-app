@@ -7,7 +7,7 @@ import SwiftUI
 struct GrainRenderTuning {
     static let atlasFrameCount = 12 // Quantidade de frames pré-gerados por textura para animação do grão.
     static let maxTextureDimension = 1600 // Limite máximo de dimensão para reduzir custo de memória/CPU em telas grandes.
-    static let noiseAmplitude: Double = 46.0 // Intensidade máxima da variação de luminância aplicada ao ruído.
+    static let noiseAmplitude: Double = 85.0 // Intensidade máxima da variação de luminância aplicada ao ruído.
     static let spatialCorrelation: Double = 0.14 // Mistura entre pixel atual e vizinhos para evitar ruído totalmente aleatório.
     static let highFrequencyAmount: Double = 0.12 // Fração de micro-ruído adicionada para preservar detalhe fino.
     static let distributionClip: Double = 0.42 // Corte dos extremos da distribuição para evitar outliers visuais.
@@ -15,9 +15,9 @@ struct GrainRenderTuning {
     static let baseAnimationInterval: TimeInterval = 1.0 / 12.0 // Cadência padrão de troca de frames da textura.
     static let minAnimationInterval: TimeInterval = 1.0 / 20.0 // Menor intervalo permitido (maior frequência).
     static let maxAnimationInterval: TimeInterval = 1.0 / 8.0 // Maior intervalo permitido (menor frequência).
-    static let preserveBrightnessOpacityMultiplier: Double = 0.28 // Opacidade usada quando brilho é preservado.
-    static let standardOpacityMultiplier: Double = 0.42 // Opacidade usada no modo normal de composição.
-    static let intensityCurveExponent: Double = 0.92 // Curva não-linear para resposta mais natural do slider de intensidade.
+    static let preserveBrightnessOpacityMultiplier: Double = 0.15 // Opacidade usada quando brilho é preservado (alpha base).
+    static let standardOpacityMultiplier: Double = 0.28 // Opacidade usada no modo normal de composição (alpha base).
+    static let intensityCurveExponent: Double = 0.65 // Curva não-linear para resposta mais natural do slider de intensidade.
     static let maxCachedAtlases = 6 // Limite de atlas mantidos em cache (política LRU simples).
     static let screenNumberDeviceKey = NSDeviceDescriptionKey("NSScreenNumber") // Chave de deviceDescription para identificar display.
 }
@@ -27,12 +27,14 @@ struct GrainTextureKey: Hashable {
     let pixelWidth: Int // Largura da textura gerada em pixels.
     let pixelHeight: Int // Altura da textura gerada em pixels.
     let scaleBucket: Int // Bucket da escala para separar caches entre densidades diferentes.
+    let isMatteMode: Bool // Se a textura foi gerada para modo matte
 }
 
 private struct GrainTextureDescriptor {
     let key: GrainTextureKey // Chave usada para lookup e invalidação no cache.
     let pixelWidth: Int // Resolução efetiva horizontal da geração.
     let pixelHeight: Int // Resolução efetiva vertical da geração.
+    let isMatteMode: Bool
 }
 
 struct GrainTextureAtlas {
@@ -70,9 +72,9 @@ class GrainTextureCache {
     
     private init() {}
     
-    func atlas(for screen: NSScreen?) -> GrainTextureAtlas? {
+    func atlas(for screen: NSScreen?, isMatteMode: Bool) -> GrainTextureAtlas? {
         guard let screen,
-              let descriptor = Self.makeDescriptor(for: screen)
+              let descriptor = Self.makeDescriptor(for: screen, isMatteMode: isMatteMode)
         else {
             return nil
         }
@@ -92,8 +94,8 @@ class GrainTextureCache {
         }
     }
     
-    func preloadTextures(for screens: [NSScreen]) {
-        let descriptors = screens.compactMap(Self.makeDescriptor)
+    func preloadTextures(for screens: [NSScreen], isMatteMode: Bool) {
+        let descriptors = screens.compactMap { Self.makeDescriptor(for: $0, isMatteMode: isMatteMode) }
         guard !descriptors.isEmpty else { return }
         
         queue.async {
@@ -111,7 +113,7 @@ class GrainTextureCache {
         }
     }
     
-    private static func makeDescriptor(for screen: NSScreen) -> GrainTextureDescriptor? {
+    private static func makeDescriptor(for screen: NSScreen, isMatteMode: Bool) -> GrainTextureDescriptor? {
         let scale = max(1.0, screen.backingScaleFactor) // Garante escala válida para cálculo em pixels.
         let rawWidth = Int((screen.frame.width * scale).rounded())
         let rawHeight = Int((screen.frame.height * scale).rounded())
@@ -137,10 +139,11 @@ class GrainTextureCache {
             displayID: displayID,
             pixelWidth: pixelWidth,
             pixelHeight: pixelHeight,
-            scaleBucket: Int((scale * 100.0).rounded())
+            scaleBucket: Int((scale * 100.0).rounded()),
+            isMatteMode: isMatteMode
         )
         
-        return GrainTextureDescriptor(key: key, pixelWidth: pixelWidth, pixelHeight: pixelHeight)
+        return GrainTextureDescriptor(key: key, pixelWidth: pixelWidth, pixelHeight: pixelHeight, isMatteMode: isMatteMode)
     }
     
     private func insertIntoCache(_ atlas: GrainTextureAtlas) {
@@ -163,8 +166,9 @@ class GrainTextureCache {
 }
 
 private func createGrainAtlas(descriptor: GrainTextureDescriptor) -> GrainTextureAtlas? {
+    let frameCount = descriptor.isMatteMode ? 1 : GrainRenderTuning.atlasFrameCount
     var frames: [CGImage] = []
-    frames.reserveCapacity(GrainRenderTuning.atlasFrameCount) // Pré-aloca capacidade para reduzir realocações.
+    frames.reserveCapacity(frameCount) // Pré-aloca capacidade para reduzir realocações.
     
     let baseSeed =
         UInt64(descriptor.key.displayID) << 32
@@ -173,84 +177,170 @@ private func createGrainAtlas(descriptor: GrainTextureDescriptor) -> GrainTextur
         ^ UInt64(descriptor.key.scaleBucket & 0xFFFF) << 48
     var seedGenerator = SplitMix64(seed: baseSeed)
     
-    for frameIndex in 0..<GrainRenderTuning.atlasFrameCount {
+    for frameIndex in 0..<frameCount {
         let frameSeed = seedGenerator.next() ^ UInt64(frameIndex) &* 0x9E3779B185EBCA87
-        guard let frame = createFineGrainFrame(
-            pixelWidth: descriptor.pixelWidth,
-            pixelHeight: descriptor.pixelHeight,
-            seed: frameSeed
-        ) else {
+        
+        let frame: CGImage?
+        if descriptor.isMatteMode {
+            frame = createMatteGrainFrame(pixelWidth: descriptor.pixelWidth, pixelHeight: descriptor.pixelHeight, seed: frameSeed)
+        } else {
+            frame = createFineGrainFrame(pixelWidth: descriptor.pixelWidth, pixelHeight: descriptor.pixelHeight, seed: frameSeed)
+        }
+        
+        guard let validFrame = frame else {
             return nil
         }
-        frames.append(frame)
+        frames.append(validFrame)
     }
     
     return GrainTextureAtlas(key: descriptor.key, frames: frames)
 }
 
-private func createFineGrainFrame(pixelWidth: Int, pixelHeight: Int, seed: UInt64) -> CGImage? {
-    let pixelCount = pixelWidth * pixelHeight
-    guard pixelCount > 0 else { return nil }
-    
-    var rng = SplitMix64(seed: seed)
-    var baseNoise = [Float](repeating: 0, count: pixelCount) // Ruído base antes da modelagem espacial.
-    
-    for index in 0..<pixelCount {
-        let centered = (rng.nextUnit() + rng.nextUnit() + rng.nextUnit()) / 3.0 - 0.5
-        baseNoise[index] = Float(centered)
-    }
-    
-    var shapedNoise = [Float](repeating: 0, count: pixelCount) // Ruído final após correlação e micro-detalhe.
-    let correlation = Float(GrainRenderTuning.spatialCorrelation) // Peso da média de vizinhança.
-    let highFrequency = Float(GrainRenderTuning.highFrequencyAmount) // Peso do ruído fino adicional.
-    
-    for y in 0..<pixelHeight {
-        let rowStart = y * pixelWidth
-        for x in 0..<pixelWidth {
-            let idx = rowStart + x
-            let current = baseNoise[idx]
-            let left = x > 0 ? baseNoise[idx - 1] : current
-            let right = x + 1 < pixelWidth ? baseNoise[idx + 1] : current
-            let up = y > 0 ? baseNoise[idx - pixelWidth] : current
-            let down = y + 1 < pixelHeight ? baseNoise[idx + pixelWidth] : current
-            
-            let neighborhood = (left + right + up + down) * 0.25
-            let microNoise = Float(rng.nextUnit() - 0.5) * highFrequency
-            shapedNoise[idx] = (current * (1.0 - correlation) + neighborhood * correlation) + microNoise
-        }
-    }
-    
-    var pixels = [UInt8](repeating: 0, count: pixelCount) // Buffer grayscale final em 8 bits.
-    let clip = Float(GrainRenderTuning.distributionClip) // Limite da distribuição antes da conversão para luma.
-    let amplitude = Float(GrainRenderTuning.noiseAmplitude) // Escala de contraste na conversão para luma.
-    
-    for index in 0..<pixelCount {
-        var sample = shapedNoise[index]
-        sample = min(clip, max(-clip, sample))
+    private func createFineGrainFrame(pixelWidth: Int, pixelHeight: Int, seed: UInt64) -> CGImage? {
+        let pixelCount = pixelWidth * pixelHeight
+        guard pixelCount > 0 else { return nil }
         
-        let luma = 127.0 + sample * amplitude
-        let rounded = Int(luma.rounded())
-        pixels[index] = UInt8(min(255, max(0, rounded)))
+        var rng = SplitMix64(seed: seed)
+        var baseNoise = [Float](repeating: 0, count: pixelCount) // Ruído base antes da modelagem espacial.
+        
+        for index in 0..<pixelCount {
+            let centered = (rng.nextUnit() + rng.nextUnit() + rng.nextUnit()) / 3.0 - 0.5
+            baseNoise[index] = Float(centered)
+        }
+        
+        var shapedNoise = [Float](repeating: 0, count: pixelCount) // Ruído final após correlação e micro-detalhe.
+        let correlation = Float(GrainRenderTuning.spatialCorrelation) // Peso da média de vizinhança.
+        let highFrequency = Float(GrainRenderTuning.highFrequencyAmount) // Peso do ruído fino adicional.
+        
+        for y in 0..<pixelHeight {
+            let rowStart = y * pixelWidth
+            for x in 0..<pixelWidth {
+                let idx = rowStart + x
+                let current = baseNoise[idx]
+                let left = x > 0 ? baseNoise[idx - 1] : current
+                let right = x + 1 < pixelWidth ? baseNoise[idx + 1] : current
+                let up = y > 0 ? baseNoise[idx - pixelWidth] : current
+                let down = y + 1 < pixelHeight ? baseNoise[idx + pixelWidth] : current
+                
+                let neighborhood = (left + right + up + down) * 0.25
+                let microNoise = Float(rng.nextUnit() - 0.5) * highFrequency
+                shapedNoise[idx] = (current * (1.0 - correlation) + neighborhood * correlation) + microNoise
+            }
+        }
+        
+        // We now generate an RGBA image (32 bits per pixel) to allow both black and white noise.
+        // This simulates a "true grain" where we have 50% transparent, 25% black (darkening), and 25% white (lightening) pixels.
+        var pixels = [UInt8](repeating: 0, count: pixelCount * 4) 
+        let clip = Float(GrainRenderTuning.distributionClip)
+        
+        // When mapping noise to RGBA, we want a lot of transparent pixels and some dark/light pixels
+        for index in 0..<pixelCount {
+            var sample = shapedNoise[index]
+            sample = min(clip, max(-clip, sample))
+            
+            // Map the sample (-clip to +clip) to a -1.0 ... 1.0 range
+            let normalized = sample / clip
+            
+            var alpha: Float = 0.0
+            var color: UInt8 = 0
+            
+            // Dead zone in the middle (50% of the distribution becomes completely transparent)
+            if normalized > 0.5 {
+                // Positive peaks become white grain
+                alpha = (normalized - 0.5) * 2.0 * 255.0
+                color = 255
+            } else if normalized < -0.5 {
+                // Negative valleys become black grain
+                alpha = (-normalized - 0.5) * 2.0 * 255.0
+                color = 0
+            } else {
+                // Midtones are completely transparent
+                alpha = 0.0
+                color = 0
+            }
+            
+            let alphaInt = UInt8(min(255, max(0, Int(alpha.rounded()))))
+            let byteIndex = index * 4
+            
+            // Premultiplied alpha format (R, G, B, A)
+            // If color is 255 (white), premultiplied RGB = Alpha.
+            // If color is 0 (black), premultiplied RGB = 0.
+            let premultipliedColor = (color == 255) ? alphaInt : 0
+            
+            pixels[byteIndex] = premultipliedColor     // R
+            pixels[byteIndex + 1] = premultipliedColor // G
+            pixels[byteIndex + 2] = premultipliedColor // B
+            pixels[byteIndex + 3] = alphaInt           // A
+        }
+        
+        guard let provider = CGDataProvider(data: Data(pixels) as CFData) else {
+            return nil
+        }
+        
+        return CGImage(
+            width: pixelWidth,
+            height: pixelHeight,
+            bitsPerComponent: 8,
+            bitsPerPixel: 32,
+            bytesPerRow: pixelWidth * 4,
+            space: CGColorSpaceCreateDeviceRGB(),
+            bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue),
+            provider: provider,
+            decode: nil,
+            shouldInterpolate: true,
+            intent: .defaultIntent
+        )
     }
-    
-    guard let provider = CGDataProvider(data: Data(pixels) as CFData) else {
-        return nil
+
+    private func createMatteGrainFrame(pixelWidth: Int, pixelHeight: Int, seed: UInt64) -> CGImage? {
+        let pixelCount = pixelWidth * pixelHeight
+        guard pixelCount > 0 else { return nil }
+        
+        var rng = SplitMix64(seed: seed)
+        var pixels = [UInt8](repeating: 0, count: pixelCount * 4)
+        
+        let hazeAlpha: UInt8 = 20
+        let sparkleThreshold = 0.96
+        
+        for index in 0..<pixelCount {
+            let byteIndex = index * 4
+            let rRand = rng.nextUnit()
+            let gRand = rng.nextUnit()
+            let bRand = rng.nextUnit()
+            
+            var r: UInt8 = 255
+            var g: UInt8 = 255
+            var b: UInt8 = 255
+            var a: UInt8 = hazeAlpha
+            
+            if rRand > sparkleThreshold { r = 255; g = 0; b = 0; a = 255 }
+            else if gRand > sparkleThreshold { r = 0; g = 255; b = 0; a = 255 }
+            else if bRand > sparkleThreshold { r = 0; g = 0; b = 255; a = 255 }
+            
+            if a == 255 {
+                pixels[byteIndex] = r
+                pixels[byteIndex + 1] = g
+                pixels[byteIndex + 2] = b
+                pixels[byteIndex + 3] = 255
+            } else {
+                let alphaFloat = Float(a) / 255.0
+                pixels[byteIndex] = UInt8(Float(r) * alphaFloat)
+                pixels[byteIndex + 1] = UInt8(Float(g) * alphaFloat)
+                pixels[byteIndex + 2] = UInt8(Float(b) * alphaFloat)
+                pixels[byteIndex + 3] = a
+            }
+        }
+        
+        guard let provider = CGDataProvider(data: Data(pixels) as CFData) else { return nil }
+        
+        return CGImage(
+            width: pixelWidth, height: pixelHeight,
+            bitsPerComponent: 8, bitsPerPixel: 32, bytesPerRow: pixelWidth * 4,
+            space: CGColorSpaceCreateDeviceRGB(),
+            bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue),
+            provider: provider, decode: nil, shouldInterpolate: true, intent: .defaultIntent
+        )
     }
-    
-    return CGImage(
-        width: pixelWidth, // Largura da textura.
-        height: pixelHeight, // Altura da textura.
-        bitsPerComponent: 8, // Precisão por canal.
-        bitsPerPixel: 8, // Um único canal (grayscale).
-        bytesPerRow: pixelWidth, // 1 byte por pixel.
-        space: CGColorSpaceCreateDeviceGray(), // Espaço de cor cinza para textura de luminância.
-        bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.none.rawValue), // Sem canal alpha.
-        provider: provider, // Fonte dos bytes de pixel.
-        decode: nil, // Sem remapeamento de faixa.
-        shouldInterpolate: true, // Permite interpolação suave em escalas fracionárias.
-        intent: .defaultIntent // Intent padrão de renderização.
-    )
-}
 
 // MARK: - Notification Extensions
 extension Notification.Name {
@@ -261,7 +351,7 @@ class GrainLayerView: NSView {
     
     // MARK: - Properties
     
-    var intensity: Double = 1.0 { // Intensidade do efeito de grão aplicada à opacidade da camada.
+    var intensity: Double = 1.1 { // Intensidade do efeito de grão aplicada à opacidade da camada.
         didSet {
             if oldValue != intensity {
                 updateLayerProperties()
@@ -277,10 +367,30 @@ class GrainLayerView: NSView {
         }
     }
     
+    var isGrainAnimated = true {
+        didSet {
+            if oldValue != isGrainAnimated {
+                if isGrainAnimated {
+                    applyTemporalJitter()
+                } else {
+                    layer?.contentsRect = CGRect(x: 0, y: 0, width: 1, height: 1)
+                }
+            }
+        }
+    }
+    
+    var isMatteMode: Bool = false {
+        didSet {
+            if oldValue != isMatteMode {
+                configureForScreen(window?.screen)
+                updateLayerProperties()
+            }
+        }
+    }
+    
     private var currentScale: CGFloat = 1.0 // Escala atual da tela para manter nitidez correta do conteúdo.
     private var textureAtlas: GrainTextureAtlas? // Atlas atualmente associado à tela da janela.
     private var currentFrameIndex = 0 // Índice do frame atual no atlas animado.
-    private let softLightBlendFilter = CIFilter(name: "CISoftLightBlendMode") // Filtro reutilizado no modo preserveBrightness.
     
     // MARK: - Initialization
     
@@ -317,7 +427,7 @@ class GrainLayerView: NSView {
     // MARK: - Public API
     
     func configureForScreen(_ screen: NSScreen?) {
-        guard let atlas = GrainTextureCache.shared.atlas(for: screen) else {
+        guard let atlas = GrainTextureCache.shared.atlas(for: screen, isMatteMode: isMatteMode) else {
             return
         }
         
@@ -338,12 +448,13 @@ class GrainLayerView: NSView {
     }
     
     func advanceAnimationFrame() {
+        guard isGrainAnimated else { return }
         guard let textureAtlas else {
             configureForScreen(window?.screen)
             return
         }
         
-        guard !textureAtlas.frames.isEmpty else { return }
+        guard textureAtlas.frames.count > 1 else { return }
         
         currentFrameIndex = (currentFrameIndex + 1) % textureAtlas.frames.count
         applyCurrentFrame()
@@ -373,16 +484,12 @@ class GrainLayerView: NSView {
         let clampedIntensity = min(1.0, max(0.0, intensity)) // Limita entrada ao intervalo esperado.
         let curvedIntensity = pow(clampedIntensity, GrainRenderTuning.intensityCurveExponent) // Aplica curva perceptual.
         
-        if preserveBrightness {
+        if isMatteMode {
+            layer.opacity = Float(curvedIntensity * GrainRenderTuning.standardOpacityMultiplier)
+        } else if preserveBrightness {
             layer.opacity = Float(curvedIntensity * GrainRenderTuning.preserveBrightnessOpacityMultiplier)
-            if layer.compositingFilter == nil {
-                layer.compositingFilter = softLightBlendFilter
-            }
         } else {
             layer.opacity = Float(curvedIntensity * GrainRenderTuning.standardOpacityMultiplier)
-            if layer.compositingFilter != nil {
-                layer.compositingFilter = nil
-            }
         }
     }
     
@@ -396,7 +503,11 @@ class GrainLayerView: NSView {
         
         let clampedIndex = max(0, min(currentFrameIndex, textureAtlas.frames.count - 1))
         layer.contents = textureAtlas.frames[clampedIndex]
-        applyTemporalJitter()
+        if isGrainAnimated {
+            applyTemporalJitter()
+        } else {
+            layer.contentsRect = CGRect(x: 0, y: 0, width: 1, height: 1)
+        }
     }
     
     private func applyTemporalJitter() {
@@ -424,11 +535,22 @@ class GrainLayerView: NSView {
 struct GrainEffect: NSViewRepresentable {
     let intensity: Double
     let preserveBrightness: Bool
+    let isAnimated: Bool
+    let isMatteMode: Bool
+    
+    init(intensity: Double, preserveBrightness: Bool, isAnimated: Bool = true, isMatteMode: Bool = false) {
+        self.intensity = intensity
+        self.preserveBrightness = preserveBrightness
+        self.isAnimated = isAnimated
+        self.isMatteMode = isMatteMode
+    }
     
     func makeNSView(context: Context) -> GrainLayerView {
         let view = GrainLayerView(frame: .zero)
         view.intensity = intensity
         view.preserveBrightness = preserveBrightness
+        view.isGrainAnimated = isAnimated
+        view.isMatteMode = isMatteMode
         
         // Use the main screen scale for the preview
         if let screen = NSScreen.main {
@@ -442,6 +564,8 @@ struct GrainEffect: NSViewRepresentable {
     func updateNSView(_ nsView: GrainLayerView, context: Context) {
         nsView.intensity = intensity
         nsView.preserveBrightness = preserveBrightness
+        nsView.isGrainAnimated = isAnimated
+        nsView.isMatteMode = isMatteMode
         nsView.configureForScreen(nsView.window?.screen ?? NSScreen.main)
     }
 }

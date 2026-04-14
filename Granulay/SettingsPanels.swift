@@ -65,6 +65,45 @@ struct AppearanceSettingsPanel: View {
 
                     Divider()
 
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text(LocalizationKeys.Settings.Appearance.motionTitle.localized)
+                            .font(.subheadline.weight(.medium))
+
+                        HStack(spacing: 10) {
+                            Button(LocalizationKeys.Settings.Appearance.motionMoving.localized) {
+                                applyChange { menuBarManager.isGrainAnimated = true }
+                            }
+                            .buttonStyle(SettingsChipButtonStyle(isSelected: menuBarManager.isGrainAnimated))
+                            .disabled(!menuBarManager.isGrainEnabled || state.globalLoading)
+
+                            Button(LocalizationKeys.Settings.Appearance.motionStatic.localized) {
+                                applyChange { menuBarManager.isGrainAnimated = false }
+                            }
+                            .buttonStyle(SettingsChipButtonStyle(isSelected: !menuBarManager.isGrainAnimated))
+                            .disabled(!menuBarManager.isGrainEnabled || state.globalLoading)
+                        }
+                        .opacity(menuBarManager.isGrainEnabled ? 1 : 0.55)
+                    }
+
+                    Divider()
+
+                    SettingsToggleRow(
+                        title: LocalizationKeys.Settings.Appearance.matteMode.localized,
+                        subtitle: LocalizationKeys.Settings.Appearance.matteModeDescription.localized
+                    ) {
+                        Toggle("", isOn: Binding(
+                            get: { menuBarManager.isMatteModeEnabled },
+                            set: { newValue in
+                                applyChange { menuBarManager.isMatteModeEnabled = newValue }
+                            }
+                        ))
+                        .toggleStyle(.switch)
+                        .labelsHidden()
+                        .disabled(!menuBarManager.isGrainEnabled || state.globalLoading)
+                    }
+
+                    Divider()
+
                     SettingsToggleRow(
                         title: LocalizationKeys.Settings.preserveBrightness.localized,
                         subtitle: LocalizationKeys.Settings.preserveBrightnessDescription.localized
@@ -121,7 +160,9 @@ struct GrainPreviewCard: View {
 
                     GrainEffect(
                         intensity: menuBarManager.isGrainEnabled ? menuBarManager.grainIntensity : 0.15,
-                        preserveBrightness: menuBarManager.preserveBrightness
+                        preserveBrightness: menuBarManager.preserveBrightness,
+                        isAnimated: menuBarManager.isGrainAnimated,
+                        isMatteMode: menuBarManager.isMatteModeEnabled
                     )
                     .opacity(menuBarManager.isGrainEnabled ? 1 : 0.4)
 

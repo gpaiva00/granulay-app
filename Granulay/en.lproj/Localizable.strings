@@ -49,6 +49,12 @@
 // Settings - Section Titles and Descriptions
 "settings.appearance.title" = "Grain Effect";
 "settings.appearance.description" = "Configure the appearance of the grain effect on screen.";
+"settings.appearance.motion_title" = "Effect Style";
+"settings.appearance.motion_moving" = "Moving";
+"settings.appearance.motion_static" = "Static";
+"settings.appearance.matte_mode" = "Matte Screen Mode";
+"settings.appearance.matte_mode.description" = "Simulates an anti-glare display protector with static RGB refraction and haze.";
+
 "settings.behavior.title" = "Behavior";
 "settings.behavior.description" = "Configure how the app behaves in the system.";
 "settings.behavior.reset_title" = "Reset Settings";

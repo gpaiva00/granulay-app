@@ -30,7 +30,19 @@ class MenuBarManager: ObservableObject {
         }
     }
 
-
+    @Published var isGrainAnimated = true {
+        didSet {
+            overlayWindow?.updateGrainAnimated(isGrainAnimated)
+            saveSettings()
+        }
+    }
+    
+    @Published var isMatteModeEnabled = false {
+        didSet {
+            overlayWindow?.updateMatteMode(isMatteModeEnabled)
+            saveSettings()
+        }
+    }
 
     @Published var showInDock = true {
         didSet {
@@ -121,6 +133,8 @@ class MenuBarManager: ObservableObject {
         overlayWindow = GrainOverlayWindow()
         overlayWindow?.updateGrainIntensity(grainIntensity)
         overlayWindow?.updatePreserveBrightness(preserveBrightness)
+        overlayWindow?.updateGrainAnimated(isGrainAnimated)
+        overlayWindow?.updateMatteMode(isMatteModeEnabled)
     }
 
     private func updateOverlay() {
@@ -298,12 +312,16 @@ class MenuBarManager: ObservableObject {
 
         preserveBrightness =
             UserDefaults.standard.object(forKey: "preserveBrightness") as? Bool ?? true
+        isGrainAnimated = UserDefaults.standard.object(forKey: "isGrainAnimated") as? Bool ?? true
+        isMatteModeEnabled = UserDefaults.standard.bool(forKey: "isMatteModeEnabled")
     }
 
     private func saveSettings() {
         UserDefaults.standard.set(isGrainEnabled, forKey: "isGrainEnabled")
         UserDefaults.standard.set(grainIntensity, forKey: "grainIntensity")
         UserDefaults.standard.set(preserveBrightness, forKey: "preserveBrightness")
+        UserDefaults.standard.set(isGrainAnimated, forKey: "isGrainAnimated")
+        UserDefaults.standard.set(isMatteModeEnabled, forKey: "isMatteModeEnabled")
         UserDefaults.standard.set(showInDock, forKey: "showInDock")
     }
 
@@ -315,6 +333,8 @@ class MenuBarManager: ObservableObject {
         grainIntensity = 0.2
         isGrainEnabled = false
         preserveBrightness = true
+        isGrainAnimated = true
+        isMatteModeEnabled = false
         showInDock = false
         saveSettings()
     }

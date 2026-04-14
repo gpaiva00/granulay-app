@@ -48,6 +48,11 @@
 // Settings - Section Titles and Descriptions
 "settings.appearance.title" = "Efeito Granulay";
 "settings.appearance.description" = "Configure a aparência do efeito na tela.";
+"settings.appearance.motion_title" = "Estilo do Efeito";
+"settings.appearance.motion_moving" = "Em Movimento";
+"settings.appearance.motion_static" = "Estático";
+"settings.appearance.matte_mode" = "Modo Tela Fosca";
+"settings.appearance.matte_mode.description" = "Simula uma película antirreflexo com refração RGB estática e difusão de luz.";
 "settings.behavior.title" = "Comportamento";
 "settings.behavior.description" = "Configure como o app se comporta no sistema.";
 "settings.behavior.reset_title" = "Redefinir Configurações";
