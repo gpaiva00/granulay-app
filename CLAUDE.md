@@ -28,9 +28,9 @@ The app is a SwiftUI + AppKit macOS app with no app window — it lives entirely
 
 **Core components:**
 
-- **`MenuBarManager`** — Central `ObservableObject`. Owns the `NSStatusItem`, manages the `GrainOverlayWindow`, opens the settings window, and holds all published state (`isGrainEnabled`, `grainIntensity`, `grainStyle`, `preserveBrightness`, `showInDock`). Enforces trial limitations on every `didSet`. Settings are persisted via `UserDefaults`.
+- **`MenuBarManager`** — Central `ObservableObject`. Owns the `NSStatusItem`, manages the `GrainOverlayWindow`, opens the settings window, and holds all published state (`isGrainEnabled`, `grainIntensity`, `isGrainAnimated`, `isMatteModeEnabled`, `preserveBrightness`, `showInDock`). Enforces trial limitations on every `didSet`. Settings are persisted via `UserDefaults`.
 
-- **`GrainOverlayWindow`** / **`GrainEffect`** / **`GrainTextureCache`** — Transparent `NSWindow` overlay that renders grain using Core Image and Metal. `GrainEffect` defines the `GrainStyle` enum (fine/medium/coarse/vintage) with parameters like `noiseScale` and `grainSize`. `GrainTextureCache` is a shared singleton.
+- **`GrainOverlayWindow`** / **`GrainEffect`** / **`GrainTextureCache`** — Transparent `NSWindow` overlay that renders grain using Core Image and Metal. `GrainEffect` defines parameters like `intensity` and handles two presentation modes: animated vs static (`isGrainAnimated`) and normal vs matte (`isMatteMode`). `GrainTextureCache` is a shared singleton that maintains LRU-cached texture atlases per display, building specific frames for normal grain vs matte grain modes.
 
 - **`TrialConfig`** — Central feature-flag struct. Uses `#if TRIAL_VERSION` compiler flag to gate features. Check `TrialConfig.isTrialVersion`, `allowedGrainStyles`, `canPreserveBrightness`, `isLoFiEnabled`, and `isBehaviorSectionEnabled` before gating any UI or behavior.
 
@@ -54,8 +54,8 @@ All user-facing strings go through `LocalizationKeys` (in `LocalizationHelper.sw
 ## Trial vs Full Version
 
 Feature gating is enforced via `TrialConfig`. In the trial build:
-- Only Fine, Medium, and Coarse grain styles are available (Vintage is locked).
-- `preserveBrightness` is always `false`.
+- `preserveBrightness` is locked/false.
+- `isMatteModeEnabled` is locked/false.
 - Lo-Fi station is hidden.
 - Behavior settings section is locked (redirects to purchase screen).
 - The `purchase` section is visible in the sidebar only for trial.
