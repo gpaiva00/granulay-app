@@ -285,7 +285,7 @@ struct AppearanceSettingsView: View {
 
                             Button(LocalizationKeys.Settings.Intensity.strong.localized) {
                                 withLoadingDelay {
-                                    menuBarManager.grainIntensity = 0.4
+                                    menuBarManager.grainIntensity = 0.3
                                 }
                             }
                             .buttonStyle(
