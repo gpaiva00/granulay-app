@@ -1,10 +1,11 @@
 import SwiftUI
 
+/// Represents the available sections within the Settings window.
+/// Note that `.lofi` is currently excluded from `visibleSections` due to the disabled S3 bucket.
 enum SettingsSection: String, CaseIterable, Identifiable {
     case appearance
     case behavior
     case lofi
-    case support
 
     var id: String { rawValue }
 
@@ -13,7 +14,6 @@ enum SettingsSection: String, CaseIterable, Identifiable {
         case .appearance: return "sparkles"
         case .behavior: return "gearshape"
         case .lofi: return "music.note"
-        case .support: return "questionmark.circle"
         }
     }
 
@@ -22,31 +22,22 @@ enum SettingsSection: String, CaseIterable, Identifiable {
         case .appearance: return LocalizationKeys.Settings.Category.appearance
         case .behavior: return LocalizationKeys.Settings.Category.behavior
         case .lofi: return LocalizationKeys.Settings.Category.lofi
-        case .support: return LocalizationKeys.Settings.Category.support
         }
     }
 
     var localizedName: String { titleKey.localized }
-
-    var isLockedInTrial: Bool {
-        return false
-    }
-
-    var showsUpgradeHint: Bool {
-        false
-    }
 
     var visualPriority: Int {
         switch self {
         case .appearance: return 0
         case .behavior: return 1
         case .lofi: return 2
-        case .support: return 3
         }
     }
 
     static var visibleSections: [SettingsSection] {
-        return [.appearance, .behavior, .lofi, .support]
+        // Lo-Fi temporariamente desabilitado (bucket S3 indisponível)
+        return [.appearance, .behavior]
     }
 
     static var orderedVisibleSections: [SettingsSection] {
@@ -54,29 +45,15 @@ enum SettingsSection: String, CaseIterable, Identifiable {
     }
 }
 
-enum FeedbackSendState {
-    case idle
-    case sending
-    case success
-    case error(String)
-}
-
+/// `SettingsState` is an `ObservableObject` specifically scoped to the Settings window.
+///
+/// It handles ephemeral UI state such as the currently selected navigation section
+/// and global loading indicators. It separates UI concerns from the core application
+/// logic stored in `MenuBarManager`.
 final class SettingsState: ObservableObject {
     @Published var selectedSection: SettingsSection = .appearance
     @Published var globalLoading = false
     @Published var loadingMessageKey = LocalizationKeys.Loading.applyingChanges
-    @Published var feedbackDraft = ""
-    @Published var feedbackSendState: FeedbackSendState = .idle
-
-    var canSendFeedback: Bool {
-        !feedbackDraft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && !globalLoading
-    }
-
-    func resetFeedbackStateAfterDelay(_ seconds: TimeInterval = 2.5) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
-            self.feedbackSendState = .idle
-        }
-    }
 }
 
 enum SettingsActionRunner {

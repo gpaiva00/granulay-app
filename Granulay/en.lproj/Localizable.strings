@@ -19,6 +19,7 @@
 
 // Settings - General
 "settings.window_title" = "Granulay Settings";
+"settings.shell.subtitle" = "Visual effects for your screen";
 "settings.title" = "Settings";
 "settings.enable_effect" = "Enable Effect";
 "settings.intensity" = "Intensity";
@@ -38,22 +39,24 @@
 
 
 // Settings - Categories
-"settings.category.appearance" = "Appearance";
+"settings.category.appearance" = "Effects";
 "settings.category.behavior" = "Behavior";
 "settings.category.lofi" = "Lo-Fi Station";
 
-"settings.category.support" = "Support";
 "settings.category.purchase" = "Full Version";
 
 
 // Settings - Section Titles and Descriptions
-"settings.appearance.title" = "Grain Effect";
-"settings.appearance.description" = "Configure the appearance of the grain effect on screen.";
+"settings.appearance.title" = "Effects";
+"settings.appearance.description" = "Choose and configure the visual effects applied to your screen.";
+"settings.appearance.grain_section_title" = "Grain";
 "settings.appearance.motion_title" = "Effect Style";
 "settings.appearance.motion_moving" = "Moving";
 "settings.appearance.motion_static" = "Static";
 "settings.appearance.matte_mode" = "Matte Screen Mode";
 "settings.appearance.matte_mode.description" = "Simulates an anti-glare display protector with static RGB refraction and haze.";
+"settings.appearance.matte_section_title" = "Matte Screen";
+"settings.appearance.matte_section_description" = "Simulates an anti-glare screen overlay with haze and RGB refraction.";
 
 "settings.behavior.title" = "Behavior";
 "settings.behavior.description" = "Configure how the app behaves in the system.";
@@ -62,16 +65,6 @@
 
 "settings.lofi.title" = "Lo-Fi Station";
 "settings.lofi.description" = "Control your ambient lo-fi music for better concentration.";
-"settings.support.title" = "Support";
-"settings.support.description" = "Send feedback or report issues.";
-
-// Settings - Feedback
-"settings.feedback" = "Feedback";
-"settings.feedback.placeholder" = "Share your experience, report bugs or suggest improvements...";
-"settings.feedback.send" = "Send Feedback";
-"settings.feedback.sent" = "Feedback sent successfully!";
-"settings.feedback.error" = "Error sending feedback. Please try again.";
-"settings.feedback.validation" = "Please enter a message before sending.";
 
 /* Settings Actions */
 "settings.reset" = "Reset to Defaults";
@@ -83,7 +76,6 @@
 
 /* Loading Messages */
 "loading.applying_changes" = "Applying changes...";
-"loading.sending_feedback" = "Sending feedback...";
 "loading.resetting" = "Resetting settings...";
 "loading.exporting" = "Exporting settings...";
 "loading.importing" = "Importing settings...";
@@ -172,12 +164,7 @@
 "performance.quality.good" = "Good";
 "performance.quality.medium" = "Medium";
 "performance.quality.low" = "Low";
-"trial.purchase.description" = "Unlock all features and support development";}]}}}
-"settings.feedback.placeholder" = "Share your experience, report bugs, or suggest improvements...";
-"settings.feedback.send" = "Send Feedback";
-"settings.feedback.sent" = "Feedback sent successfully!";
-"settings.feedback.error" = "Error sending feedback. Please try again.";
-"settings.feedback.validation" = "Please enter a message before sending.";
+"trial.purchase.description" = "Unlock all features and support development";
 
 // Settings - Actions
 "settings.reset" = "Reset to Defaults";
@@ -189,8 +176,6 @@
 
 // Loading and Status
 "loading.applying_changes" = "Applying changes...";
-
-"loading.sending_feedback" = "Sending feedback...";
 "loading.resetting" = "Resetting settings...";
 "loading.exporting" = "Exporting settings...";
 "loading.importing" = "Importing settings...";

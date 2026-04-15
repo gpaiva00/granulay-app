@@ -1,6 +1,13 @@
 import Foundation
 import AppKit
 
+/// `PerformanceOptimizer` is a background singleton that monitors the application's perceived
+/// frame rate and system performance.
+///
+/// If it detects that the average FPS is dropping below acceptable levels, it broadcasts
+/// an `updateFrequencyChanged` notification. Consumers (like `GrainOverlayWindow`) listen
+/// for this notification and dynamically reduce their rendering/animation frequency to
+/// alleviate CPU/GPU load. If performance recovers, it signals to restore the normal frequency.
 class PerformanceOptimizer: ObservableObject {
     static let shared = PerformanceOptimizer()
     

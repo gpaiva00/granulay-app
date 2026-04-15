@@ -2,10 +2,21 @@ import SwiftUI
 import AppKit
 import Combine
 
+/// `GrainOverlayWindow` is responsible for managing the lifecycle of the transparent
+/// overlay windows across all connected displays.
+///
+/// It ensures that an `NSWindow` is created for each active `NSScreen`, configures the
+/// window attributes to be non-intrusive (e.g., ignoring mouse events, passing through clicks,
+/// and appearing over full-screen apps), and handles the animation loop that tells the
+/// `GrainLayerView`s to swap their texture frames.
+///
+/// It also listens to notifications from the `PerformanceOptimizer` to dynamically adjust
+/// the animation frequency to save system resources when under load.
 class GrainOverlayWindow: NSObject, ObservableObject {
     private var overlayWindows: [NSWindow] = []
     private var grainViews: [GrainLayerView] = []
     private var currentIntensity: Double = 0.2
+    private var currentMatteIntensity: Double = 0.2
     private var currentPreserveBrightness: Bool = true
     private var currentGrainAnimated: Bool = true
     private var currentMatteMode: Bool = false
@@ -88,6 +99,7 @@ class GrainOverlayWindow: NSObject, ObservableObject {
         
         let grainView = GrainLayerView(frame: screen.frame)
         grainView.intensity = currentIntensity
+        grainView.matteIntensity = currentMatteIntensity
         grainView.preserveBrightness = currentPreserveBrightness
         grainView.isGrainAnimated = currentGrainAnimated
         grainView.isMatteMode = currentMatteMode
@@ -159,7 +171,7 @@ class GrainOverlayWindow: NSObject, ObservableObject {
         // Forçar uma atualização imediata
 
         performUpdate()
-        if currentGrainAnimated {
+        if currentGrainAnimated && !currentMatteMode {
             startAnimationLoop()
         }
     }
@@ -174,6 +186,12 @@ class GrainOverlayWindow: NSObject, ObservableObject {
     func updateGrainIntensity(_ intensity: Double) {
         guard currentIntensity != intensity else { return }
         currentIntensity = intensity
+        scheduleSettingsUpdate()
+    }
+
+    func updateMatteIntensity(_ intensity: Double) {
+        guard currentMatteIntensity != intensity else { return }
+        currentMatteIntensity = intensity
         scheduleSettingsUpdate()
     }
     
@@ -221,6 +239,7 @@ class GrainOverlayWindow: NSObject, ObservableObject {
             let grainView = grainViews[index]
             
             grainView.intensity = currentIntensity
+            grainView.matteIntensity = currentMatteIntensity
             grainView.preserveBrightness = currentPreserveBrightness
             grainView.isGrainAnimated = currentGrainAnimated
             grainView.isMatteMode = currentMatteMode

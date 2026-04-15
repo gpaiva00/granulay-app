@@ -3,6 +3,7 @@ import AVFoundation
 import Combine
 import Network
 
+/// `LoFiTrack` represents a single streamable audio track.
 struct LoFiTrack {
     let id: String
     let title: String
@@ -11,6 +12,17 @@ struct LoFiTrack {
     let pixabayId: String
 }
 
+/// `LoFiMusicManager` handles the streaming of ambient Lo-Fi tracks via `AVFoundation`.
+/// 
+/// **NOTE: SOFT-DISABLED FEATURE**
+/// This feature is currently disabled because the underlying S3 bucket hosting the audio 
+/// files was lost. The class remains in the codebase for future restoration, but UI access
+/// points (in `MenuBarManager` and the Settings window) have been hidden.
+///
+/// To re-enable:
+/// 1. Restore the S3 bucket with the tracks listed below.
+/// 2. Ensure public read access on the bucket.
+/// 3. Revert the UI visibility changes in `SettingsState.visibleSections` and `MenuBarManager`.
 class LoFiMusicManager: ObservableObject {
     static let shared = LoFiMusicManager()
     

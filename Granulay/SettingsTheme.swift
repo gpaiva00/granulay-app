@@ -1,13 +1,13 @@
 import SwiftUI
 
 struct SettingsLayoutMetrics {
-    static let windowInitialWidth: CGFloat = 940
+    static let windowInitialWidth: CGFloat = 720
     static let windowInitialHeight: CGFloat = 660
-    static let windowMinWidth: CGFloat = 820
+    static let windowMinWidth: CGFloat = 680
     static let windowMinHeight: CGFloat = 560
 
     static let sidebarWidth: CGFloat = 230
-    static let contentMaxWidth: CGFloat = 940
+    static let contentMaxWidth: CGFloat = 460
     static let pagePadding: CGFloat = 28
     static let sectionSpacing: CGFloat = 22
     static let cardPadding: CGFloat = 20

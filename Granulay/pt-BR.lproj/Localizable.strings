@@ -19,6 +19,7 @@
 
 // Settings - General
 "settings.window_title" = "Configurações do Granulay";
+"settings.shell.subtitle" = "Efeitos visuais para sua tela";
 "settings.title" = "Configurações";
 "settings.enable_effect" = "Ativar Efeito";
 "settings.intensity" = "Intensidade";
@@ -38,21 +39,23 @@
 
 
 // Settings - Categories
-"settings.category.appearance" = "Aparência";
+"settings.category.appearance" = "Efeitos";
 "settings.category.behavior" = "Comportamento";
 "settings.category.lofi" = "Estação Lo-Fi";
 
-"settings.category.support" = "Suporte";
 "settings.category.purchase" = "Versão Completa";
 
 // Settings - Section Titles and Descriptions
-"settings.appearance.title" = "Efeito Granulay";
-"settings.appearance.description" = "Configure a aparência do efeito na tela.";
+"settings.appearance.title" = "Efeitos";
+"settings.appearance.description" = "Escolha e configure os efeitos visuais aplicados na sua tela.";
+"settings.appearance.grain_section_title" = "Granulado";
 "settings.appearance.motion_title" = "Estilo do Efeito";
 "settings.appearance.motion_moving" = "Em Movimento";
 "settings.appearance.motion_static" = "Estático";
 "settings.appearance.matte_mode" = "Modo Tela Fosca";
 "settings.appearance.matte_mode.description" = "Simula uma película antirreflexo com refração RGB estática e difusão de luz.";
+"settings.appearance.matte_section_title" = "Tela Fosca";
+"settings.appearance.matte_section_description" = "Simula uma película antirreflexo com difusão e refração RGB.";
 "settings.behavior.title" = "Comportamento";
 "settings.behavior.description" = "Configure como o app se comporta no sistema.";
 "settings.behavior.reset_title" = "Redefinir Configurações";
@@ -60,16 +63,6 @@
 
 "settings.lofi.title" = "Estação Lo-Fi";
 "settings.lofi.description" = "Controle sua música lo-fi ambiente para maior concentração.";
-"settings.support.title" = "Suporte";
-"settings.support.description" = "Envie feedback ou reporte problemas.";
-
-// Settings - Feedback
-"settings.feedback" = "Feedback";
-"settings.feedback.placeholder" = "Compartilhe sua experiência, reporte bugs ou sugira melhorias...";
-"settings.feedback.send" = "Enviar Feedback";
-"settings.feedback.sent" = "Feedback enviado com sucesso!";
-"settings.feedback.error" = "Erro ao enviar feedback. Tente novamente.";
-"settings.feedback.validation" = "Por favor, digite uma mensagem antes de enviar.";
 
 // Settings - Actions
 "settings.reset" = "Restaurar Padrões";
@@ -81,8 +74,6 @@
 
 // Loading and Status
 "loading.applying_changes" = "Aplicando alterações...";
-
-"loading.sending_feedback" = "Enviando feedback...";
 "loading.resetting" = "Restaurando configurações...";
 "loading.exporting" = "Exportando configurações...";
 "loading.importing" = "Importando configurações...";

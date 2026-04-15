@@ -27,30 +27,30 @@ struct LoFiControlsView: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: 12) {
             // Status da faixa atual
             HStack {
                 Image(systemName: musicManager.isPlaying ? "music.note" : "music.note.list")
                     .foregroundColor(.accentColor)
-                
+
                 VStack(alignment: .leading, spacing: 2) {
                     Text(musicManager.currentTrack)
                         .font(.headline)
                         .fontWeight(.medium)
                         .lineLimit(1)
-                    
+
                     Text(musicManager.isPlaying ? LocalizationKeys.LoFi.playing.localized : LocalizationKeys.LoFi.stopped.localized)
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                 }
-                
+
                 Spacer()
-                
+
                 // Botão de lista de faixas removido
             }
-                
-                Divider()
-                
+
+            Divider()
+
             // Controles de reprodução
             HStack(spacing: 16) {
                 Button(action: {
@@ -63,7 +63,7 @@ struct LoFiControlsView: View {
                 }
                 .buttonStyle(PlainButtonStyle())
                 .disabled(isLoading)
-                
+
                 Button(action: {
                     withLoadingDelay {
                         if musicManager.isPlaying {
@@ -79,7 +79,7 @@ struct LoFiControlsView: View {
                 }
                 .buttonStyle(PlainButtonStyle())
                 .disabled(isLoading)
-                
+
                 Button(action: {
                     withLoadingDelay {
                         musicManager.nextTrack()
@@ -90,9 +90,9 @@ struct LoFiControlsView: View {
                 }
                 .buttonStyle(PlainButtonStyle())
                 .disabled(isLoading)
-                
+
                 Spacer()
-                
+
                 // Controles de shuffle e repeat
                 Button(action: {
                     musicManager.toggleShuffle()
@@ -102,7 +102,7 @@ struct LoFiControlsView: View {
                         .foregroundColor(musicManager.isShuffled ? .accentColor : .secondary)
                 }
                 .buttonStyle(PlainButtonStyle())
-                
+
                 Button(action: {
                     musicManager.toggleRepeat()
                 }) {
@@ -111,7 +111,7 @@ struct LoFiControlsView: View {
                         .foregroundColor(musicManager.repeatMode != .off ? .accentColor : .secondary)
                 }
                 .buttonStyle(PlainButtonStyle())
-                
+
                 Button(action: {
                     withLoadingDelay {
                         musicManager.stop()
@@ -124,28 +124,28 @@ struct LoFiControlsView: View {
                 .buttonStyle(PlainButtonStyle())
                 .disabled(isLoading)
             }
-            
+
             Divider()
-            
+
             // Lista de faixas removida
-                
+
             // Controle de volume
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
                     Text(LocalizationKeys.LoFi.volume.localized)
                         .font(.subheadline)
-                    
+
                     Spacer()
-                    
+
                     Text("\(Int(musicManager.volume * 100))%")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
-                
+
                 HStack {
                     Image(systemName: "speaker.fill")
                         .foregroundColor(.secondary)
-                    
+
                     Slider(
                         value: Binding(
                             get: { Double(musicManager.volume) },
@@ -156,14 +156,14 @@ struct LoFiControlsView: View {
                         in: 0...1
                     )
                     .disabled(isLoading)
-                    
+
                     Image(systemName: "speaker.wave.3.fill")
                         .foregroundColor(.secondary)
                 }
             }
-            
+
             Divider()
-            
+
             // Créditos do Pixabay
             HStack {
                 Button(action: {
@@ -177,10 +177,10 @@ struct LoFiControlsView: View {
                     .foregroundColor(.secondary)
                 }
                 .buttonStyle(PlainButtonStyle())
-                
+
                 Spacer()
             }
-            
+
             if showCredits {
                 ScrollView {
                     Text(musicManager.getPixabayCredits())
@@ -191,9 +191,5 @@ struct LoFiControlsView: View {
                 .frame(maxHeight: 100)
             }
         }
-
-        .padding(8)
-        .background(Color(NSColor.controlBackgroundColor))
-        .cornerRadius(12)
     }
 }

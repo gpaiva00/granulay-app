@@ -4,6 +4,8 @@ import Foundation
 import QuartzCore
 import SwiftUI
 
+/// Central configuration for the grain effect rendering.
+/// Defines parameters like texture size limits, animation framerates, and noise generation tuning.
 struct GrainRenderTuning {
     static let atlasFrameCount = 12 // Quantidade de frames pré-gerados por textura para animação do grão.
     static let maxTextureDimension = 1600 // Limite máximo de dimensão para reduzir custo de memória/CPU em telas grandes.
@@ -34,7 +36,6 @@ private struct GrainTextureDescriptor {
     let key: GrainTextureKey // Chave usada para lookup e invalidação no cache.
     let pixelWidth: Int // Resolução efetiva horizontal da geração.
     let pixelHeight: Int // Resolução efetiva vertical da geração.
-    let isMatteMode: Bool
 }
 
 struct GrainTextureAtlas {
@@ -63,6 +64,12 @@ private struct SplitMix64 {
     }
 }
 
+/// `GrainTextureCache` is a thread-safe singleton responsible for caching procedurally
+/// generated noise textures (`GrainTextureAtlas`).
+///
+/// Generating large noise textures is computationally expensive. This cache ensures that
+/// textures are only generated once per display resolution and scale factor. It uses
+/// a simple Least Recently Used (LRU) policy to evict old atlases.
 class GrainTextureCache {
     static let shared = GrainTextureCache() // Instância compartilhada para reutilizar atlas entre views.
     
@@ -143,7 +150,7 @@ class GrainTextureCache {
             isMatteMode: isMatteMode
         )
         
-        return GrainTextureDescriptor(key: key, pixelWidth: pixelWidth, pixelHeight: pixelHeight, isMatteMode: isMatteMode)
+        return GrainTextureDescriptor(key: key, pixelWidth: pixelWidth, pixelHeight: pixelHeight)
     }
     
     private func insertIntoCache(_ atlas: GrainTextureAtlas) {
@@ -166,7 +173,7 @@ class GrainTextureCache {
 }
 
 private func createGrainAtlas(descriptor: GrainTextureDescriptor) -> GrainTextureAtlas? {
-    let frameCount = descriptor.isMatteMode ? 1 : GrainRenderTuning.atlasFrameCount
+    let frameCount = descriptor.key.isMatteMode ? 1 : GrainRenderTuning.atlasFrameCount
     var frames: [CGImage] = []
     frames.reserveCapacity(frameCount) // Pré-aloca capacidade para reduzir realocações.
     
@@ -181,7 +188,7 @@ private func createGrainAtlas(descriptor: GrainTextureDescriptor) -> GrainTextur
         let frameSeed = seedGenerator.next() ^ UInt64(frameIndex) &* 0x9E3779B185EBCA87
         
         let frame: CGImage?
-        if descriptor.isMatteMode {
+        if descriptor.key.isMatteMode {
             frame = createMatteGrainFrame(pixelWidth: descriptor.pixelWidth, pixelHeight: descriptor.pixelHeight, seed: frameSeed)
         } else {
             frame = createFineGrainFrame(pixelWidth: descriptor.pixelWidth, pixelHeight: descriptor.pixelHeight, seed: frameSeed)
@@ -196,6 +203,10 @@ private func createGrainAtlas(descriptor: GrainTextureDescriptor) -> GrainTextur
     return GrainTextureAtlas(key: descriptor.key, frames: frames)
 }
 
+    /// Generates a frame of "Fine Grain" noise using a PRNG.
+    /// The algorithm applies spatial correlation (averaging neighboring pixels) and
+    /// adds high-frequency micro-noise to create a cinematic film grain aesthetic,
+    /// rather than pure TV static.
     private func createFineGrainFrame(pixelWidth: Int, pixelHeight: Int, seed: UInt64) -> CGImage? {
         let pixelCount = pixelWidth * pixelHeight
         guard pixelCount > 0 else { return nil }
@@ -228,70 +239,45 @@ private func createGrainAtlas(descriptor: GrainTextureDescriptor) -> GrainTextur
             }
         }
         
-        // We now generate an RGBA image (32 bits per pixel) to allow both black and white noise.
-        // This simulates a "true grain" where we have 50% transparent, 25% black (darkening), and 25% white (lightening) pixels.
         var pixels = [UInt8](repeating: 0, count: pixelCount * 4) 
         let clip = Float(GrainRenderTuning.distributionClip)
         
-        // When mapping noise to RGBA, we want a lot of transparent pixels and some dark/light pixels
         for index in 0..<pixelCount {
             var sample = shapedNoise[index]
             sample = min(clip, max(-clip, sample))
             
-            // Map the sample (-clip to +clip) to a -1.0 ... 1.0 range
             let normalized = sample / clip
             
             var alpha: Float = 0.0
             var color: UInt8 = 0
             
-            // Dead zone in the middle (50% of the distribution becomes completely transparent)
             if normalized > 0.5 {
-                // Positive peaks become white grain
                 alpha = (normalized - 0.5) * 2.0 * 255.0
                 color = 255
             } else if normalized < -0.5 {
-                // Negative valleys become black grain
                 alpha = (-normalized - 0.5) * 2.0 * 255.0
                 color = 0
             } else {
-                // Midtones are completely transparent
                 alpha = 0.0
                 color = 0
             }
             
             let alphaInt = UInt8(min(255, max(0, Int(alpha.rounded()))))
             let byteIndex = index * 4
-            
-            // Premultiplied alpha format (R, G, B, A)
-            // If color is 255 (white), premultiplied RGB = Alpha.
-            // If color is 0 (black), premultiplied RGB = 0.
             let premultipliedColor = (color == 255) ? alphaInt : 0
             
-            pixels[byteIndex] = premultipliedColor     // R
-            pixels[byteIndex + 1] = premultipliedColor // G
-            pixels[byteIndex + 2] = premultipliedColor // B
-            pixels[byteIndex + 3] = alphaInt           // A
+            pixels[byteIndex] = premultipliedColor
+            pixels[byteIndex + 1] = premultipliedColor
+            pixels[byteIndex + 2] = premultipliedColor
+            pixels[byteIndex + 3] = alphaInt
         }
         
-        guard let provider = CGDataProvider(data: Data(pixels) as CFData) else {
-            return nil
-        }
-        
-        return CGImage(
-            width: pixelWidth,
-            height: pixelHeight,
-            bitsPerComponent: 8,
-            bitsPerPixel: 32,
-            bytesPerRow: pixelWidth * 4,
-            space: CGColorSpaceCreateDeviceRGB(),
-            bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue),
-            provider: provider,
-            decode: nil,
-            shouldInterpolate: true,
-            intent: .defaultIntent
-        )
+        return makePremultipliedRGBAImage(width: pixelWidth, height: pixelHeight, pixels: pixels)
     }
 
+    /// Generates a frame of "Matte Grain" noise.
+    /// This mode produces a hazy, translucent layer with occasional bright RGB "sparkles"
+    /// to simulate a distinct aesthetic compared to the fine film grain.
     private func createMatteGrainFrame(pixelWidth: Int, pixelHeight: Int, seed: UInt64) -> CGImage? {
         let pixelCount = pixelWidth * pixelHeight
         guard pixelCount > 0 else { return nil }
@@ -331,11 +317,15 @@ private func createGrainAtlas(descriptor: GrainTextureDescriptor) -> GrainTextur
             }
         }
         
+        return makePremultipliedRGBAImage(width: pixelWidth, height: pixelHeight, pixels: pixels)
+    }
+
+    private func makePremultipliedRGBAImage(width: Int, height: Int, pixels: [UInt8]) -> CGImage? {
         guard let provider = CGDataProvider(data: Data(pixels) as CFData) else { return nil }
         
         return CGImage(
-            width: pixelWidth, height: pixelHeight,
-            bitsPerComponent: 8, bitsPerPixel: 32, bytesPerRow: pixelWidth * 4,
+            width: width, height: height,
+            bitsPerComponent: 8, bitsPerPixel: 32, bytesPerRow: width * 4,
             space: CGColorSpaceCreateDeviceRGB(),
             bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue),
             provider: provider, decode: nil, shouldInterpolate: true, intent: .defaultIntent
@@ -347,6 +337,13 @@ extension Notification.Name {
     static let updateFrequencyChanged = Notification.Name("updateFrequencyChanged")
 }
 
+/// `GrainLayerView` is a layer-backed `NSView` responsible for actually rendering the
+/// texture to the screen. 
+///
+/// It does not generate noise itself; instead, it receives a `GrainTextureAtlas` from the
+/// cache and quickly swaps the `layer.contents` (or animates via temporal jitter) to create
+/// the illusion of moving grain. It also handles opacity adjustments based on user settings
+/// (like intensity and brightness preservation).
 class GrainLayerView: NSView {
     
     // MARK: - Properties
@@ -354,6 +351,14 @@ class GrainLayerView: NSView {
     var intensity: Double = 1.1 { // Intensidade do efeito de grão aplicada à opacidade da camada.
         didSet {
             if oldValue != intensity {
+                updateLayerProperties()
+            }
+        }
+    }
+
+    var matteIntensity: Double = 0.2 { // Intensidade do efeito fosco, independente do grão.
+        didSet {
+            if oldValue != matteIntensity && isMatteMode {
                 updateLayerProperties()
             }
         }
@@ -483,9 +488,11 @@ class GrainLayerView: NSView {
         
         let clampedIntensity = min(1.0, max(0.0, intensity)) // Limita entrada ao intervalo esperado.
         let curvedIntensity = pow(clampedIntensity, GrainRenderTuning.intensityCurveExponent) // Aplica curva perceptual.
-        
+
         if isMatteMode {
-            layer.opacity = Float(curvedIntensity * GrainRenderTuning.standardOpacityMultiplier)
+            let clampedMatte = min(1.0, max(0.0, matteIntensity))
+            let curvedMatte = pow(clampedMatte, GrainRenderTuning.intensityCurveExponent)
+            layer.opacity = Float(curvedMatte * GrainRenderTuning.standardOpacityMultiplier)
         } else if preserveBrightness {
             layer.opacity = Float(curvedIntensity * GrainRenderTuning.preserveBrightnessOpacityMultiplier)
         } else {

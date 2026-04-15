@@ -50,18 +50,11 @@ struct SettingsSidebarRow: View {
             HStack(spacing: 10) {
                 Image(systemName: section.icon)
                     .frame(width: 16, height: 16)
-                    .foregroundColor(section.isLockedInTrial ? .secondary : (isSelected ? .accentColor : .secondary))
+                    .foregroundColor(isSelected ? .accentColor : .secondary)
 
                 Text(section.localizedName)
                     .font(.subheadline.weight(.medium))
-                    .foregroundColor(section.isLockedInTrial ? .secondary : .primary)
-
-                if section.showsUpgradeHint {
-                    SettingsBadge(
-                        title: NSLocalizedString("settings.badge.trial", comment: "Trial badge title"),
-                        icon: section.isLockedInTrial ? "lock.fill" : "sparkles"
-                    )
-                }
+                    .foregroundColor(.primary)
 
                 Spacer()
             }
@@ -73,40 +66,18 @@ struct SettingsSidebarRow: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .stroke(isSelected ? Color.accentColor.opacity(0.35) : (isHovered ? SettingsTheme.subtleStroke : Color.clear), lineWidth: 1)
+                    .stroke(isHovered && !isSelected ? SettingsTheme.subtleStroke : Color.clear, lineWidth: 1)
             )
             .scaleEffect(isHovered ? 1.01 : 1.0)
         }
         .buttonStyle(.plain)
-        .focusable(true)
+        .focusable(false)
         .onHover { hovering in
             withAnimation(SettingsTheme.hoverTransition) {
                 isHovered = hovering
             }
         }
         .accessibilityLabel(section.localizedName)
-        .accessibilityHint(section.isLockedInTrial ? NSLocalizedString("settings.trial.upgrade_hint", comment: "Trial upsell hint") : "")
-    }
-}
-
-struct SettingsBadge: View {
-    let title: String
-    let icon: String
-
-    var body: some View {
-        Label(title, systemImage: icon)
-            .font(.caption2.weight(.semibold))
-            .padding(.horizontal, 7)
-            .padding(.vertical, 3)
-            .background(
-                Capsule()
-                    .fill(SettingsTheme.secondarySurface)
-            )
-            .overlay(
-                Capsule().stroke(SettingsTheme.subtleStroke, lineWidth: 1)
-            )
-            .foregroundColor(.secondary)
-            .fixedSize()
     }
 }
 

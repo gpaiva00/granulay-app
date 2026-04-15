@@ -43,6 +43,7 @@ struct LocalizationKeys {
     // MARK: - Settings
     struct Settings {
         static let windowTitle = "settings.window_title"
+        static let shellSubtitle = "settings.shell.subtitle"
         static let title = "settings.title"
         static let enableEffect = "settings.enable_effect"
         static let intensity = "settings.intensity"
@@ -54,12 +55,6 @@ struct LocalizationKeys {
         static let showInDock = "settings.show_in_dock"
         static let showInDockDescription = "settings.show_in_dock.description"
 
-        static let feedback = "settings.feedback"
-        static let feedbackPlaceholder = "settings.feedback.placeholder"
-        static let feedbackSend = "settings.feedback.send"
-        static let feedbackSent = "settings.feedback.sent"
-        static let feedbackError = "settings.feedback.error"
-        static let feedbackValidation = "settings.feedback.validation"
         static let reset = "settings.reset"
         static let resetDescription = "settings.reset.description"
         static let export = "settings.export"
@@ -67,18 +62,11 @@ struct LocalizationKeys {
         static let importSettings = "settings.import"
         static let importDescription = "settings.import.description"
 
-        // MARK: - Feedback
-        struct Feedback {
-            static let validation = "settings.feedback.validation"
-        }
-
         // MARK: - Categories
         struct Category {
             static let appearance = "settings.category.appearance"
             static let behavior = "settings.category.behavior"
             static let lofi = "settings.category.lofi"
-
-            static let support = "settings.category.support"
             static let purchase = "settings.category.purchase"
         }
 
@@ -91,6 +79,9 @@ struct LocalizationKeys {
             static let motionStatic = "settings.appearance.motion_static"
             static let matteMode = "settings.appearance.matte_mode"
             static let matteModeDescription = "settings.appearance.matte_mode.description"
+            static let grainTitle = "settings.appearance.grain_section_title"
+            static let matteTitle = "settings.appearance.matte_section_title"
+            static let matteSectionDescription = "settings.appearance.matte_section_description"
         }
 
         struct Behavior {
@@ -107,11 +98,6 @@ struct LocalizationKeys {
             static let description = "settings.lofi.description"
         }
 
-        struct Support {
-            static let title = "settings.support.title"
-            static let description = "settings.support.description"
-        }
-
         // MARK: - Intensity
         struct Intensity {
             static let weak = "settings.intensity.weak"
@@ -124,8 +110,6 @@ struct LocalizationKeys {
     // MARK: - Loading
     struct Loading {
         static let applyingChanges = "loading.applying_changes"
-
-        static let sendingFeedback = "loading.sending_feedback"
         static let resetting = "loading.resetting"
         static let exporting = "loading.exporting"
         static let importing = "loading.importing"

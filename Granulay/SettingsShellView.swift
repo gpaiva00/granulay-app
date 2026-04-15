@@ -1,5 +1,8 @@
 import SwiftUI
 
+/// `SettingsShellView` provides the core layout structure for the Settings window.
+/// It implements a master-detail pattern with a collapsible sidebar on the left and
+/// scrollable content area on the right, adhering to macOS design conventions.
 struct SettingsShellView<Content: View>: View {
     @ObservedObject var state: SettingsState
     let sections: [SettingsSection]
@@ -50,7 +53,7 @@ struct SettingsShellView<Content: View>: View {
                     Text("Granulay")
                         .font(.title3.weight(.semibold))
 
-                    Text(NSLocalizedString("settings.shell.subtitle", comment: "Settings shell subtitle"))
+                    Text(LocalizationKeys.Settings.shellSubtitle.localized)
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .lineLimit(2)

@@ -20,6 +20,11 @@
 		B1000043000000000000001 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B1000040000000000000001 /* Localizable.strings */; };
 		B1000044000000000000001 /* LoFiMusicManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000045000000000000001 /* LoFiMusicManager.swift */; };
 		B1000046000000000000001 /* LoFiControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000047000000000000001 /* LoFiControlsView.swift */; };
+		A71D896ABB51420E99ACAB4E /* SettingsComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E0AA22556742F980F67DB3 /* SettingsComponents.swift */; };
+		A23B9A9A2A41475D88B13B73 /* SettingsPanels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B70D80C331484FFAB1A18D06 /* SettingsPanels.swift */; };
+		A8C135E2E9FF4E17A19B1DB4 /* SettingsShellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25221C884B04983A4A60540 /* SettingsShellView.swift */; };
+		A8429111DA764D89A6E50CD2 /* SettingsState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B83ED8AB80F940D9BD84216A /* SettingsState.swift */; };
+		AA813F01D5F34E079C0D49E8 /* SettingsTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22CF23D4E7E434B98F501D0 /* SettingsTheme.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +44,11 @@
 		B1000042000000000000001 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		B1000045000000000000001 /* LoFiMusicManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoFiMusicManager.swift; sourceTree = "<group>"; };
 		B1000047000000000000001 /* LoFiControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoFiControlsView.swift; sourceTree = "<group>"; };
+		B4E0AA22556742F980F67DB3 /* SettingsComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsComponents.swift; sourceTree = "<group>"; };
+		B70D80C331484FFAB1A18D06 /* SettingsPanels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsPanels.swift; sourceTree = "<group>"; };
+		B25221C884B04983A4A60540 /* SettingsShellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsShellView.swift; sourceTree = "<group>"; };
+		B83ED8AB80F940D9BD84216A /* SettingsState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsState.swift; sourceTree = "<group>"; };
+		B22CF23D4E7E434B98F501D0 /* SettingsTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTheme.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,7 +72,12 @@
 		};
 		B1000021000000000000001 /* Granulay */ = {
 			isa = PBXGroup;
-			children = (
+			children = (				B4E0AA22556742F980F67DB3 /* SettingsComponents.swift */,
+				B70D80C331484FFAB1A18D06 /* SettingsPanels.swift */,
+				B25221C884B04983A4A60540 /* SettingsShellView.swift */,
+				B83ED8AB80F940D9BD84216A /* SettingsState.swift */,
+				B22CF23D4E7E434B98F501D0 /* SettingsTheme.swift */,
+
 				B1000018000000000000001 /* Granulay.entitlements */,
 				B1000002000000000000001 /* GranulayApp.swift */,
 				B1000004000000000000001 /* ContentView.swift */,
@@ -170,7 +185,12 @@
 		B1000026000000000000001 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
-			files = (
+			files = (				A71D896ABB51420E99ACAB4E /* SettingsComponents.swift in Sources */,
+				A23B9A9A2A41475D88B13B73 /* SettingsPanels.swift in Sources */,
+				A8C135E2E9FF4E17A19B1DB4 /* SettingsShellView.swift in Sources */,
+				A8429111DA764D89A6E50CD2 /* SettingsState.swift in Sources */,
+				AA813F01D5F34E079C0D49E8 /* SettingsTheme.swift in Sources */,
+
 				B1000003000000000000001 /* ContentView.swift in Sources */,
 				B1000009000000000000001 /* GrainOverlayWindow.swift in Sources */,
 				B1000011000000000000001 /* SettingsView.swift in Sources */,
@@ -391,105 +411,6 @@
 			};
 			name = Release;
 		};
-		B1000052000000000000001 /* Trial Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = NO;
-				DEAD_CODE_STRIPPING = YES;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = TB76NB7VWG;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG TRIAL_VERSION";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-			};
-			name = "Trial Debug";
-		};
-		B1000053000000000000001 /* Trial Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
-				CODE_SIGN_ENTITLEMENTS = Granulay/Granulay.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_ASSET_PATHS = Granulay/Assets.xcassets;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = TB76NB7VWG;
-				ENABLE_HARDENED_RUNTIME = YES;
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = Granulay/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Granulay;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.granulay.trial;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-			};
-			name = "Trial Debug";
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -498,7 +419,6 @@
 			buildConfigurations = (
 				B1000032000000000000001 /* Debug */,
 				B1000033000000000000001 /* Release */,
-				B1000053000000000000001 /* Trial Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -508,7 +428,6 @@
 			buildConfigurations = (
 				B1000030000000000000001 /* Debug */,
 				B1000031000000000000001 /* Release */,
-				B1000052000000000000001 /* Trial Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
