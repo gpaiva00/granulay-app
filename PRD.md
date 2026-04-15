@@ -218,23 +218,8 @@ A versão trial serve como demonstração das capacidades do produto, incentivan
 
 #### Compilação
 ```bash
-# Versão Trial
-./build-trial.sh
-xcodebuild -project Granulay.xcodeproj -target Granulay -configuration "Trial Debug"
-
-# Versão Completa
+# Versão Completa (Release)
 xcodebuild -project Granulay.xcodeproj -target Granulay -configuration Release
-```
-
-#### Detecção de Versão
-```swift
-static var isTrialVersion: Bool {
-    #if TRIAL_VERSION
-    return true
-    #else
-    return false
-    #endif
-}
 ```
 
 ### Experiência do Usuário Trial
@@ -343,11 +328,6 @@ static var isLoFiEnabled: Bool {
 - **Responsabilidade**: Geração e aplicação do efeito de grão
 - **Funcionalidades**: 4 estilos, cache de texturas, blend modes
 - **Otimização**: Texture cache e performance monitoring
-
-#### TrialConfig
-- **Responsabilidade**: Gerenciamento de limitações trial vs completa
-- **Funcionalidades**: Feature flags, validação de recursos
-- **Compilação**: Conditional compilation com #if TRIAL_VERSION
 
 #### LoFiMusicManager
 - **Responsabilidade**: Reprodução de música Lo-Fi

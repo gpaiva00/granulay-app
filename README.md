@@ -96,7 +96,6 @@ xcodebuild -project Granulay.xcodeproj -scheme Granulay -configuration Release
 - **MenuBarManager**: Gerenciamento da barra de menu
 - **GrainOverlayWindow**: Janela de sobreposição para efeito
 - **LoFiMusicManager**: Sistema de reprodução de música
-- **TrialConfig**: Gerenciamento de limitações trial/completa
 - **PerformanceOptimizer**: Otimização baseada em FPS
 - **LocalizationHelper**: Sistema de localização EN/PT-BR
 
