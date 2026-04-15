@@ -26,6 +26,7 @@ class GrainOverlayWindow: NSObject, ObservableObject {
     private let settingsDebounceInterval: TimeInterval = 0.05
     private var animationInterval: TimeInterval = GrainRenderTuning.baseAnimationInterval
     private var updateFrequencyObserver: NSObjectProtocol?
+    private let overlayWindowLevel = NSWindow.Level(rawValue: Int(CGWindowLevelForKey(.maximumWindow)))
     
     override init() {
         super.init()
@@ -78,15 +79,14 @@ class GrainOverlayWindow: NSObject, ObservableObject {
     }
     
     private func createOverlayWindow(for screen: NSScreen) -> NSWindow {
-        let window = NSWindow(
+        let window = NSPanel(
             contentRect: screen.frame,
-            styleMask: [.borderless],
+            styleMask: [.borderless, .nonactivatingPanel],
             backing: .buffered,
-            defer: false,
-            screen: screen
+            defer: false
         )
         
-        window.level = NSWindow.Level(rawValue: Int(CGWindowLevelForKey(.maximumWindow)) + 1)
+        window.level = overlayWindowLevel
         window.backgroundColor = NSColor.clear
         window.isOpaque = false
         window.hasShadow = false
@@ -146,7 +146,7 @@ class GrainOverlayWindow: NSObject, ObservableObject {
         // Garantir configuração correta das janelas
         for window in overlayWindows {
 
-            window.level = NSWindow.Level(rawValue: Int(CGWindowLevelForKey(.screenSaverWindow)) + 1)
+            window.level = overlayWindowLevel
             window.collectionBehavior = [.canJoinAllSpaces, .stationary, .ignoresCycle, .fullScreenAuxiliary]
             window.isOpaque = false
             window.hasShadow = false
