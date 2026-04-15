@@ -19,19 +19,20 @@ struct GrainRenderTuning {
     static let maxAnimationInterval: TimeInterval = 1.0 / 8.0 // Maior intervalo permitido (menor frequência).
     static let preserveBrightnessOpacityMultiplier: Double = 0.15 // Opacidade usada quando brilho é preservado (alpha base).
     static let standardOpacityMultiplier: Double = 0.28 // Opacidade usada no modo normal de composição (alpha base).
+    static let matteOpacityMultiplier: Double = 0.24 // Matte usa alpha um pouco menor para reduzir aspecto "frosted" sem perder presença.
     static let intensityCurveExponent: Double = 0.65 // Curva não-linear para resposta mais natural do slider de intensidade.
     static let maxCachedAtlases = 6 // Limite de atlas mantidos em cache (política LRU simples).
     static let screenNumberDeviceKey = NSDeviceDescriptionKey("NSScreenNumber") // Chave de deviceDescription para identificar display.
 }
 
 struct MatteGrainTuning {
-    static let baseHazeAlpha: Int = 130          // 255-scale base opacity of the white film
-    static let hazeAlphaAmplitude: Int = 35      // ± variation driven by shaped noise
-    static let spatialCorrelation: Double = 0.40 // Stronger smoothing than fine grain (0.14)
-    static let distributionClip: Double = 0.45   // Slightly looser than fine grain's 0.42
-    static let highlightThreshold: Double = 0.998 // ~0.2% of pixels become highlight cores
-    static let highlightCoreAlpha: Int = 190     // Alpha of the highlight core pixel
-    static let highlightNeighborAlphaBoost: Int = 50 // Alpha bump added to 4-neighbours of each core
+    static let baseHazeAlpha: Int = 118          // Slightly lower haze floor to keep matte softer and less opaque.
+    static let hazeAlphaAmplitude: Int = 42      // More local variation so grain reads through the matte film.
+    static let spatialCorrelation: Double = 0.30 // Less diffusion than 0.40 for a subtly sharper matte texture.
+    static let distributionClip: Double = 0.40   // Boosts local contrast without pushing the texture into harsh noise.
+    static let highlightThreshold: Double = 0.9975 // Slightly more highlight seeds to improve matte grain legibility.
+    static let highlightCoreAlpha: Int = 198     // Keeps highlight centers defined but still below fully opaque.
+    static let highlightNeighborAlphaBoost: Int = 40 // Lower bloom around highlights to keep edges cleaner.
 }
 
 struct GrainTextureKey: Hashable {
@@ -540,7 +541,7 @@ class GrainLayerView: NSView {
         if isMatteMode {
             let clampedMatte = min(1.0, max(0.0, matteIntensity))
             let curvedMatte = pow(clampedMatte, GrainRenderTuning.intensityCurveExponent)
-            layer.opacity = Float(curvedMatte * GrainRenderTuning.standardOpacityMultiplier)
+            layer.opacity = Float(curvedMatte * GrainRenderTuning.matteOpacityMultiplier)
         } else if preserveBrightness {
             layer.opacity = Float(curvedIntensity * GrainRenderTuning.preserveBrightnessOpacityMultiplier)
         } else {
