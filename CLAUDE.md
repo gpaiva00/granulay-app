@@ -1,10 +1,17 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code (claude.ai/code) and other AI agents when working with code in this repository.
 
 ## Project Overview
 
 Granulay is a macOS menu bar app that applies a real-time vintage grain effect as a transparent overlay over all screens. It is distributed via the App Store (Bundle ID: `com.granulay.app`).
+
+## Documentation Map
+
+Before making architectural changes or exploring the codebase, please review the following:
+- **`ARCHITECTURE.md`**: Start here to understand the execution flow, the `AppKit` + `SwiftUI` hybrid setup, and the core modules rendering the grain effect.
+- **`PRD.md`**: Context on product goals, historical decisions (e.g., Trial vs. Full versions), and non-functional requirements.
+- **`README.md`**: Quick start, build instructions, and feature overview.
 
 ## Build Commands
 
@@ -12,32 +19,20 @@ Granulay is a macOS menu bar app that applies a real-time vintage grain effect a
 xcodebuild -project Granulay.xcodeproj -scheme Granulay -configuration Release
 ```
 
-There are no automated tests (swift test exists in CI but the project does not have a test target). Build configurations are: Debug, Release.
+There are no automated tests (swift test exists in CI but the project does not have a test target). Build configurations are: `Debug`, `Release`.
 
-## Architecture
+## Architecture Overview
 
-The app is a SwiftUI + AppKit macOS app with no app window — it lives entirely in the menu bar.
+*For full details, please refer to `ARCHITECTURE.md`.*
 
-**Entry point:** `GranulayApp.swift` — creates `MenuBarManager` as a `@StateObject` and provides a `Settings` scene.
+The app is a `SwiftUI` + `AppKit` macOS app with no main application window — it lives entirely in the menu bar.
 
-**Core components:**
-
-- **`MenuBarManager`** — Central `ObservableObject`. Owns the `NSStatusItem`, manages the `GrainOverlayWindow`, opens the settings window, and holds all published state (`isGrainEnabled`, `grainIntensity`, `isGrainAnimated`, `isMatteModeEnabled`, `preserveBrightness`, `showInDock`). Settings are persisted via `UserDefaults`.
-
-- **`GrainOverlayWindow`** / **`GrainEffect`** / **`GrainTextureCache`** — Transparent `NSWindow` overlay that renders grain using Core Image and Metal. `GrainEffect` defines parameters like `intensity` and handles two presentation modes: animated vs static (`isGrainAnimated`) and normal vs matte (`isMatteMode`). `GrainTextureCache` is a shared singleton that maintains LRU-cached texture atlases per display, building specific frames for normal grain vs matte grain modes.
-
-- **`LoFiMusicManager`** — Singleton managing AVFoundation playback of 20 royalty-free tracks hosted on S3. **Currently soft-deleted** (S3 bucket lost): hidden from sidebar (`SettingsState.visibleSections`) and menu bar (`MenuBarManager`). To re-enable, restore the bucket, add the public read policy, and revert those two changes.
-
-- **`PerformanceOptimizer`** — Shared singleton that monitors FPS and adjusts grain rendering.
-
-**Settings UI architecture** (recently refactored into multiple files):
-
-- `SettingsView.swift` — Top-level view; selects which panel to show.
-- `SettingsShellView.swift` — Layout shell (sidebar + content area).
-- `SettingsState.swift` — `SettingsState` ObservableObject (selected section, loading state, feedback draft) and `SettingsSection` enum.
-- `SettingsPanels.swift` — Panel views: `AppearanceSettingsPanel`, `BehaviorSettingsPanel`, `LoFiSettingsPanel`, `SupportSettingsPanel`.
-- `SettingsComponents.swift` — Reusable UI components: `SettingsCard`, `SettingsSectionHeader`, `SettingsSidebarRow`, etc.
-- `SettingsTheme.swift` — `SettingsTheme` enum (colors, animations) and `SettingsLayoutMetrics` struct (dimensions).
+**Core components summary:**
+- **`MenuBarManager`** — Central `ObservableObject`, single source of truth for app state.
+- **`GrainOverlayWindow`** & **`GrainEffect`** — Transparent `NSWindow` overlay rendering the grain using Core Image and Metal.
+- **`GrainTextureCache`** — Shared singleton for LRU-cached texture atlases.
+- **`PerformanceOptimizer`** — Monitors FPS and adjusts grain rendering.
+- **`LoFiMusicManager`** — **CURRENTLY SOFT-DISABLED** (S3 bucket lost). Hidden from UI and disabled in code. To re-enable, restore the bucket, add the public read policy, and revert the UI hiding changes. Do not attempt to use this module without explicit user instruction.
 
 ## Localization
 
@@ -45,8 +40,9 @@ All user-facing strings go through `LocalizationKeys` (in `LocalizationHelper.sw
 
 ## Key Conventions
 
-- `MenuBarManager` is the single source of truth for all grain/app state; pass it via `.environmentObject`.
-- `SettingsState` is scoped to the settings window only (navigation state, loading, feedback).
-- Animations and colors come from `SettingsTheme`; layout dimensions from `SettingsLayoutMetrics` — do not hardcode values.
-- Team ID: `TB76NB7VWG`. App Store URL: `https://apps.apple.com/br/app/granulay/id6751862804?mt=12Granulay`.
-
+- **State Management**: `MenuBarManager` is the single source of truth for all grain/app state. Always pass it via `.environmentObject`.
+- **UI State**: `SettingsState` is scoped to the settings window only (navigation state, loading, feedback).
+- **Styling**: Animations and colors come from `SettingsTheme`; layout dimensions from `SettingsLayoutMetrics` — do not hardcode these values.
+- **Team ID**: `TB76NB7VWG`. 
+- **App Store URL**: `https://apps.apple.com/br/app/granulay/id6751862804?mt=12Granulay`.
+- **In-code Documentation**: When adding or updating code, ensure public APIs, complex logic, and key configuration structs have clear English documentation explaining their *intent* and *side effects*.

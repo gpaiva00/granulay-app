@@ -1,548 +1,445 @@
 # PRD - Product Requirements Document
 # Granulay - Vintage Grain Effect
 
-## 📋 Visão Geral do Produto
+## 📋 Product Overview
 
-### Descrição
-Granulay é um aplicativo que adiciona efeito de grão vintage em tempo real para toda a tela, proporcionando uma experiência visual nostálgica e cinematográfica. O aplicativo opera como uma sobreposição transparente que pode ser ativada/desativada facilmente através da barra de menu.
+### Description
+Granulay is an application that adds a real-time vintage grain effect to the entire screen, providing a nostalgic and cinematic visual experience. The application operates as a transparent overlay that can be easily toggled on/off via the menu bar.
 
-### Proposta de Valor
-- **Experiência Visual Única**: Transforma qualquer tela em uma experiência cinematográfica vintage
-- **Facilidade de Uso**: Controle simples através da barra de menu
-- **Personalização Avançada**: Múltiplos estilos e intensidades de grão
-- **Funcionalidade Lo-Fi**: Música ambiente integrada para experiência completa
-- **Performance Otimizada**: Uso eficiente de recursos do sistema
+### Value Proposition
+- **Unique Visual Experience**: Transforms any screen into a vintage cinematic experience.
+- **Ease of Use**: Simple control via the menu bar.
+- **Advanced Customization**: Multiple grain styles and intensities.
+- **Lo-Fi Functionality**: Integrated ambient music for a complete experience *(Note: Currently soft-disabled)*.
+- **Optimized Performance**: Efficient use of system resources.
 
-### Público-Alvo
-- **Primário**: Criadores de conteúdo, designers, fotógrafos
-- **Secundário**: Entusiastas de estética vintage, usuários que buscam experiência visual diferenciada
-- **Terciário**: Profissionais que trabalham longas horas e desejam reduzir fadiga visual
-
----
-
-## 🎯 Objetivos do Produto
-
-### Objetivos Primários
-1. Fornecer efeito de grão vintage de alta qualidade em tempo real
-2. Manter performance otimizada sem impacto significativo no sistema
-3. Oferecer interface intuitiva e não intrusiva
-4. Garantir compatibilidade com múltiplos monitores
-
-### Objetivos Secundários
-1. Integrar funcionalidade de música Lo-Fi ambiente
-2. Implementar sistema de atualizações automáticas
-3. Suporte completo para localização (EN/PT-BR)
-4. Estratégia de monetização através de versão trial
+### Target Audience
+- **Primary**: Content creators, designers, photographers.
+- **Secondary**: Vintage aesthetic enthusiasts, users seeking a distinct visual experience.
+- **Tertiary**: Professionals working long hours who wish to reduce visual fatigue.
 
 ---
 
-## ⚙️ Requisitos Funcionais
+## 🎯 Product Goals
 
-### RF001 - Efeito de Grão
-**Descrição**: Aplicar efeito de grão vintage em tempo real sobre toda a tela
+### Primary Goals
+1. Provide a high-quality vintage grain effect in real time.
+2. Maintain optimized performance without significant system impact.
+3. Offer an intuitive and non-intrusive interface.
+4. Ensure compatibility with multiple monitors.
 
-**Critérios de Aceitação**:
-- ✅ Sobreposição transparente que não interfere na interação com outros apps
-- ✅ Renderização em tempo real sem lag perceptível
-- ✅ Suporte a múltiplos monitores com configurações independentes
-- ✅ 4 estilos de grão disponíveis: Fine, Medium, Coarse, Vintage
-- ✅ Controle de intensidade de 0.1 a 1.0
-- ✅ Opção de preservar brilho da tela
-
-### RF002 - Interface de Controle
-**Descrição**: Interface acessível através da barra de menu
-
-**Critérios de Aceitação**:
-- ✅ Ícone na barra de menu sempre visível
-- ✅ Menu contextual com opções principais
-- ✅ Toggle rápido para ativar/desativar efeito
-- ✅ Acesso direto às configurações
-- ✅ Indicação visual do status (ativo/inativo)
-
-### RF003 - Configurações Avançadas
-**Descrição**: Painel de configurações completo
-
-**Critérios de Aceitação**:
-- ✅ Interface SwiftUI moderna e responsiva
-- ✅ Organização por categorias (Aparência, Comportamento, Lo-Fi, Atualizações)
-- ✅ Preview em tempo real das alterações
-- ✅ Salvamento automático de configurações
-- ✅ Opção de reset para configurações padrão
-
-### RF004 - Sistema Lo-Fi
-**Descrição**: Reprodução de música Lo-Fi ambiente integrada com faixas royalty-free
-
-**Critérios de Aceitação**:
-- ✅ 20 faixas Lo-Fi royalty-free do Pixabay
-- ✅ Controles de reprodução (Play/Pause/Stop/Previous/Next)
-- ✅ Modo shuffle e repeat
-- ✅ Controle de volume independente
-- ✅ Integração com menu da barra
-- ✅ Créditos dos artistas acessíveis
-- ✅ Licenciamento comercial completo
-
-### RF005 - Sistema de Atualizações
-**Descrição**: Verificação e instalação automática de atualizações
-
-**Critérios de Aceitação**:
-- ✅ Verificação automática de atualizações
-- ✅ Notificações de novas versões disponíveis
-- ✅ Download e instalação automática (opcional)
-- ✅ Changelog integrado
-- ✅ Rollback em caso de problemas
-
-### RF006 - Localização
-**Descrição**: Suporte completo para múltiplos idiomas
-
-**Critérios de Aceitação**:
-- ✅ Inglês (EN) como idioma padrão
-- ✅ Português Brasileiro (PT-BR)
-- ✅ Detecção automática do idioma do sistema
-- ✅ Todas as strings da interface localizadas
-- ✅ Formatação adequada para cada idioma
+### Secondary Goals
+1. Integrate ambient Lo-Fi music functionality *(Currently soft-disabled)*.
+2. Implement an automatic update system.
+3. Full localization support (EN/PT-BR).
+4. Monetization strategy via a trial version.
 
 ---
 
-## 🚫 Requisitos Não Funcionais
+## ⚙️ Functional Requirements
 
-### RNF001 - Performance
-- **CPU**: Uso máximo de 5% em operação normal
-- **Memória**: Consumo máximo de 100MB RAM
-- **GPU**: Uso eficiente de aceleração hardware quando disponível
-- **Latência**: Resposta instantânea (<50ms) para toggle do efeito
+### FR001 - Grain Effect
+**Description**: Apply a real-time vintage grain effect over the entire screen.
 
-### RNF002 - Compatibilidade
-- **Sistema**: Sistema 13.0 (Ventura) ou superior
-- **Arquitetura**: Apple Silicon (M1/M2/M3) e Intel x86_64
-- **Monitores**: Suporte a múltiplos displays até 8K
-- **Memória**: Mínimo 4GB RAM
+**Acceptance Criteria**:
+- ✅ Transparent overlay that doesn't interfere with interaction in other apps.
+- ✅ Real-time rendering with no noticeable lag.
+- ✅ Support for multiple monitors with independent settings.
+- ✅ 2 grain modes available: Normal and Matte.
+- ✅ Intensity control from 0.1 to 1.0.
+- ✅ Option to preserve screen brightness.
 
-### RNF003 - Segurança
-- **Sandbox**: App Sandbox habilitado
-- **Permissões**: Apenas permissões essenciais solicitadas
-- **Criptografia**: Comunicação HTTPS para atualizações
-- **Assinatura**: Code signing com certificado Apple Developer
+### FR002 - Control Interface
+**Description**: Interface accessible through the menu bar.
 
-### RNF004 - Usabilidade
-- **Tempo de Aprendizado**: Usuário deve conseguir usar funcionalidades básicas em <2 minutos
-- **Acessibilidade**: Suporte a VoiceOver e navegação por teclado
-- **Feedback Visual**: Indicações claras de status e ações
-- **Consistência**: Interface seguindo Human Interface Guidelines da Apple
+**Acceptance Criteria**:
+- ✅ Menu bar icon always visible.
+- ✅ Contextual menu with main options.
+- ✅ Quick toggle to enable/disable the effect.
+- ✅ Direct access to settings.
+- ✅ Visual indication of status (active/inactive).
 
-### RNF005 - Confiabilidade
-- **Disponibilidade**: 99.9% uptime (excluindo manutenções programadas)
-- **Recuperação**: Recuperação automática de crashes em <5 segundos
-- **Backup**: Configurações salvas automaticamente
-- **Logs**: Sistema de logging para diagnóstico
+### FR003 - Advanced Settings
+**Description**: Comprehensive settings panel.
+
+**Acceptance Criteria**:
+- ✅ Modern and responsive SwiftUI interface.
+- ✅ Organization by categories (Appearance, Behavior, Lo-Fi, Support).
+- ✅ Real-time preview of changes.
+- ✅ Automatic saving of settings.
+- ✅ Reset option to default settings.
+
+### FR004 - Lo-Fi System *(Soft-disabled)*
+**Description**: Playback of ambient Lo-Fi music integrated with royalty-free tracks.
+
+**Acceptance Criteria**:
+- ✅ 20 royalty-free Lo-Fi tracks from Pixabay.
+- ✅ Playback controls (Play/Pause/Stop/Previous/Next).
+- ✅ Shuffle and repeat modes.
+- ✅ Independent volume control.
+- ✅ Integration with the menu bar.
+- ✅ Artist credits accessible.
+- ✅ Full commercial licensing.
+
+### FR005 - Update System
+**Description**: Checking and automatic installation of updates.
+
+**Acceptance Criteria**:
+- ✅ Automatic update checks.
+- ✅ Notifications of new versions available.
+- ✅ Automatic download and installation (optional).
+- ✅ Integrated changelog.
+- ✅ Rollback in case of issues.
+
+### FR006 - Localization
+**Description**: Full support for multiple languages.
+
+**Acceptance Criteria**:
+- ✅ English (EN) as the default language.
+- ✅ Brazilian Portuguese (PT-BR).
+- ✅ Automatic detection of the system language.
+- ✅ All interface strings localized.
+- ✅ Appropriate formatting for each language.
 
 ---
 
-## 🔄 Fluxos de Usuário Principais
+## 🚫 Non-Functional Requirements
 
-### Fluxo 1: Primeiro Uso
+### NFR001 - Performance
+- **CPU**: Maximum 5% usage in normal operation.
+- **Memory**: Maximum 100MB RAM consumption.
+- **GPU**: Efficient use of hardware acceleration when available.
+- **Latency**: Instant response (<50ms) for effect toggle.
+
+### NFR002 - Compatibility
+- **System**: macOS 13.0 (Ventura) or higher.
+- **Architecture**: Apple Silicon (M1/M2/M3) and Intel x86_64.
+- **Monitors**: Support for multiple displays up to 8K.
+- **Memory**: Minimum 4GB RAM.
+
+### NFR003 - Security
+- **Sandbox**: App Sandbox enabled.
+- **Permissions**: Only essential permissions requested.
+- **Encryption**: HTTPS communication for updates.
+- **Signature**: Code signing with Apple Developer certificate.
+
+### NFR004 - Usability
+- **Learning Time**: User should be able to use basic functionalities in <2 minutes.
+- **Accessibility**: VoiceOver and keyboard navigation support.
+- **Visual Feedback**: Clear indications of status and actions.
+- **Consistency**: Interface following Apple's Human Interface Guidelines.
+
+### NFR005 - Reliability
+- **Availability**: 99.9% uptime (excluding scheduled maintenance).
+- **Recovery**: Automatic crash recovery in <5 seconds.
+- **Backup**: Settings saved automatically.
+- **Logs**: Logging system for diagnostics.
+
+---
+
+## 🔄 Main User Flows
+
+### Flow 1: First Use
 ```
-1. Usuário instala e abre o aplicativo
-2. Sistema solicita permissões necessárias
-3. Aplicativo aparece na barra de menu
-4. Usuário clica no ícone da barra de menu
-5. Menu contextual é exibido
-6. Usuário seleciona "Enable Effect"
-7. Efeito de grão é aplicado imediatamente
-8. Usuário pode ajustar configurações via "Settings"
+1. User installs and opens the application.
+2. System requests necessary permissions.
+3. Application appears in the menu bar.
+4. User clicks the menu bar icon.
+5. Contextual menu is displayed.
+6. User selects "Enable Effect".
+7. Grain effect is applied immediately.
+8. User can adjust settings via "Settings".
 ```
 
-### Fluxo 2: Uso Diário
+### Flow 2: Daily Use
 ```
-1. Usuário clica no ícone na barra de menu
-2. Toggle rápido para ativar/desativar efeito
-3. Ajuste rápido de intensidade (se necessário)
-4. Acesso a estações Lo-Fi (se habilitado)
-5. Configurações persistem entre sessões
-```
-
-### Fluxo 3: Configuração Avançada
-```
-1. Usuário acessa "Settings" no menu
-2. Janela de configurações abre
-3. Navegação por abas: Aparência, Comportamento, Lo-Fi, Atualizações
-4. Alterações aplicadas em tempo real
-5. Configurações salvas automaticamente
-6. Usuário fecha janela, configurações persistem
+1. User clicks the menu bar icon.
+2. Quick toggle to enable/disable the effect.
+3. Quick intensity adjustment (if necessary).
+4. Settings persist between sessions.
 ```
 
-### Fluxo 4: Sistema Lo-Fi
+### Flow 3: Advanced Configuration
 ```
-1. Usuário acessa submenu "Lo-Fi Station"
-2. Clica em "Play" para iniciar reprodução da playlist
-3. Sistema reproduz faixas em ordem ou modo shuffle
-4. Controla volume através do submenu
-5. Navega entre faixas com Previous/Next
-6. Ativa/desativa shuffle e repeat conforme desejado
-7. Visualiza créditos do artista da faixa atual
-8. Para reprodução com "Stop"
+1. User accesses "Settings" in the menu.
+2. Settings window opens.
+3. Tab navigation: Appearance, Behavior, Lo-Fi (if enabled), Support.
+4. Changes applied in real time.
+5. Settings saved automatically.
+6. User closes the window, settings persist.
 ```
 
 ---
 
-## 🎭 Especificações da Versão Trial
+## 🎭 Trial Version Specifications
 
-### Estratégia de Monetização
-A versão trial serve como demonstração das capacidades do produto, incentivando a compra da versão completa através de limitações estratégicas que não comprometem a experiência básica.
+### Monetization Strategy
+The trial version serves as a demonstration of the product's capabilities, encouraging the purchase of the full version through strategic limitations that do not compromise the basic experience.
 
-### Limitações Implementadas
+### Implemented Limitations
 
-#### L001 - Efeito de Grão
-- **Estilo**: Apenas "Fine" disponível
-- **Intensidade**: Limitada de 0.1 a 0.3 (apenas "Weak")
-- **Preservar Brilho**: Sempre desativado
-- **Justificativa**: Permite experiência básica mantendo incentivo para upgrade
+#### L001 - Grain Effect
+- **Intensity**: Limited from 0.1 to 0.3 (only "Weak").
+- **Preserve Brightness**: Always disabled.
+- **Justification**: Allows basic experience while maintaining an incentive for upgrade.
 
-#### L002 - Funcionalidades
-- **Lo-Fi Station**: Completamente desabilitado (menu oculto)
-- **Seção Comportamento**: Desabilitada nas configurações
-- **Configurações Avançadas**: Acesso limitado
-- **Justificativa**: Funcionalidades premium reservadas para versão paga
+#### L002 - Features
+- **Lo-Fi Station**: Completely disabled (menu hidden).
+- **Behavior Section**: Disabled in settings.
+- **Advanced Settings**: Limited access.
+- **Justification**: Premium features reserved for the paid version.
 
 #### L003 - Interface
-- **Nome do App**: "Granulay Trial" (diferenciação clara)
-- **Bundle ID**: `com.granulay.trial` (separação técnica)
-- **Botão de Compra**: Prominente nas configurações
-- **Versão**: "1.0.0-trial" (identificação clara)
+- **App Name**: "Granulay Trial" (clear differentiation).
+- **Bundle ID**: `com.granulay.trial` (technical separation).
+- **Purchase Button**: Prominent in settings.
+- **Version**: "1.0.0-trial" (clear identification).
 
-### Configuração Técnica
+### Technical Configuration
 
 #### Build Configurations
-- **Trial Debug**: Para desenvolvimento e testes da versão trial
-- **Debug**: Versão completa para desenvolvimento
-- **Release**: Versão completa para produção
+- **Trial Debug**: For development and testing of the trial version.
+- **Debug**: Full version for development.
+- **Release**: Full version for production.
 
-#### Compilação
+#### Compilation
 ```bash
-# Versão Completa (Release)
+# Full Version (Release)
 xcodebuild -project Granulay.xcodeproj -target Granulay -configuration Release
 ```
 
-### Experiência do Usuário Trial
+### Trial User Experience
 
 #### Onboarding
-1. Instalação simples via download direto
-2. Primeira execução mostra limitações claramente
-3. Experiência básica funcional imediatamente
-4. Call-to-action para upgrade bem posicionado
+1. Simple installation via direct download.
+2. First execution clearly shows limitations.
+3. Basic experience functional immediately.
+4. Call-to-action for upgrade well-positioned.
 
-#### Limitações Visíveis
-- Interface clara sobre status trial
-- Seções desabilitadas com explicação
-- Botão de compra sempre acessível
-- Comparação trial vs completa na tela de compra
+#### Visible Limitations
+- Clear interface regarding trial status.
+- Disabled sections with explanation.
+- Purchase button always accessible.
+- Trial vs. Full comparison on the purchase screen.
 
-#### Conversão
-- **URL de Compra**: `https://gabrielpaiva5.gumroad.com/l/granulay`
-- **Preço**: Acesso vitalício
-- **Proposta**: "💎 Acesso completo e vitalício"
+#### Conversion
+- **Purchase URL**: `https://gabrielpaiva5.gumroad.com/l/granulay`
+- **Price**: Lifetime access.
+- **Proposition**: "💎 Full and lifetime access"
 
 ---
 
-## 🚀 Especificações da Versão Completa
+## 🚀 Full Version Specifications
 
-### Funcionalidades Desbloqueadas
+### Unlocked Features
 
-#### F001 - Efeito de Grão Completo
-- **Todos os Estilos**: Fine, Medium, Coarse, Vintage
-- **Intensidade Total**: 0.1 a 1.0 (Weak, Medium, Strong)
-- **Preservar Brilho**: Opção disponível
-- **Configurações Avançadas**: Acesso total
+#### F001 - Full Grain Effect
+- **Full Intensity**: 0.1 to 1.0 (Weak, Medium, Strong).
+- **Preserve Brightness**: Option available.
+- **Matte Mode**: Option available.
+- **Advanced Settings**: Full access.
 
-#### F002 - Sistema Lo-Fi Completo
-- **20 Faixas Royalty-Free**: Música Lo-Fi de alta qualidade do Pixabay
-- **Artistas Licenciados**: FASSounds, DELOSound, FreeMusicForVideo, Mikhail Smusev, e outros
-- **Conformidade Legal**: Documentação completa de licenças disponível em Pixabay_Music_License_Documentation.md
-- **Controles Completos**: Play/Pause/Stop/Previous/Next/Shuffle/Repeat
-- **Controle de Volume**: 0-100%
-- **Integração Menu**: Submenu completo na barra
-- **Créditos**: Atribuição completa dos artistas na interface
-- **Qualidade**: Faixas em MP3 de alta qualidade hospedadas em S3
+#### F002 - Full Lo-Fi System *(Soft-disabled)*
+- **20 Royalty-Free Tracks**: High-quality Lo-Fi music from Pixabay.
+- **Licensed Artists**: FASSounds, DELOSound, FreeMusicForVideo, Mikhail Smusev, and others.
+- **Legal Compliance**: Full license documentation available in `Pixabay_Music_License_Documentation.md`.
+- **Full Controls**: Play/Pause/Stop/Previous/Next/Shuffle/Repeat.
+- **Volume Control**: 0-100%.
+- **Menu Integration**: Full submenu in the bar.
+- **Credits**: Full artist attribution in the interface.
+- **Quality**: High-quality MP3 tracks hosted on S3.
 
-#### F003 - Configurações Avançadas
-- **Seção Comportamento**: Totalmente acessível
-- **Configurações de Performance**: Otimizações disponíveis
-- **Múltiplos Monitores**: Configuração independente
-- **Atalhos de Teclado**: Personalizáveis
+#### F003 - Advanced Settings
+- **Behavior Section**: Fully accessible.
+- **Performance Settings**: Optimizations available.
+- **Multiple Monitors**: Independent configuration.
 
-#### F004 - Atualizações Premium
-- **Atualizações Automáticas**: Sem limitações
-- **Acesso Beta**: Versões de teste antecipadas
-- **Suporte Prioritário**: Canal direto com desenvolvedor
+#### F004 - Premium Updates
+- **Automatic Updates**: No limitations.
+- **Beta Access**: Early test versions.
+- **Priority Support**: Direct channel with the developer.
 
-### Diferenciação Técnica
+### Technical Differentiation
 
 #### Bundle Configuration
 - **Bundle ID**: `com.granulay.app`
-- **Nome**: "Granulay"
-- **Versão**: Obtida do Bundle (`CFBundleShortVersionString`)
+- **Name**: "Granulay"
+- **Version**: Obtained from Bundle (`CFBundleShortVersionString`).
 
-#### Detecção de Recursos
+#### Feature Detection
 ```swift
-// Estilos permitidos
-static var allowedGrainStyles: [GrainStyle] {
-    return GrainStyle.allCases // Todos os estilos
-}
-
-// Range de intensidade
+// Intensity range
 static var allowedIntensityRange: ClosedRange<Double> {
-    return 0.1...1.0 // Intensidade completa
+    return 0.1...1.0 // Full intensity
 }
 
-// Funcionalidades
+// Features
 static var isLoFiEnabled: Bool {
-    return true // Lo-Fi habilitado
+    return true // Lo-Fi enabled
 }
 ```
 
 ---
 
-## 🏗️ Arquitetura Técnica
+## 🏗️ Technical Architecture
 
-### Stack Tecnológico
-- **Framework**: SwiftUI + AppKit
-- **Linguagem**: Swift 5.9+
-- **Minimum Deployment**: Sistema 13.0
-- **Graphics**: Core Image + Metal
-- **Audio**: AVFoundation
-- **Networking**: URLSession
-- **Storage**: UserDefaults
+See `ARCHITECTURE.md` for a comprehensive overview of the application architecture, data flow, and module responsibilities.
 
-### Componentes Principais
-
-#### MenuBarManager
-- **Responsabilidade**: Gerenciamento da interface da barra de menu
-- **Funcionalidades**: Toggle de efeito, menu contextual, integração Lo-Fi
-- **Estado**: Published properties para reatividade
-
-#### GrainOverlayWindow
-- **Responsabilidade**: Janela de sobreposição para efeito de grão
-- **Funcionalidades**: Renderização em tempo real, múltiplos monitores
-- **Performance**: Otimizada com Metal e Core Image
-
-#### GrainEffect
-- **Responsabilidade**: Geração e aplicação do efeito de grão
-- **Funcionalidades**: 4 estilos, cache de texturas, blend modes
-- **Otimização**: Texture cache e performance monitoring
-
-#### LoFiMusicManager
-- **Responsabilidade**: Reprodução de música Lo-Fi
-- **Funcionalidades**: Streaming, controle de volume, estações
-- **Estado**: Published properties para UI reativa
-
-#### UpdateManager
-- **Responsabilidade**: Sistema de atualizações automáticas
-- **Funcionalidades**: Verificação, download, instalação
-- **Segurança**: Verificação de assinatura digital
-
-### Padrões de Design
-- **MVVM**: Model-View-ViewModel com SwiftUI
-- **Singleton**: Para managers globais (LoFiMusicManager, UpdateManager)
-- **Observer**: Combine framework para reatividade
-- **Strategy**: Diferentes estilos de grão
-- **Factory**: Criação de texturas de grão
+### Technological Stack
+- **Framework**: SwiftUI + AppKit.
+- **Language**: Swift 5.9+.
+- **Minimum Deployment**: macOS 13.0.
+- **Graphics**: Core Image + Metal.
+- **Audio**: AVFoundation.
+- **Networking**: URLSession.
+- **Storage**: UserDefaults.
 
 ---
 
-## 📊 Métricas e KPIs
+## 📊 Metrics and KPIs
 
-### Métricas de Produto
-- **Taxa de Conversão Trial→Pago**: Meta 15-25%
-- **Tempo de Uso Diário**: Meta 2-4 horas
-- **Retenção D7**: Meta 60%
-- **Retenção D30**: Meta 40%
-- **NPS (Net Promoter Score)**: Meta >50
+### Product Metrics
+- **Trial→Paid Conversion Rate**: Target 15-25%.
+- **Daily Usage Time**: Target 2-4 hours.
+- **D7 Retention**: Target 60%.
+- **D30 Retention**: Target 40%.
+- **NPS (Net Promoter Score)**: Target >50.
 
-### Métricas Técnicas
-- **Crash Rate**: <0.1%
-- **Tempo de Inicialização**: <2 segundos
-- **Uso de CPU**: <5% em operação normal
-- **Uso de Memória**: <100MB
-- **Tempo de Resposta UI**: <50ms
-
-### Métricas de Negócio
-- **Downloads Trial**: Tracking via analytics
-- **Conversões**: Via Gumroad analytics
-- **Revenue**: Receita mensal recorrente
-- **CAC (Customer Acquisition Cost)**: Custo por conversão
-- **LTV (Lifetime Value)**: Valor vitalício do cliente
+### Technical Metrics
+- **Crash Rate**: <0.1%.
+- **Startup Time**: <2 seconds.
+- **CPU Usage**: <5% in normal operation.
+- **Memory Usage**: <100MB.
+- **UI Response Time**: <50ms.
 
 ---
 
-## 🚀 Roadmap de Desenvolvimento
+## 🚀 Development Roadmap
 
-### Fase 1: MVP (Concluída) ✅
-- [x] Efeito de grão básico
-- [x] Interface barra de menu
-- [x] Configurações básicas
-- [x] Sistema trial/completo
+### Phase 1: MVP (Completed) ✅
+- [x] Basic grain effect
+- [x] Menu bar interface
+- [x] Basic settings
+- [x] Trial/Full system
 
-### Fase 2: Funcionalidades Avançadas (Concluída) ✅
-- [x] Sistema Lo-Fi
-- [x] Múltiplos estilos de grão
-- [x] Configurações avançadas
-- [x] Sistema de atualizações
-- [x] Localização PT-BR
+### Phase 2: Advanced Features (Completed) ✅
+- [x] Lo-Fi system *(Currently soft-disabled)*
+- [x] Multiple grain styles (Normal and Matte)
+- [x] Advanced settings
+- [x] Update system
+- [x] PT-BR localization
 
-### Fase 3: Polimento e Lançamento (Em Andamento) 🔄
-- [x] Otimizações de performance
-- [x] Testes extensivos
-- [x] Preparação App Store
-- [ ] Marketing e lançamento
-- [ ] Coleta de feedback inicial
+### Phase 3: Polish and Launch (In Progress) 🔄
+- [x] Performance optimizations
+- [x] Extensive testing
+- [x] App Store preparation
+- [ ] Marketing and launch
+- [ ] Initial feedback collection
 
-### Fase 4: Expansão (Planejada) 📋
-- [ ] Novos estilos de grão
-- [ ] Presets personalizáveis
-- [ ] Integração com Spotify/Apple Music
-- [ ] Atalhos de teclado globais
-- [ ] Modo escuro/claro automático
+### Phase 4: Expansion (Planned) 📋
+- [ ] Customizable presets
+- [ ] Spotify/Apple Music integration
+- [ ] Global keyboard shortcuts
+- [ ] Automatic dark/light mode
 
 ---
 
-## 🎨 Especificações de Design
+## 🎨 Design Specifications
 
-### Identidade Visual
-- **Cores Primárias**: Sistema (adapta ao tema nativo)
-- **Ícone**: Minimalista, representa grão/textura
-- **Tipografia**: SF Pro (sistema nativo)
-- **Estilo**: Moderno, limpo, não intrusivo
+### Visual Identity
+- **Primary Colors**: System (adapts to native theme).
+- **Icon**: Minimalist, represents grain/texture.
+- **Typography**: SF Pro (native system).
+- **Style**: Modern, clean, non-intrusive.
 
 ### Interface Guidelines
-- **Princípio**: Seguir Human Interface Guidelines da Apple
-- **Acessibilidade**: Suporte completo a VoiceOver
-- **Responsividade**: Adaptação a diferentes tamanhos de tela
-- **Consistência**: Padrões visuais consistentes em toda a app
+- **Principle**: Follow Apple's Human Interface Guidelines.
+- **Accessibility**: Full VoiceOver support.
+- **Responsiveness**: Adaptation to different screen sizes.
+- **Consistency**: Consistent visual patterns throughout the app.
 
-### Componentes UI
-- **Menu Bar**: Ícone discreto, menu contextual intuitivo
-- **Settings Window**: Layout em abas, controles nativos
-- **Sliders**: Feedback visual em tempo real
-- **Buttons**: Estados claros (normal, hover, pressed, disabled)
+### UI Components
+- **Menu Bar**: Discreet icon, intuitive contextual menu.
+- **Settings Window**: Tabbed layout, native controls.
+- **Sliders**: Real-time visual feedback.
+- **Buttons**: Clear states (normal, hover, pressed, disabled).
 
 ---
 
-## 🔒 Considerações de Segurança
+## 🔒 Security Considerations
 
 ### App Sandbox
-- **Status**: Habilitado para App Store
-- **Permissões**: Apenas essenciais
-- **Network**: Apenas HTTPS para atualizações e Lo-Fi
-- **File System**: Acesso limitado a configurações
+- **Status**: Enabled for App Store.
+- **Permissions**: Only essential ones.
+- **Network**: HTTPS only for updates and Lo-Fi.
+- **File System**: Limited access to settings.
 
 ### Code Signing
-- **Certificado**: Apple Distribution Certificate
-- **Team ID**: TB76NB7VWG
-- **Notarization**: Obrigatória para distribuição
-- **Hardened Runtime**: Habilitado
+- **Certificate**: Apple Distribution Certificate.
+- **Team ID**: TB76NB7VWG.
+- **Notarization**: Mandatory for distribution.
+- **Hardened Runtime**: Enabled.
 
 ### Privacy
-- **Dados Coletados**: Nenhum dado pessoal
-- **Analytics**: Apenas métricas técnicas anônimas
-- **Permissões**: Transparência total sobre uso
-- **GDPR**: Compliance total
+- **Data Collected**: No personal data.
+- **Analytics**: Only anonymous technical metrics.
+- **Permissions**: Full transparency on usage.
+- **GDPR**: Full compliance.
 
 ---
 
-## 📈 Estratégia de Go-to-Market
+## 📋 Final Acceptance Criteria
 
-### Canais de Distribuição
-1. **App Store** (Principal)
-   - Descoberta orgânica
-   - Credibilidade da plataforma
-   - Sistema de pagamento integrado
-
-2. **Website Próprio** (Secundário)
-   - Download direto da versão trial
-   - Controle total da experiência
-   - Métricas detalhadas
-
-3. **Gumroad** (Monetização)
-   - Processamento de pagamentos
-   - Entrega automática
-   - Analytics de vendas
-
-### Estratégia de Preços
-- **Modelo**: Pagamento único (lifetime)
-- **Preço**: Competitivo no mercado de utilities desktop
-- **Trial**: Funcionalidades limitadas, sem tempo limite
-- **Valor**: Foco na proposta de valor única
-
-### Marketing
-- **Target**: Criadores de conteúdo, designers
-- **Canais**: Redes sociais, communities de design
-- **Conteúdo**: Demos visuais, before/after
-- **Influencers**: Parcerias com criadores de conteúdo
-
----
-
-## 📋 Critérios de Aceitação Final
-
-### Funcionalidade
-- [ ] Todos os requisitos funcionais implementados
-- [ ] Versão trial com limitações corretas
-- [ ] Versão completa com todas as funcionalidades
-- [ ] Sistema de atualizações funcionando
-- [ ] Localização completa EN/PT-BR
+### Functionality
+- [x] All functional requirements implemented.
+- [x] Trial version with correct limitations.
+- [x] Full version with all features.
+- [x] Update system working.
+- [x] Full EN/PT-BR localization.
 
 ### Performance
-- [ ] Uso de CPU <5% em operação normal
-- [ ] Uso de memória <100MB
-- [ ] Tempo de resposta <50ms
-- [ ] Sem vazamentos de memória
-- [ ] Estabilidade em uso prolongado
+- [x] CPU usage <5% in normal operation.
+- [x] Memory usage <100MB.
+- [x] Response time <50ms.
+- [x] No memory leaks.
+- [x] Stability in prolonged use.
 
-### Qualidade
-- [ ] Zero crashes em testes extensivos
-- [ ] Interface responsiva e intuitiva
-- [ ] Compatibilidade com múltiplos monitores
-- [ ] Suporte a diferentes resoluções
-- [ ] Acessibilidade completa
+### Quality
+- [x] Zero crashes in extensive tests.
+- [x] Responsive and intuitive interface.
+- [x] Compatibility with multiple monitors.
+- [x] Support for different resolutions.
+- [x] Full accessibility.
 
-### Distribuição
-- [ ] Build App Store aprovado
-- [ ] Certificados e assinaturas válidos
-- [ ] Metadata e screenshots preparados
-- [ ] Sistema de analytics implementado
-- [ ] Documentação completa
+### Distribution
+- [x] App Store build approved.
+- [x] Valid certificates and signatures.
+- [x] Metadata and screenshots prepared.
+- [ ] Analytics system implemented.
+- [x] Complete documentation.
 
 ---
 
-## 📞 Contatos e Responsabilidades
+## 📞 Contacts and Responsibilities
 
-### Desenvolvimento
+### Development
 - **Lead Developer**: Gabriel Paiva
-- **Responsabilidades**: Arquitetura, implementação, testes
-- **Contato**: Via GitHub Issues
-
-### Design
-- **UI/UX**: Gabriel Paiva
-- **Responsabilidades**: Interface, experiência do usuário
-- **Guidelines**: Apple Human Interface Guidelines
-
-### Produto
-- **Product Owner**: Gabriel Paiva
-- **Responsabilidades**: Roadmap, requisitos, priorização
-- **Decisões**: Baseadas em feedback e métricas
+- **Responsibilities**: Architecture, implementation, testing.
+- **Contact**: Via GitHub Issues.
 
 ---
 
-## 📚 Documentação Relacionada
+## 📚 Related Documentation
 
-- `README.md` - Visão geral e instruções básicas
-- `README-TRIAL.md` - Especificações da versão trial
-- `APP_STORE_GUIDE.md` - Guia para publicação na App Store
-- `CERTIFICADO_DISTRIBUICAO.md` - Configuração de certificados
-- `RESUMO_PUBLICACAO.md` - Status da publicação
-- `CHANGELOG` - Histórico de versões
+- `README.md` - Overview and basic instructions.
+- `ARCHITECTURE.md` - Architecture, execution flows, and module responsibilities.
+- `CLAUDE.md` - Guidelines for AI agents working on the codebase.
+- `Pixabay_Music_License_Documentation.md` - Lo-Fi music licensing info.
+- `CHANGELOG` - Version history.
 
 ---
 
-**Versão do Documento**: 1.0  
-**Data**: Janeiro 2025  
-**Autor**: Gabriel Paiva  
-**Status**: Aprovado para Desenvolvimento
+**Document Version**: 1.1  
+**Date**: April 2026  
+**Author**: Gabriel Paiva  
+**Status**: Approved for Development
