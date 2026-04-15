@@ -132,9 +132,6 @@ class MenuBarManager: ObservableObject {
             button.image?.size = NSSize(width: 16, height: 16)
 
             button.image?.isTemplate = true
-
-            button.action = #selector(toggleGrain)
-            button.target = self
         }
 
         setupMenu()
@@ -143,13 +140,23 @@ class MenuBarManager: ObservableObject {
     private func setupMenu() {
         let menu = NSMenu()
 
-        let toggleItem = NSMenuItem(
-            title: isGrainEnabled ? LocalizationKeys.Menu.disableEffect.localized : LocalizationKeys.Menu.enableEffect.localized,
-            action: #selector(toggleGrain),
+        let grainItem = NSMenuItem(
+            title: LocalizationKeys.Settings.Appearance.grainTitle.localized,
+            action: #selector(toggleGrainFromMenu),
             keyEquivalent: ""
         )
-        toggleItem.target = self
-        menu.addItem(toggleItem)
+        grainItem.target = self
+        grainItem.state = isGrainEnabled ? .on : .off
+        menu.addItem(grainItem)
+
+        let matteItem = NSMenuItem(
+            title: LocalizationKeys.Settings.Appearance.matteTitle.localized,
+            action: #selector(toggleMatteFromMenu),
+            keyEquivalent: ""
+        )
+        matteItem.target = self
+        matteItem.state = isMatteModeEnabled ? .on : .off
+        menu.addItem(matteItem)
 
         menu.addItem(NSMenuItem.separator())
 
@@ -197,8 +204,11 @@ class MenuBarManager: ObservableObject {
     private func updateMenuTitle() {
         guard let menu = statusItem?.menu else { return }
 
-        if let toggleItem = menu.item(at: 0) {
-            toggleItem.title = isGrainEnabled ? LocalizationKeys.Menu.disableEffect.localized : LocalizationKeys.Menu.enableEffect.localized
+        if let grainItem = menu.item(at: 0) {
+            grainItem.state = isGrainEnabled ? .on : .off
+        }
+        if let matteItem = menu.item(at: 1) {
+            matteItem.state = isMatteModeEnabled ? .on : .off
         }
     }
 
@@ -222,8 +232,12 @@ class MenuBarManager: ObservableObject {
         }
     }
 
-    @objc private func toggleGrain() {
+    @objc private func toggleGrainFromMenu() {
         isGrainEnabled.toggle()
+    }
+
+    @objc private func toggleMatteFromMenu() {
+        isMatteModeEnabled.toggle()
     }
 
     @objc private func openSettings() {

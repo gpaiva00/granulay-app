@@ -147,7 +147,7 @@ class GrainOverlayWindow: NSObject, ObservableObject {
         for window in overlayWindows {
 
             window.level = NSWindow.Level(rawValue: Int(CGWindowLevelForKey(.screenSaverWindow)) + 1)
-            window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .ignoresCycle]
+            window.collectionBehavior = [.canJoinAllSpaces, .stationary, .ignoresCycle, .fullScreenAuxiliary]
             window.isOpaque = false
             window.hasShadow = false
             window.ignoresMouseEvents = true

@@ -24,6 +24,16 @@ struct GrainRenderTuning {
     static let screenNumberDeviceKey = NSDeviceDescriptionKey("NSScreenNumber") // Chave de deviceDescription para identificar display.
 }
 
+struct MatteGrainTuning {
+    static let baseHazeAlpha: Int = 130          // 255-scale base opacity of the white film
+    static let hazeAlphaAmplitude: Int = 35      // ± variation driven by shaped noise
+    static let spatialCorrelation: Double = 0.40 // Stronger smoothing than fine grain (0.14)
+    static let distributionClip: Double = 0.45   // Slightly looser than fine grain's 0.42
+    static let highlightThreshold: Double = 0.998 // ~0.2% of pixels become highlight cores
+    static let highlightCoreAlpha: Int = 190     // Alpha of the highlight core pixel
+    static let highlightNeighborAlphaBoost: Int = 50 // Alpha bump added to 4-neighbours of each core
+}
+
 struct GrainTextureKey: Hashable {
     let displayID: CGDirectDisplayID // Identificador físico/lógico da tela.
     let pixelWidth: Int // Largura da textura gerada em pixels.
@@ -283,38 +293,76 @@ private func createGrainAtlas(descriptor: GrainTextureDescriptor) -> GrainTextur
         guard pixelCount > 0 else { return nil }
         
         var rng = SplitMix64(seed: seed)
-        var pixels = [UInt8](repeating: 0, count: pixelCount * 4)
-        
-        let hazeAlpha: UInt8 = 20
-        let sparkleThreshold = 0.96
+        var baseNoise = [Float](repeating: 0, count: pixelCount)
         
         for index in 0..<pixelCount {
-            let byteIndex = index * 4
-            let rRand = rng.nextUnit()
-            let gRand = rng.nextUnit()
-            let bRand = rng.nextUnit()
-            
-            var r: UInt8 = 255
-            var g: UInt8 = 255
-            var b: UInt8 = 255
-            var a: UInt8 = hazeAlpha
-            
-            if rRand > sparkleThreshold { r = 255; g = 0; b = 0; a = 255 }
-            else if gRand > sparkleThreshold { r = 0; g = 255; b = 0; a = 255 }
-            else if bRand > sparkleThreshold { r = 0; g = 0; b = 255; a = 255 }
-            
-            if a == 255 {
-                pixels[byteIndex] = r
-                pixels[byteIndex + 1] = g
-                pixels[byteIndex + 2] = b
-                pixels[byteIndex + 3] = 255
-            } else {
-                let alphaFloat = Float(a) / 255.0
-                pixels[byteIndex] = UInt8(Float(r) * alphaFloat)
-                pixels[byteIndex + 1] = UInt8(Float(g) * alphaFloat)
-                pixels[byteIndex + 2] = UInt8(Float(b) * alphaFloat)
-                pixels[byteIndex + 3] = a
+            let centered = (rng.nextUnit() + rng.nextUnit() + rng.nextUnit()) / 3.0 - 0.5
+            baseNoise[index] = Float(centered)
+        }
+        
+        var shapedNoise = [Float](repeating: 0, count: pixelCount)
+        let correlation = Float(MatteGrainTuning.spatialCorrelation)
+        
+        for y in 0..<pixelHeight {
+            let rowStart = y * pixelWidth
+            for x in 0..<pixelWidth {
+                let idx = rowStart + x
+                let current = baseNoise[idx]
+                let left = x > 0 ? baseNoise[idx - 1] : current
+                let right = x + 1 < pixelWidth ? baseNoise[idx + 1] : current
+                let up = y > 0 ? baseNoise[idx - pixelWidth] : current
+                let down = y + 1 < pixelHeight ? baseNoise[idx + pixelWidth] : current
+                
+                let neighborhood = (left + right + up + down) * 0.25
+                shapedNoise[idx] = current * (1.0 - correlation) + neighborhood * correlation
             }
+        }
+        
+        var alphas = [Int](repeating: 0, count: pixelCount)
+        let clip = Float(MatteGrainTuning.distributionClip)
+        let baseHazeAlpha = Float(MatteGrainTuning.baseHazeAlpha)
+        let hazeAmplitude = Float(MatteGrainTuning.hazeAlphaAmplitude)
+        
+        for index in 0..<pixelCount {
+            var sample = shapedNoise[index]
+            sample = min(clip, max(-clip, sample))
+            let normalized = sample / clip
+            
+            let alphaFloat = baseHazeAlpha + (normalized * hazeAmplitude)
+            alphas[index] = Int(alphaFloat.rounded())
+        }
+        
+        let highlightThreshold = MatteGrainTuning.highlightThreshold
+        let coreAlpha = MatteGrainTuning.highlightCoreAlpha
+        let neighborBoost = MatteGrainTuning.highlightNeighborAlphaBoost
+        
+        for y in 0..<pixelHeight {
+            let rowStart = y * pixelWidth
+            for x in 0..<pixelWidth {
+                if rng.nextUnit() > highlightThreshold {
+                    let idx = rowStart + x
+                    alphas[idx] = max(alphas[idx], coreAlpha)
+                    
+                    if x > 0 { alphas[idx - 1] += neighborBoost }
+                    if x + 1 < pixelWidth { alphas[idx + 1] += neighborBoost }
+                    if y > 0 { alphas[idx - pixelWidth] += neighborBoost }
+                    if y + 1 < pixelHeight { alphas[idx + pixelWidth] += neighborBoost }
+                }
+            }
+        }
+        
+        var pixels = [UInt8](repeating: 0, count: pixelCount * 4)
+        for index in 0..<pixelCount {
+            let a = UInt8(min(255, max(0, alphas[index])))
+            let byteIndex = index * 4
+            
+            let alphaFloat = Float(a) / 255.0
+            let colorPremultiplied = UInt8(255.0 * alphaFloat)
+            
+            pixels[byteIndex] = colorPremultiplied
+            pixels[byteIndex + 1] = colorPremultiplied
+            pixels[byteIndex + 2] = colorPremultiplied
+            pixels[byteIndex + 3] = a
         }
         
         return makePremultipliedRGBAImage(width: pixelWidth, height: pixelHeight, pixels: pixels)
