@@ -185,7 +185,7 @@ private enum IntensityPreset: CaseIterable {
         case .medium:
             return 0.2
         case .strong:
-            return 0.3
+            return 0.45
         }
     }
 
@@ -194,9 +194,9 @@ private enum IntensityPreset: CaseIterable {
         case .weak:
             return intensity <= 0.15
         case .medium:
-            return intensity > 0.15 && intensity <= 0.25
+            return intensity > 0.15 && intensity <= 0.3
         case .strong:
-            return intensity > 0.25
+            return intensity > 0.3
         }
     }
 }
