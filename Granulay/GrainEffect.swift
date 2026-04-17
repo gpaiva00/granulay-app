@@ -25,14 +25,47 @@ struct GrainRenderTuning {
     static let screenNumberDeviceKey = NSDeviceDescriptionKey("NSScreenNumber") // Chave de deviceDescription para identificar display.
 }
 
+/// Tuning for the frosted-film matte mode.
+///
+/// The matte mode is a two-layer composite that simulates real frosted emulsion film rather
+/// than a flat screen haze:
+///   • **Cloud diffusion layer** (≈60% of perceived density): a low-frequency, multi-pass
+///     smoothed noise field rendered at low resolution and bilinearly upscaled by Core
+///     Animation. Produces patchy, non-uniform density — the single strongest cue that the
+///     overlay is a physical material. A slow `contentsRect` pan adds subtle "breathing"
+///     without per-frame CPU cost.
+///   • **Emulsion grain layer** (≈40% of perceived density): anisotropic shaped noise with
+///     slight horizontal bias (fiber feel) and occasional highlight sparkles with subtle
+///     warm/cool chromatic splits, approximating silver-halide scatter.
 struct MatteGrainTuning {
-    static let baseHazeAlpha: Int = 118          // Slightly lower haze floor to keep matte softer and less opaque.
-    static let hazeAlphaAmplitude: Int = 42      // More local variation so grain reads through the matte film.
-    static let spatialCorrelation: Double = 0.30 // Less diffusion than 0.40 for a subtly sharper matte texture.
-    static let distributionClip: Double = 0.40   // Boosts local contrast without pushing the texture into harsh noise.
-    static let highlightThreshold: Double = 0.9975 // Slightly more highlight seeds to improve matte grain legibility.
-    static let highlightCoreAlpha: Int = 198     // Keeps highlight centers defined but still below fully opaque.
-    static let highlightNeighborAlphaBoost: Int = 40 // Lower bloom around highlights to keep edges cleaner.
+    // 60/40 diffusion-first split of the matte opacity budget. Cloud carries the bulk of
+    // perceived density so emulsion specks read *over* the frosted base rather than
+    // dominating it. These must sum to 1.0.
+    static let grainDensityShare: Double = 0.40
+    static let cloudDensityShare: Double = 0.60
+
+    // Emulsion micro-grain layer (~40% of density).
+    static let grainHazeAlpha: Int = 52           // Base alpha for grain layer; cloud carries the bulk of density now.
+    static let grainHazeAmplitude: Int = 34       // Local variation amplitude on top of the base haze.
+    static let horizontalCorrelation: Double = 0.38 // Stronger lateral neighbor pull → fiber-like anisotropy.
+    static let verticalCorrelation: Double = 0.16   // Weaker vertical pull so grain doesn't average into mush.
+    static let distributionClip: Double = 0.40    // Clip extremes of the shaped distribution.
+    static let highlightThreshold: Double = 0.9975 // Probability gate for emulsion highlight seeds.
+    static let highlightCoreAlpha: Int = 210      // Core alpha of a highlight pixel.
+    static let highlightNeighborAlphaBoost: Int = 38 // Neighbor bloom around highlights.
+    static let highlightWarmShift: Int = 9        // Slight R bias on highlights (silver-halide warm scatter).
+    static let highlightCoolShift: Int = 7        // Slight B bias on highlights (cool scatter).
+
+    // Cloud diffusion layer (~60% of density).
+    static let cloudDownsample: Int = 12          // Low-res generation factor; CA linear filter upscales smoothly.
+    static let cloudBaseAlpha: Int = 82           // Mean alpha of the cloud field.
+    static let cloudAmplitude: Int = 48           // Peak deviation around the mean — drives patchiness.
+    static let cloudBlurPasses: Int = 3           // Box-blur iterations on noise for soft-cloud spectrum.
+    static let cloudMidFrequencyMix: Double = 0.28 // Fraction of less-smoothed noise re-added for mid-frequency detail.
+    static let cloudRadialBoost: Double = 0.06    // Subtle edge density gain for physical "presence."
+    static let cloudPanRange: CGFloat = 0.045     // Fraction of contentsRect that drifts during animation.
+    static let cloudPanDuration: CFTimeInterval = 11.0 // Full drift cycle (autoreversed) — slow breathing.
+    static let cloudMinResolution: Int = 64       // Lower bound on cloud texture dimension so tiny screens still get detail.
 }
 
 struct GrainTextureKey: Hashable {
@@ -52,6 +85,9 @@ private struct GrainTextureDescriptor {
 struct GrainTextureAtlas {
     let key: GrainTextureKey // Chave de cache correspondente ao atlas.
     let frames: [CGImage] // Sequência de frames usada para animar o grão.
+    /// Low-resolution cloud diffusion texture for matte (frosted-film) mode. `nil` for fine mode.
+    /// Rendered on a sibling `CALayer` behind the grain, upscaled by Core Animation's bilinear filter.
+    let cloudFrame: CGImage?
 }
 
 private struct SplitMix64 {
@@ -211,7 +247,15 @@ private func createGrainAtlas(descriptor: GrainTextureDescriptor) -> GrainTextur
         frames.append(validFrame)
     }
     
-    return GrainTextureAtlas(key: descriptor.key, frames: frames)
+    let cloudFrame: CGImage? = descriptor.key.isMatteMode
+        ? createCloudFrame(
+            pixelWidth: descriptor.pixelWidth,
+            pixelHeight: descriptor.pixelHeight,
+            seed: seedGenerator.next()
+        )
+        : nil
+
+    return GrainTextureAtlas(key: descriptor.key, frames: frames, cloudFrame: cloudFrame)
 }
 
     /// Generates a frame of "Fine Grain" noise using a PRNG.
@@ -286,24 +330,35 @@ private func createGrainAtlas(descriptor: GrainTextureDescriptor) -> GrainTextur
         return makePremultipliedRGBAImage(width: pixelWidth, height: pixelHeight, pixels: pixels)
     }
 
-    /// Generates a frame of "Matte Grain" noise.
-    /// This mode produces a hazy, translucent layer with occasional bright RGB "sparkles"
-    /// to simulate a distinct aesthetic compared to the fine film grain.
+    /// Generates the emulsion micro-grain layer for matte (frosted-film) mode.
+    ///
+    /// Compared to the previous flat-haze matte, this pass does two things that make it read
+    /// as physical emulsion rather than an overlay:
+    ///   1. **Anisotropic correlation kernel** — horizontal neighbors pull harder than
+    ///      vertical, giving the texture a subtle fibrous directionality (like real film
+    ///      emulsion) instead of uniform isotropic noise.
+    ///   2. **Chromatic highlight sparkles** — highlight seeds carry a small warm/cool RGB
+    ///      split rather than pure grey, approximating silver-halide light scatter.
+    ///
+    /// Designed to be composited **on top of** the cloud diffusion layer; carries ~40% of the
+    /// effect's perceived density (the cloud layer carries the other 60%).
     private func createMatteGrainFrame(pixelWidth: Int, pixelHeight: Int, seed: UInt64) -> CGImage? {
         let pixelCount = pixelWidth * pixelHeight
         guard pixelCount > 0 else { return nil }
-        
+
         var rng = SplitMix64(seed: seed)
         var baseNoise = [Float](repeating: 0, count: pixelCount)
-        
+
         for index in 0..<pixelCount {
             let centered = (rng.nextUnit() + rng.nextUnit() + rng.nextUnit()) / 3.0 - 0.5
             baseNoise[index] = Float(centered)
         }
-        
+
         var shapedNoise = [Float](repeating: 0, count: pixelCount)
-        let correlation = Float(MatteGrainTuning.spatialCorrelation)
-        
+        let hCorr = Float(MatteGrainTuning.horizontalCorrelation)
+        let vCorr = Float(MatteGrainTuning.verticalCorrelation)
+        let selfWeight = 1.0 - hCorr - vCorr
+
         for y in 0..<pixelHeight {
             let rowStart = y * pixelWidth
             for x in 0..<pixelWidth {
@@ -313,37 +368,40 @@ private func createGrainAtlas(descriptor: GrainTextureDescriptor) -> GrainTextur
                 let right = x + 1 < pixelWidth ? baseNoise[idx + 1] : current
                 let up = y > 0 ? baseNoise[idx - pixelWidth] : current
                 let down = y + 1 < pixelHeight ? baseNoise[idx + pixelWidth] : current
-                
-                let neighborhood = (left + right + up + down) * 0.25
-                shapedNoise[idx] = current * (1.0 - correlation) + neighborhood * correlation
+
+                let horizontal = (left + right) * 0.5
+                let vertical = (up + down) * 0.5
+                shapedNoise[idx] = current * selfWeight + horizontal * hCorr + vertical * vCorr
             }
         }
-        
+
         var alphas = [Int](repeating: 0, count: pixelCount)
         let clip = Float(MatteGrainTuning.distributionClip)
-        let baseHazeAlpha = Float(MatteGrainTuning.baseHazeAlpha)
-        let hazeAmplitude = Float(MatteGrainTuning.hazeAlphaAmplitude)
-        
+        let baseHaze = Float(MatteGrainTuning.grainHazeAlpha)
+        let hazeAmplitude = Float(MatteGrainTuning.grainHazeAmplitude)
+
         for index in 0..<pixelCount {
             var sample = shapedNoise[index]
             sample = min(clip, max(-clip, sample))
             let normalized = sample / clip
-            
-            let alphaFloat = baseHazeAlpha + (normalized * hazeAmplitude)
-            alphas[index] = Int(alphaFloat.rounded())
+            alphas[index] = Int((baseHaze + normalized * hazeAmplitude).rounded())
         }
-        
+
+        // Highlight pass: record which pixels received a "silver-halide" sparkle, so we can
+        // apply a chromatic split on those only without tinting the neutral haze field.
+        var chromaFlags = [Int8](repeating: 0, count: pixelCount) // 0 = neutral, 1 = highlight core
         let highlightThreshold = MatteGrainTuning.highlightThreshold
         let coreAlpha = MatteGrainTuning.highlightCoreAlpha
         let neighborBoost = MatteGrainTuning.highlightNeighborAlphaBoost
-        
+
         for y in 0..<pixelHeight {
             let rowStart = y * pixelWidth
             for x in 0..<pixelWidth {
                 if rng.nextUnit() > highlightThreshold {
                     let idx = rowStart + x
                     alphas[idx] = max(alphas[idx], coreAlpha)
-                    
+                    chromaFlags[idx] = 1
+
                     if x > 0 { alphas[idx - 1] += neighborBoost }
                     if x + 1 < pixelWidth { alphas[idx + 1] += neighborBoost }
                     if y > 0 { alphas[idx - pixelWidth] += neighborBoost }
@@ -351,22 +409,152 @@ private func createGrainAtlas(descriptor: GrainTextureDescriptor) -> GrainTextur
                 }
             }
         }
-        
+
+        let warmShift = MatteGrainTuning.highlightWarmShift
+        let coolShift = MatteGrainTuning.highlightCoolShift
         var pixels = [UInt8](repeating: 0, count: pixelCount * 4)
         for index in 0..<pixelCount {
             let a = UInt8(min(255, max(0, alphas[index])))
             let byteIndex = index * 4
-            
-            let alphaFloat = Float(a) / 255.0
-            let colorPremultiplied = UInt8(255.0 * alphaFloat)
-            
-            pixels[byteIndex] = colorPremultiplied
-            pixels[byteIndex + 1] = colorPremultiplied
-            pixels[byteIndex + 2] = colorPremultiplied
+            // Premultiplied-white base: RGB channels equal the alpha channel.
+
+            // Highlights gain a tiny R boost / B dip (warm shift) or vice-versa — picked by
+            // the low bit of the pixel index so the two variants interleave, approximating
+            // random dispersion without an extra RNG draw per pixel.
+            if chromaFlags[index] == 1 {
+                let luma = Int(a)
+                let warm = (index & 1) == 0
+                let r = warm ? min(255, luma + warmShift) : max(0, luma - warmShift)
+                let b = warm ? max(0, luma - coolShift) : min(255, luma + coolShift)
+                pixels[byteIndex] = UInt8(r)
+                pixels[byteIndex + 1] = a
+                pixels[byteIndex + 2] = UInt8(b)
+            } else {
+                pixels[byteIndex] = a
+                pixels[byteIndex + 1] = a
+                pixels[byteIndex + 2] = a
+            }
             pixels[byteIndex + 3] = a
         }
-        
+
         return makePremultipliedRGBAImage(width: pixelWidth, height: pixelHeight, pixels: pixels)
+    }
+
+    /// Generates the low-resolution cloud diffusion layer for matte (frosted-film) mode.
+    ///
+    /// This is the single biggest cue that the overlay is a physical frosted material rather
+    /// than a flat digital haze: it varies density *in patches* across the frame instead of
+    /// holding a constant alpha. The image is intentionally generated at a fraction of the
+    /// displayed resolution (see `MatteGrainTuning.cloudDownsample`) so Core Animation's
+    /// bilinear magnification filter does the smoothing for free — the low-pass is the
+    /// upscale itself, which is effectively zero-cost at render time.
+    ///
+    /// Pipeline:
+    ///   1. White noise → box-blur passes → soft low-frequency field.
+    ///   2. Re-add a fraction of a less-smoothed copy for mid-frequency variation.
+    ///   3. Apply a gentle radial falloff so the frame has material "presence" at edges.
+    ///   4. Encode as premultiplied black-with-alpha.
+    ///
+    /// The CALayer hosting this frame pans `contentsRect` slowly (see
+    /// `MatteGrainTuning.cloudPanRange/Duration`), which produces a slow "breathing" effect
+    /// at zero CPU cost — real frosted film shifts slowly, not per-frame like grain.
+    private func createCloudFrame(pixelWidth: Int, pixelHeight: Int, seed: UInt64) -> CGImage? {
+        let downsample = max(1, MatteGrainTuning.cloudDownsample)
+        let w = max(MatteGrainTuning.cloudMinResolution, pixelWidth / downsample)
+        let h = max(MatteGrainTuning.cloudMinResolution, pixelHeight / downsample)
+        let count = w * h
+        guard count > 0 else { return nil }
+
+        var rng = SplitMix64(seed: seed)
+        var field = [Float](repeating: 0, count: count)
+        for i in 0..<count {
+            field[i] = Float(rng.nextUnit())
+        }
+
+        // Save a lightly-smoothed copy for mid-frequency re-injection after the main blur.
+        var midField = field
+        boxBlurInPlace(&midField, width: w, height: h, passes: 1)
+
+        boxBlurInPlace(&field, width: w, height: h, passes: MatteGrainTuning.cloudBlurPasses)
+
+        let midMix = Float(MatteGrainTuning.cloudMidFrequencyMix)
+        for i in 0..<count {
+            field[i] = field[i] * (1.0 - midMix) + midField[i] * midMix
+        }
+
+        // Normalize to [-1, 1] centered around the mean so baseAlpha + amplitude mapping is
+        // symmetric regardless of how the RNG draws fell.
+        var fieldMin: Float = .greatestFiniteMagnitude
+        var fieldMax: Float = -.greatestFiniteMagnitude
+        for v in field {
+            if v < fieldMin { fieldMin = v }
+            if v > fieldMax { fieldMax = v }
+        }
+        let range = max(0.0001, fieldMax - fieldMin)
+
+        let baseAlpha = Float(MatteGrainTuning.cloudBaseAlpha)
+        let amplitude = Float(MatteGrainTuning.cloudAmplitude)
+        let radialBoost = Float(MatteGrainTuning.cloudRadialBoost)
+        let cxF = Float(w) * 0.5
+        let cyF = Float(h) * 0.5
+        let maxR2 = cxF * cxF + cyF * cyF
+
+        var pixels = [UInt8](repeating: 0, count: count * 4)
+        for y in 0..<h {
+            let rowStart = y * w
+            let dy = Float(y) - cyF
+            for x in 0..<w {
+                let idx = rowStart + x
+                let dx = Float(x) - cxF
+                let r2 = (dx * dx + dy * dy) / maxR2 // 0 at center, ~1 at corner
+                let radial = 1.0 + radialBoost * r2
+
+                let normalized = ((field[idx] - fieldMin) / range) * 2.0 - 1.0 // -1..1
+                var alphaF = (baseAlpha + normalized * amplitude) * radial
+                alphaF = min(255, max(0, alphaF))
+                let a = UInt8(alphaF.rounded())
+                let byteIndex = idx * 4
+                // Premultiplied-white tint: RGB channels equal alpha so Core Animation
+                // composites the cloud as a soft white film rather than a dark veil.
+                pixels[byteIndex] = a
+                pixels[byteIndex + 1] = a
+                pixels[byteIndex + 2] = a
+                pixels[byteIndex + 3] = a
+            }
+        }
+
+        return makePremultipliedRGBAImage(width: w, height: h, pixels: pixels)
+    }
+
+    /// In-place 3x3 box blur, separable (horizontal then vertical), repeated `passes` times.
+    /// Used to soften white noise into cloud-like low-frequency density. Edge pixels clamp.
+    private func boxBlurInPlace(_ field: inout [Float], width: Int, height: Int, passes: Int) {
+        guard passes > 0, width > 0, height > 0 else { return }
+        var scratch = [Float](repeating: 0, count: field.count)
+        for _ in 0..<passes {
+            // Horizontal pass: field → scratch
+            for y in 0..<height {
+                let rowStart = y * width
+                for x in 0..<width {
+                    let l = field[rowStart + max(0, x - 1)]
+                    let c = field[rowStart + x]
+                    let r = field[rowStart + min(width - 1, x + 1)]
+                    scratch[rowStart + x] = (l + c + r) / 3.0
+                }
+            }
+            // Vertical pass: scratch → field
+            for y in 0..<height {
+                let rowStart = y * width
+                let upRow = max(0, y - 1) * width
+                let downRow = min(height - 1, y + 1) * width
+                for x in 0..<width {
+                    let u = scratch[upRow + x]
+                    let c = scratch[rowStart + x]
+                    let d = scratch[downRow + x]
+                    field[rowStart + x] = (u + c + d) / 3.0
+                }
+            }
+        }
     }
 
     private func makePremultipliedRGBAImage(width: Int, height: Int, pixels: [UInt8]) -> CGImage? {
@@ -445,6 +633,14 @@ class GrainLayerView: NSView {
     private var currentScale: CGFloat = 1.0 // Escala atual da tela para manter nitidez correta do conteúdo.
     private var textureAtlas: GrainTextureAtlas? // Atlas atualmente associado à tela da janela.
     private var currentFrameIndex = 0 // Índice do frame atual no atlas animado.
+
+    /// Sublayer that renders the low-resolution cloud diffusion field for matte mode.
+    /// Sits **behind** the grain (which is drawn on `layer.contents`) so grain specks
+    /// composite on top of the cloud's patchy density, exactly like real emulsion over a
+    /// frosted base. `nil` and removed from the tree when not in matte mode.
+    private var cloudLayer: CALayer?
+    private var cloudLayerAtlasKey: GrainTextureKey? // Last atlas key applied to `cloudLayer.contents`; avoids CGImage identity fragility.
+    private static let cloudPanAnimationKey = "granulay.cloudPan"
     
     // MARK: - Initialization
     
@@ -484,12 +680,14 @@ class GrainLayerView: NSView {
         guard let atlas = GrainTextureCache.shared.atlas(for: screen, isMatteMode: isMatteMode) else {
             return
         }
-        
+
         if textureAtlas?.key != atlas.key || textureAtlas == nil {
             textureAtlas = atlas
             currentFrameIndex = 0
             applyCurrentFrame()
         }
+
+        syncCloudLayer(with: atlas)
     }
     
     func applyScale(_ scale: CGFloat) {
@@ -534,19 +732,82 @@ class GrainLayerView: NSView {
     
     private func updateLayerProperties() {
         guard let layer else { return }
-        
+
         let clampedIntensity = min(1.0, max(0.0, intensity)) // Limita entrada ao intervalo esperado.
         let curvedIntensity = pow(clampedIntensity, GrainRenderTuning.intensityCurveExponent) // Aplica curva perceptual.
 
         if isMatteMode {
             let clampedMatte = min(1.0, max(0.0, matteIntensity))
             let curvedMatte = pow(clampedMatte, GrainRenderTuning.intensityCurveExponent)
-            layer.opacity = Float(curvedMatte * GrainRenderTuning.matteOpacityMultiplier)
+            let matteOpacity = curvedMatte * GrainRenderTuning.matteOpacityMultiplier
+            layer.opacity = Float(matteOpacity * MatteGrainTuning.grainDensityShare)
+            cloudLayer?.opacity = Float(matteOpacity * MatteGrainTuning.cloudDensityShare)
         } else if preserveBrightness {
             layer.opacity = Float(curvedIntensity * GrainRenderTuning.preserveBrightnessOpacityMultiplier)
         } else {
             layer.opacity = Float(curvedIntensity * GrainRenderTuning.standardOpacityMultiplier)
         }
+    }
+
+    /// Installs or tears down the cloud diffusion sublayer in response to mode/atlas changes.
+    ///
+    /// When matte mode is active and the current atlas carries a cloud frame, we lazily
+    /// create a sibling `CALayer` inserted at sublayer index 0 (behind the grain) and drive
+    /// a slow `contentsRect` pan via Core Animation. When the mode flips off, the layer is
+    /// removed so fine mode renders exactly as before.
+    private func syncCloudLayer(with atlas: GrainTextureAtlas) {
+        guard let hostLayer = layer else { return }
+
+        if isMatteMode, let cloudImage = atlas.cloudFrame {
+            let cl: CALayer
+            if let existing = cloudLayer {
+                cl = existing
+            } else {
+                cl = CALayer()
+                cl.magnificationFilter = .linear
+                cl.minificationFilter = .linear
+                cl.contentsGravity = .resize
+                cl.isOpaque = false
+                cl.allowsEdgeAntialiasing = false
+                cl.edgeAntialiasingMask = []
+                cl.frame = hostLayer.bounds
+                cl.autoresizingMask = [.layerWidthSizable, .layerHeightSizable]
+                hostLayer.insertSublayer(cl, at: 0)
+                cloudLayer = cl
+            }
+
+            if cloudLayerAtlasKey != atlas.key {
+                cl.contents = cloudImage
+                cl.contentsScale = currentScale
+                cloudLayerAtlasKey = atlas.key
+            }
+
+            startCloudPanIfNeeded(on: cl)
+        } else if let existing = cloudLayer {
+            existing.removeAnimation(forKey: Self.cloudPanAnimationKey)
+            existing.removeFromSuperlayer()
+            cloudLayer = nil
+            cloudLayerAtlasKey = nil
+        }
+    }
+
+    /// Drives a slow, autoreversed `contentsRect` pan on the cloud layer. This is what gives
+    /// the frosted film its subtle "breathing" without any per-frame CPU work — the grain
+    /// atlas handles high-frequency motion; the cloud handles low-frequency drift.
+    private func startCloudPanIfNeeded(on cloudLayer: CALayer) {
+        if cloudLayer.animation(forKey: Self.cloudPanAnimationKey) != nil { return }
+
+        let range = MatteGrainTuning.cloudPanRange
+        let window = 1.0 - range
+        let anim = CABasicAnimation(keyPath: "contentsRect")
+        anim.fromValue = NSValue(rect: CGRect(x: 0, y: 0, width: window, height: window))
+        anim.toValue = NSValue(rect: CGRect(x: range, y: range, width: window, height: window))
+        anim.duration = MatteGrainTuning.cloudPanDuration
+        anim.autoreverses = true
+        anim.repeatCount = .infinity
+        anim.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        anim.isRemovedOnCompletion = false
+        cloudLayer.add(anim, forKey: Self.cloudPanAnimationKey)
     }
     
     private func applyCurrentFrame() {
