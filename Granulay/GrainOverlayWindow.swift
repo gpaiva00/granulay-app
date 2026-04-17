@@ -93,6 +93,9 @@ class GrainOverlayWindow: NSObject, ObservableObject {
         window.ignoresMouseEvents = true
         window.collectionBehavior = [.canJoinAllSpaces, .stationary, .ignoresCycle, .fullScreenAuxiliary]
         window.isReleasedWhenClosed = false
+        // Excludes the overlay from screenshots and screen recordings so users capture
+        // the actual window content underneath rather than the grain layer.
+        window.sharingType = .none
         
         // Garante que a janela cubra toda a tela de forma consistente
         window.setFrame(screen.frame, display: true, animate: false)
@@ -151,6 +154,7 @@ class GrainOverlayWindow: NSObject, ObservableObject {
             window.isOpaque = false
             window.hasShadow = false
             window.ignoresMouseEvents = true
+            window.sharingType = .none
             
             // Garantir que a janela está configurada corretamente
             if let screen = window.screen {
