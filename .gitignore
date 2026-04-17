@@ -14,6 +14,7 @@ RELEASES_SETUP.md
 dist/
 build/
 bin/
+graphify-out/
 
 # Sparkle XCode project
 Sparkle Test App.app/
