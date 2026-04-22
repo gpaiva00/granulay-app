@@ -22,3 +22,5 @@ sparkle.app/
 sparkle.framework/
 DerivedData/
 Symbols/
+
+node_modules/
